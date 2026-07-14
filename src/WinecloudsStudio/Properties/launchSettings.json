@@ -1,8 +1,5 @@
 {
   "profiles": {
-    "WinecloudsStudio (Package)": {
-      "commandName": "MsixPackage"
-    },
     "WinecloudsStudio (Unpackaged)": {
       "commandName": "Project"
     }

@@ -1,5 +1,6 @@
 .superpowers/
 .vs/
+artifacts/
 **/bin/
 **/obj/
 *.user
