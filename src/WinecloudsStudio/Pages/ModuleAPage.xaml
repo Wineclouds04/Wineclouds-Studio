@@ -144,6 +144,323 @@
                     </StackPanel>
                 </Border>
 
+                <!-- Window Groups -->
+                <Border
+                    Padding="24"
+                    Background="White"
+                    BorderBrush="#E2E8F0"
+                    BorderThickness="1"
+                    CornerRadius="12">
+                    <StackPanel Spacing="12">
+                        <Grid ColumnSpacing="12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" FontSize="16" FontWeight="SemiBold" VerticalAlignment="Center" Text="窗口分组与循环" />
+                            <Button
+                                x:Name="AddGroupButton"
+                                Grid.Column="1"
+                                Click="AddGroupButton_Click"
+                                Content="添加分组">
+                                <Button.Resources>
+                                    <SolidColorBrush x:Key="ButtonBackground" Color="#E2E8F0" />
+                                    <SolidColorBrush x:Key="ButtonForeground" Color="#334155" />
+                                    <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#CBD5E1" />
+                                </Button.Resources>
+                            </Button>
+                        </Grid>
+
+                        <!-- Group list -->
+                        <ListView
+                            x:Name="GroupList"
+                            Height="160"
+                            IsItemClickEnabled="True"
+                            ItemClick="GroupList_ItemClick"
+                            SelectionMode="None">
+                            <ListView.ItemTemplate>
+                                <DataTemplate x:DataType="pages:GroupItem">
+                                    <Grid ColumnSpacing="8" Padding="4,6">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                                            <TextBlock FontWeight="SemiBold" Text="{x:Bind GroupName}" />
+                                            <TextBlock Foreground="#94A3B8" FontSize="12" Text="{x:Bind DetailsText}" />
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="1" HorizontalAlignment="Right" Orientation="Horizontal" Spacing="4">
+                                            <TextBlock
+                                                VerticalAlignment="Center"
+                                                FontSize="12"
+                                                Foreground="#64748B"
+                                                Text="{x:Bind ForwardHotkeyText}" />
+                                            <TextBlock
+                                                VerticalAlignment="Center"
+                                                FontSize="12"
+                                                Foreground="#94A3B8"
+                                                Text="/" />
+                                            <TextBlock
+                                                VerticalAlignment="Center"
+                                                FontSize="12"
+                                                Foreground="#64748B"
+                                                Text="{x:Bind BackwardHotkeyText}" />
+                                        </StackPanel>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+
+                        <Grid ColumnSpacing="8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock
+                                x:Name="GroupCountLabel"
+                                Grid.Column="0"
+                                Foreground="#94A3B8"
+                                VerticalAlignment="Center"
+                                Text="共 0 个分组" />
+                            <Button
+                                x:Name="EditGroupButton"
+                                Grid.Column="1"
+                                Click="EditGroupButton_Click"
+                                Content="编辑"
+                                IsEnabled="False">
+                                <Button.Resources>
+                                    <SolidColorBrush x:Key="ButtonBackground" Color="#E2E8F0" />
+                                    <SolidColorBrush x:Key="ButtonForeground" Color="#334155" />
+                                    <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#CBD5E1" />
+                                    <SolidColorBrush x:Key="ButtonBackgroundDisabled" Color="#F1F5F9" />
+                                    <SolidColorBrush x:Key="ButtonForegroundDisabled" Color="#CBD5E1" />
+                                </Button.Resources>
+                            </Button>
+                            <Button
+                                x:Name="DeleteGroupButton"
+                                Grid.Column="2"
+                                Click="DeleteGroupButton_Click"
+                                Content="删除"
+                                IsEnabled="False">
+                                <Button.Resources>
+                                    <SolidColorBrush x:Key="ButtonBackground" Color="#FEE2E2" />
+                                    <SolidColorBrush x:Key="ButtonForeground" Color="#DC2626" />
+                                    <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#FECACA" />
+                                    <SolidColorBrush x:Key="ButtonBackgroundDisabled" Color="#F1F5F9" />
+                                    <SolidColorBrush x:Key="ButtonForegroundDisabled" Color="#CBD5E1" />
+                                </Button.Resources>
+                            </Button>
+                        </Grid>
+
+                        <!-- Inline group editor (hidden by default) -->
+                        <Border
+                            x:Name="GroupEditorPanel"
+                            Padding="16"
+                            Background="#F8FAFC"
+                            BorderBrush="#E2E8F0"
+                            BorderThickness="1"
+                            CornerRadius="8"
+                            Visibility="Collapsed">
+                            <StackPanel Spacing="10">
+                                <TextBlock FontWeight="SemiBold" Text="编辑分组" />
+
+                                <!-- Group name -->
+                                <StackPanel Spacing="4">
+                                    <TextBlock Foreground="#64748B" FontSize="13" Text="分组名称" />
+                                    <TextBox x:Name="GroupNameBox" PlaceholderText="输入分组名称" />
+                                </StackPanel>
+
+                                <!-- Forward hotkey -->
+                                <StackPanel Spacing="4">
+                                    <TextBlock Foreground="#64748B" FontSize="13" Text="正向循环热键" />
+                                    <Grid ColumnSpacing="8">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock
+                                            x:Name="ForwardHotkeyDisplay"
+                                            Grid.Column="0"
+                                            VerticalAlignment="Center"
+                                            FontSize="14"
+                                            FontWeight="SemiBold"
+                                            Foreground="#334155"
+                                            Text="未设置" />
+                                        <Button
+                                            x:Name="SelectForwardKeyButton"
+                                            Grid.Column="1"
+                                            Click="SelectForwardKeyButton_Click"
+                                            Content="选择按键"
+                                            FontSize="12">
+                                            <Button.Resources>
+                                                <SolidColorBrush x:Key="ButtonBackground" Color="#E2E8F0" />
+                                                <SolidColorBrush x:Key="ButtonForeground" Color="#334155" />
+                                                <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#CBD5E1" />
+                                            </Button.Resources>
+                                        </Button>
+                                    </Grid>
+                                </StackPanel>
+
+                                <!-- Backward hotkey -->
+                                <StackPanel Spacing="4">
+                                    <TextBlock Foreground="#64748B" FontSize="13" Text="反向循环热键" />
+                                    <Grid ColumnSpacing="8">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock
+                                            x:Name="BackwardHotkeyDisplay"
+                                            Grid.Column="0"
+                                            VerticalAlignment="Center"
+                                            FontSize="14"
+                                            FontWeight="SemiBold"
+                                            Foreground="#334155"
+                                            Text="未设置" />
+                                        <Button
+                                            x:Name="SelectBackwardKeyButton"
+                                            Grid.Column="1"
+                                            Click="SelectBackwardKeyButton_Click"
+                                            Content="选择按键"
+                                            FontSize="12">
+                                            <Button.Resources>
+                                                <SolidColorBrush x:Key="ButtonBackground" Color="#E2E8F0" />
+                                                <SolidColorBrush x:Key="ButtonForeground" Color="#334155" />
+                                                <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#CBD5E1" />
+                                            </Button.Resources>
+                                        </Button>
+                                    </Grid>
+                                </StackPanel>
+
+                                <!-- Validation status -->
+                                <TextBlock
+                                    x:Name="GroupValidationLabel"
+                                    Foreground="#DC2626"
+                                    FontSize="12"
+                                    FontWeight="SemiBold"
+                                    Visibility="Collapsed"
+                                    Text="按键已被其他循环操作占用" />
+
+                                <!-- Window ordering -->
+                                <StackPanel Spacing="4">
+                                    <TextBlock Foreground="#64748B" FontSize="13" Text="窗口顺序 (由上到下 = 循环正向顺序)" />
+                                    <ListView
+                                        x:Name="GroupWindowList"
+                                        Height="120"
+                                        IsItemClickEnabled="True"
+                                        ItemClick="GroupWindowList_ItemClick"
+                                        SelectionMode="None">
+                                        <ListView.ItemTemplate>
+                                            <DataTemplate x:DataType="pages:ProcessItem">
+                                                <TextBlock
+                                                    VerticalAlignment="Center"
+                                                    FontSize="13"
+                                                    Text="{x:Bind DisplayText}" />
+                                            </DataTemplate>
+                                        </ListView.ItemTemplate>
+                                    </ListView>
+                                    <Grid ColumnSpacing="8">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <ComboBox
+                                            x:Name="AddWindowComboBox"
+                                            Grid.Column="0"
+                                            PlaceholderText="选择要添加的窗口" />
+                                        <Button
+                                            x:Name="AddWindowButton"
+                                            Grid.Column="1"
+                                            Click="AddWindowButton_Click"
+                                            Content="添加"
+                                            FontSize="12">
+                                            <Button.Resources>
+                                                <SolidColorBrush x:Key="ButtonBackground" Color="#E2E8F0" />
+                                                <SolidColorBrush x:Key="ButtonForeground" Color="#334155" />
+                                                <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#CBD5E1" />
+                                            </Button.Resources>
+                                        </Button>
+                                        <Button
+                                            x:Name="RemoveWindowButton"
+                                            Grid.Column="2"
+                                            Click="RemoveWindowButton_Click"
+                                            Content="移除"
+                                            FontSize="12">
+                                            <Button.Resources>
+                                                <SolidColorBrush x:Key="ButtonBackground" Color="#FEE2E2" />
+                                                <SolidColorBrush x:Key="ButtonForeground" Color="#DC2626" />
+                                                <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#FECACA" />
+                                            </Button.Resources>
+                                        </Button>
+                                    </Grid>
+                                    <Grid ColumnSpacing="8">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <Button
+                                            x:Name="MoveUpButton"
+                                            Grid.Column="0"
+                                            Click="MoveUpButton_Click"
+                                            Content="▲ 上移"
+                                            FontSize="12">
+                                            <Button.Resources>
+                                                <SolidColorBrush x:Key="ButtonBackground" Color="#E2E8F0" />
+                                                <SolidColorBrush x:Key="ButtonForeground" Color="#334155" />
+                                                <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#CBD5E1" />
+                                            </Button.Resources>
+                                        </Button>
+                                        <Button
+                                            x:Name="MoveDownButton"
+                                            Grid.Column="1"
+                                            Click="MoveDownButton_Click"
+                                            Content="▼ 下移"
+                                            FontSize="12">
+                                            <Button.Resources>
+                                                <SolidColorBrush x:Key="ButtonBackground" Color="#E2E8F0" />
+                                                <SolidColorBrush x:Key="ButtonForeground" Color="#334155" />
+                                                <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#CBD5E1" />
+                                            </Button.Resources>
+                                        </Button>
+                                    </Grid>
+                                </StackPanel>
+
+                                <!-- Save / Cancel -->
+                                <Grid ColumnSpacing="8">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Button
+                                        x:Name="SaveGroupButton"
+                                        Grid.Column="0"
+                                        Click="SaveGroupButton_Click"
+                                        Content="保存分组">
+                                        <Button.Resources>
+                                            <SolidColorBrush x:Key="ButtonBackground" Color="#16A34A" />
+                                            <SolidColorBrush x:Key="ButtonForeground" Color="White" />
+                                            <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#22C55E" />
+                                        </Button.Resources>
+                                    </Button>
+                                    <Button
+                                        x:Name="CancelGroupButton"
+                                        Grid.Column="1"
+                                        Click="CancelGroupButton_Click"
+                                        Content="取消">
+                                        <Button.Resources>
+                                            <SolidColorBrush x:Key="ButtonBackground" Color="#E2E8F0" />
+                                            <SolidColorBrush x:Key="ButtonForeground" Color="#334155" />
+                                            <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#CBD5E1" />
+                                        </Button.Resources>
+                                    </Button>
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </Border>
+
                 <!-- Action buttons -->
                 <Grid ColumnSpacing="12">
                     <Grid.ColumnDefinitions>

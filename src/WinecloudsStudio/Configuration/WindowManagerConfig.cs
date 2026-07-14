@@ -11,6 +11,8 @@ public class WindowManagerConfig
     public double ThumbnailOpacity { get; set; } = 0.9;
     public bool AlwaysOnTop { get; set; } = true;
     public bool ShowThumbnailFrames { get; set; } = false;
+    public bool ShowBorder { get; set; } = false;
     public bool ShowOverlayLabels { get; set; } = true;
     public List<string> MonitoredProcesses { get; set; } = new();
+    public List<WindowGroupConfig> Groups { get; set; } = new();
 }

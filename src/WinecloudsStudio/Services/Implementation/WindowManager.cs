@@ -28,6 +28,11 @@ public class WindowManager : IWindowManager
 
     public void ActivateWindow(IntPtr handle)
     {
+        if (handle == IntPtr.Zero)
+        {
+            return;
+        }
+
         User32NativeMethods.SetForegroundWindow(handle);
         User32NativeMethods.SetFocus(handle);
 
@@ -37,6 +42,7 @@ public class WindowManager : IWindowManager
         {
             User32NativeMethods.ShowWindowAsync(handle, InteropConstants.SW_RESTORE);
         }
+
     }
 
     public void MinimizeWindow(IntPtr handle)

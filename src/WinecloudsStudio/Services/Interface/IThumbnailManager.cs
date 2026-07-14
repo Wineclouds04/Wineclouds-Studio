@@ -1,3 +1,5 @@
+using WinecloudsStudio.Configuration;
+
 namespace WinecloudsStudio.Services.Interface;
 
 /// <summary>
@@ -21,4 +23,16 @@ public interface IThumbnailManager
     bool ShowFrames { get; set; }
     bool ShowOverlayLabels { get; set; }
     bool ShowBorder { get; set; }
+
+    /// <summary>Gets the current window groups.</summary>
+    IReadOnlyList<WindowGroupConfig> Groups { get; }
+
+    /// <summary>Replaces all window groups and re-registers hotkeys.</summary>
+    void SetGroups(IReadOnlyList<WindowGroupConfig> groups);
+
+    /// <summary>Cycles to the next window in the specified group.</summary>
+    void CycleGroupForward(int groupIndex);
+
+    /// <summary>Cycles to the previous window in the specified group.</summary>
+    void CycleGroupBackward(int groupIndex);
 }

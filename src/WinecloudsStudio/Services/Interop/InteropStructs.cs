@@ -75,3 +75,17 @@ public struct WINDOWPLACEMENT
     public const int SW_SHOWNA = 8;
     public const int SW_RESTORE = 9;
 }
+
+/// <summary>
+/// Win32 MSG structure for GetMessage / DispatchMessage loops.
+/// </summary>
+[StructLayout(LayoutKind.Sequential)]
+public struct MSG
+{
+    public IntPtr hwnd;
+    public uint message;
+    public IntPtr wParam;
+    public IntPtr lParam;
+    public uint time;
+    public POINT pt;
+}

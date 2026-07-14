@@ -1,44 +1,69 @@
-﻿using Windows.ApplicationModel;
-using Windows.ApplicationModel.Activation;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
-using Microsoft.UI.Xaml.Shapes;
-
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
+﻿using Microsoft.UI.Xaml;
+using WinecloudsStudio.Services.Implementation;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Security.Principal;
 
 namespace WinecloudsStudio;
 
-/// <summary>
-/// Provides application-specific behavior to supplement the default Application class.
-/// </summary>
-public partial class App : Application
+public partial class App : Microsoft.UI.Xaml.Application
 {
     private Window? _window;
-    
-    /// <summary>
-    /// Initializes the singleton application object.  This is the first line of authored code
-    /// executed, and as such is the logical equivalent of main() or WinMain().
-    /// </summary>
+
     public App()
     {
+        if (!EnsureElevated())
+        {
+            Environment.Exit(0);
+            return;
+        }
+
         InitializeComponent();
+        Logger.Init();
+        Logger.Info("App", "Application starting");
     }
 
-    /// <summary>
-    /// Invoked when the application is launched.
-    /// </summary>
-    /// <param name="args">Details about the launch request and process.</param>
     protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
     {
         _window = new MainWindow();
+        _window.Closed += (_, _) =>
+        {
+            Logger.Info("App", "Window closed, shutting down");
+            Logger.Shutdown();
+        };
         _window.Activate();
+        Logger.Info("App", "MainWindow activated");
+    }
+
+    private static bool EnsureElevated()
+    {
+        using WindowsIdentity identity = WindowsIdentity.GetCurrent();
+        var principal = new WindowsPrincipal(identity);
+        if (principal.IsInRole(WindowsBuiltInRole.Administrator))
+        {
+            return true;
+        }
+
+        string? executablePath = Environment.ProcessPath;
+        if (string.IsNullOrWhiteSpace(executablePath))
+        {
+            return false;
+        }
+
+        try
+        {
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = executablePath,
+                UseShellExecute = true,
+                Verb = "runas"
+            });
+        }
+        catch (Win32Exception error) when (error.NativeErrorCode == 1223)
+        {
+            // The user cancelled the UAC prompt. End the medium-integrity launcher.
+        }
+
+        return false;
     }
 }
