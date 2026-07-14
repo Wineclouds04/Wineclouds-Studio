@@ -61,9 +61,9 @@
                     Content="服务模块"
                     Foreground="{StaticResource NavigationGroupLabelBrush}" />
                 <NavigationViewItem
-                    Content="模块 A"
+                    Content="窗口管理器"
                     Foreground="{StaticResource NavigationPaneForegroundBrush}"
-                    Icon="Folder"
+                    Icon="OpenWith"
                     Tag="module-a" />
                 <NavigationViewItem
                     Content="模块 B"

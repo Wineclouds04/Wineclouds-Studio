@@ -5,24 +5,181 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:pages="using:WinecloudsStudio.Pages"
     Background="{StaticResource ContentSurfaceBrush}"
     mc:Ignorable="d">
+
     <Grid Padding="40">
-        <StackPanel Spacing="20">
-            <TextBlock FontSize="30" FontWeight="SemiBold" Text="模块 A" />
-            <TextBlock Foreground="#64748B" Text="模块 A 的服务入口将在此展示。" />
-            <Border
-                MinHeight="220"
-                Padding="28"
-                Background="White"
-                BorderBrush="{StaticResource PlaceholderBorderBrush}"
-                BorderThickness="1"
-                CornerRadius="12">
-                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="8">
-                    <TextBlock HorizontalAlignment="Center" FontSize="18" FontWeight="SemiBold" Text="模块 A" />
-                    <TextBlock HorizontalAlignment="Center" Foreground="#64748B" Text="功能建设中" />
+        <ScrollViewer>
+            <StackPanel Spacing="20">
+                <!-- Title -->
+                <StackPanel Spacing="4">
+                    <TextBlock FontSize="30" FontWeight="SemiBold" Text="窗口管理器" />
+                    <TextBlock Foreground="#64748B" Text="选择要监控的进程窗口，缩略图将置顶显示，点击小窗即可切换到对应窗口。" />
                 </StackPanel>
-            </Border>
-        </StackPanel>
+
+                <!-- Process selection list -->
+                <Border
+                    Padding="24"
+                    Background="White"
+                    BorderBrush="#E2E8F0"
+                    BorderThickness="1"
+                    CornerRadius="12">
+                    <StackPanel Spacing="12">
+                        <Grid ColumnSpacing="12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" FontSize="16" FontWeight="SemiBold" VerticalAlignment="Center" Text="可用进程" />
+                            <Button
+                                x:Name="RefreshProcessesButton"
+                                Grid.Column="1"
+                                Click="RefreshProcessesButton_Click"
+                                Content="刷新列表">
+                                <Button.Resources>
+                                    <SolidColorBrush x:Key="ButtonBackground" Color="#E2E8F0" />
+                                    <SolidColorBrush x:Key="ButtonForeground" Color="#334155" />
+                                    <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#CBD5E1" />
+                                </Button.Resources>
+                            </Button>
+                        </Grid>
+                        <ListView
+                            x:Name="ProcessList"
+                            Height="280"
+                            SelectionMode="None">
+                            <ListView.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <ItemsStackPanel CacheLength="500" />
+                                </ItemsPanelTemplate>
+                            </ListView.ItemsPanel>
+                            <ListView.ItemTemplate>
+                                <DataTemplate x:DataType="pages:ProcessItem">
+                                    <Grid ColumnSpacing="12" Padding="2,4">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <CheckBox
+                                            Grid.Column="0"
+                                            HorizontalAlignment="Left"
+                                            IsChecked="{x:Bind IsSelected, Mode=TwoWay}"
+                                            VerticalAlignment="Center" />
+                                        <TextBlock
+                                            Grid.Column="1"
+                                            VerticalAlignment="Center"
+                                            FontWeight="SemiBold"
+                                            Text="{x:Bind DisplayText}" />
+                                    </Grid>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                        <TextBlock
+                            x:Name="ProcessCountLabel"
+                            Foreground="#94A3B8"
+                            Text="共 0 个带窗口的进程" />
+                    </StackPanel>
+                </Border>
+
+                <!-- Thumbnail settings -->
+                <Border
+                    Padding="24"
+                    Background="White"
+                    BorderBrush="#E2E8F0"
+                    BorderThickness="1"
+                    CornerRadius="12">
+                    <StackPanel Spacing="16">
+                        <TextBlock FontSize="16" FontWeight="SemiBold" Text="缩略图设置" />
+
+                        <Grid ColumnSpacing="16">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0" Spacing="6">
+                                <TextBlock Foreground="#64748B" Text="宽度" />
+                                <NumberBox
+                                    x:Name="ThumbWidthBox"
+                                    Maximum="800"
+                                    Minimum="80"
+                                    Value="280" />
+                            </StackPanel>
+                            <StackPanel Grid.Column="1" Spacing="6">
+                                <TextBlock Foreground="#64748B" Text="高度" />
+                                <NumberBox
+                                    x:Name="ThumbHeightBox"
+                                    Maximum="600"
+                                    Minimum="60"
+                                    Value="180" />
+                            </StackPanel>
+                        </Grid>
+
+                        <StackPanel Spacing="6">
+                            <Grid ColumnSpacing="8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Foreground="#64748B" Text="透明度" />
+                                <Slider
+                                    x:Name="OpacitySlider"
+                                    Grid.Column="1"
+                                    Maximum="10"
+                                    Minimum="1"
+                                    StepFrequency="1"
+                                    Value="9" />
+                                <TextBlock
+                                    x:Name="OpacityValueLabel"
+                                    Grid.Column="2"
+                                    Foreground="#64748B"
+                                    Text="0.9" />
+                            </Grid>
+                        </StackPanel>
+
+                        <StackPanel Spacing="10">
+                            <CheckBox x:Name="AlwaysOnTopCheck" Content="始终置顶" IsChecked="True" />
+                            <CheckBox x:Name="ShowBorderCheck" Click="ShowBorderCheck_Click" Content="荧光绿边框" IsChecked="False" />
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <!-- Action buttons -->
+                <Grid ColumnSpacing="12">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Button
+                        x:Name="StartButton"
+                        Grid.Column="0"
+                        Click="StartButton_Click"
+                        Content="开始监控"
+                        IsEnabled="True">
+                        <Button.Resources>
+                            <SolidColorBrush x:Key="ButtonBackground" Color="#16A34A" />
+                            <SolidColorBrush x:Key="ButtonForeground" Color="White" />
+                            <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#22C55E" />
+                            <SolidColorBrush x:Key="ButtonBackgroundDisabled" Color="#D1D5DB" />
+                            <SolidColorBrush x:Key="ButtonForegroundDisabled" Color="#9CA3AF" />
+                        </Button.Resources>
+                    </Button>
+                    <Button
+                        x:Name="StopButton"
+                        Grid.Column="1"
+                        Click="StopButton_Click"
+                        Content="停止监控"
+                        IsEnabled="False">
+                        <Button.Resources>
+                            <SolidColorBrush x:Key="ButtonBackground" Color="#DC2626" />
+                            <SolidColorBrush x:Key="ButtonForeground" Color="White" />
+                            <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#EF4444" />
+                            <SolidColorBrush x:Key="ButtonBackgroundDisabled" Color="#D1D5DB" />
+                            <SolidColorBrush x:Key="ButtonForegroundDisabled" Color="#9CA3AF" />
+                        </Button.Resources>
+                    </Button>
+                </Grid>
+            </StackPanel>
+        </ScrollViewer>
     </Grid>
 </Page>
