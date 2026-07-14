@@ -24,6 +24,7 @@ public sealed class ThumbnailManager : IThumbnailManager
     private HotkeyService? _hotkeyService;
     private List<WindowGroupConfig> _groups = new();
     private IntPtr _activeClient;
+    private bool _snapThumbnailsToGrid;
 
     public ThumbnailManager()
     {
@@ -44,6 +45,19 @@ public sealed class ThumbnailManager : IThumbnailManager
     public int ThumbnailHeight { get; set; }
     public double ThumbnailOpacity { get; set; }
     public bool AlwaysOnTop { get; set; }
+    public bool LockThumbnailPosition { get; set; }
+    public bool SnapThumbnailsToGrid
+    {
+        get => _snapThumbnailsToGrid;
+        set
+        {
+            _snapThumbnailsToGrid = value;
+            foreach (IThumbnailView view in _thumbnailViews.Values)
+            {
+                view.SetSnapToGrid(value);
+            }
+        }
+    }
     public bool ShowFrames { get; set; }
     public bool ShowOverlayLabels { get; set; }
     public bool ShowBorder { get; set; }
@@ -220,6 +234,8 @@ public sealed class ThumbnailManager : IThumbnailManager
         }
 
         view.SetTopMost(AlwaysOnTop);
+        view.SetPositionLocked(LockThumbnailPosition);
+        view.SetSnapToGrid(SnapThumbnailsToGrid);
         view.SetOpacity(ThumbnailOpacity);
         view.SetOverlayLabel(ShowOverlayLabels);
         view.SetShowBorder(ShowBorder);

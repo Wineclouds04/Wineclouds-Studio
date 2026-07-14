@@ -20,6 +20,8 @@ public interface IThumbnailManager
     int ThumbnailHeight { get; set; }
     double ThumbnailOpacity { get; set; }
     bool AlwaysOnTop { get; set; }
+    bool LockThumbnailPosition { get; set; }
+    bool SnapThumbnailsToGrid { get; set; }
     bool ShowFrames { get; set; }
     bool ShowOverlayLabels { get; set; }
     bool ShowBorder { get; set; }

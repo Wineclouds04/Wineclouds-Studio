@@ -58,6 +58,16 @@ public sealed partial class ModuleAPage : Page
         _thumbnailManager.ShowBorder = ShowBorderCheck.IsChecked ?? false;
     }
 
+    private void LockThumbnailPositionCheck_Click(object sender, RoutedEventArgs e)
+    {
+        _thumbnailManager.LockThumbnailPosition = LockThumbnailPositionCheck.IsChecked ?? false;
+    }
+
+    private void SnapThumbnailsToGridCheck_Click(object sender, RoutedEventArgs e)
+    {
+        _thumbnailManager.SnapThumbnailsToGrid = SnapThumbnailsToGridCheck.IsChecked ?? false;
+    }
+
     private void RefreshProcessList()
     {
         _processItems.Clear();
@@ -94,15 +104,34 @@ public sealed partial class ModuleAPage : Page
         _processItems.Sort((a, b) => string.CompareOrdinal(
             a.DisplayText, b.DisplayText));
 
-        ProcessList.ItemsSource = null;
-        ProcessList.ItemsSource = _processItems;
-
-        ProcessCountLabel.Text = $"共 {_processItems.Count} 个带窗口的进程";
+        ApplyProcessFilter();
     }
 
     private void RefreshProcessesButton_Click(object sender, RoutedEventArgs e)
     {
         RefreshProcessList();
+    }
+
+    private void ProcessFilterBox_TextChanged(object sender, TextChangedEventArgs e)
+    {
+        ApplyProcessFilter();
+    }
+
+    private void ApplyProcessFilter()
+    {
+        string filterText = ProcessFilterBox.Text.Trim();
+        List<ProcessItem> filteredItems = string.IsNullOrEmpty(filterText)
+            ? _processItems
+            : _processItems.Where(item =>
+                    item.ProcessName.Contains(filterText, StringComparison.OrdinalIgnoreCase)
+                    || item.WindowTitle.Contains(filterText, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+        ProcessList.ItemsSource = null;
+        ProcessList.ItemsSource = filteredItems;
+        ProcessCountLabel.Text = string.IsNullOrEmpty(filterText)
+            ? $"共 {_processItems.Count} 个带窗口的进程"
+            : $"显示 {filteredItems.Count} / 共 {_processItems.Count} 个带窗口的进程";
     }
 
     private void StartButton_Click(object sender, RoutedEventArgs e)
@@ -149,6 +178,8 @@ public sealed partial class ModuleAPage : Page
         _thumbnailManager.ThumbnailHeight = (int)ThumbHeightBox.Value;
         _thumbnailManager.ThumbnailOpacity = OpacitySlider.Value / 10.0;
         _thumbnailManager.AlwaysOnTop = AlwaysOnTopCheck.IsChecked ?? true;
+        _thumbnailManager.LockThumbnailPosition = LockThumbnailPositionCheck.IsChecked ?? false;
+        _thumbnailManager.SnapThumbnailsToGrid = SnapThumbnailsToGridCheck.IsChecked ?? false;
         _thumbnailManager.ShowBorder = ShowBorderCheck.IsChecked ?? false;
     }
 
@@ -162,6 +193,8 @@ public sealed partial class ModuleAPage : Page
         ThumbHeightBox.Value = config.ThumbnailHeight;
         OpacitySlider.Value = config.ThumbnailOpacity * 10.0;
         AlwaysOnTopCheck.IsChecked = config.AlwaysOnTop;
+        LockThumbnailPositionCheck.IsChecked = config.LockThumbnailPosition;
+        SnapThumbnailsToGridCheck.IsChecked = config.SnapThumbnailsToGrid;
         ShowBorderCheck.IsChecked = config.ShowBorder;
 
         _thumbnailManager.ThumbnailOpacity = config.ThumbnailOpacity;
@@ -189,6 +222,8 @@ public sealed partial class ModuleAPage : Page
             ThumbnailHeight = (int)ThumbHeightBox.Value,
             ThumbnailOpacity = OpacitySlider.Value / 10.0,
             AlwaysOnTop = AlwaysOnTopCheck.IsChecked ?? true,
+            LockThumbnailPosition = LockThumbnailPositionCheck.IsChecked ?? false,
+            SnapThumbnailsToGrid = SnapThumbnailsToGridCheck.IsChecked ?? false,
             ShowBorder = ShowBorderCheck.IsChecked ?? false,
             Groups = new List<WindowGroupConfig>(_groups),
         };

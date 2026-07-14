@@ -20,6 +20,8 @@ public interface IThumbnailView : IDisposable
     void RefreshThumbnail(bool forceRefresh);
     void SetOpacity(double opacity);
     void SetTopMost(bool topMost);
+    void SetPositionLocked(bool locked);
+    void SetSnapToGrid(bool snapToGrid);
     void SetHighlight(bool highlighted);
     void SetShowBorder(bool showBorder);
     void SetOverlayLabel(bool showLabel);

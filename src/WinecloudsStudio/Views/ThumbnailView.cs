@@ -9,12 +9,15 @@ namespace WinecloudsStudio.Views;
 public abstract class ThumbnailView : Form, IThumbnailView
 {
     private const int BorderWidth = 3;
+    private const int GridSize = 8;
     private static readonly Color HighlightColor = Color.Lime;
 
     private readonly ThumbnailOverlay _overlay;
     private bool _customMouseMode;
     private bool _highlighted;
     private bool _showBorder;
+    private bool _positionLocked;
+    private bool _snapToGrid;
     private Point _baseMousePosition;
     private Point _baseWindowLocation;
     private Control? _captureControl;
@@ -145,6 +148,22 @@ public abstract class ThumbnailView : Form, IThumbnailView
         _overlay.TopMost = topMost;
     }
 
+    public void SetPositionLocked(bool locked) => _positionLocked = locked;
+
+    public void SetSnapToGrid(bool snapToGrid)
+    {
+        if (_snapToGrid == snapToGrid)
+        {
+            return;
+        }
+
+        _snapToGrid = snapToGrid;
+        if (_snapToGrid)
+        {
+            Location = SnapToGrid(Location);
+        }
+    }
+
     public void SetHighlight(bool highlighted)
     {
         if (_highlighted == highlighted)
@@ -240,7 +259,10 @@ public abstract class ThumbnailView : Form, IThumbnailView
                 ThumbnailActivated?.Invoke(Id);
                 break;
             case MouseButtons.Right:
-                EnterCustomMouseMode(sender as Control);
+                if (!_positionLocked)
+                {
+                    EnterCustomMouseMode(sender as Control);
+                }
                 break;
         }
     }
@@ -257,7 +279,9 @@ public abstract class ThumbnailView : Form, IThumbnailView
         int offsetY = mousePosition.Y - _baseMousePosition.Y;
         _baseMousePosition = mousePosition;
 
-        Location = new Point(Location.X + offsetX, Location.Y + offsetY);
+        Location = _snapToGrid
+            ? SnapToGrid(new Point(Location.X + offsetX, Location.Y + offsetY))
+            : new Point(Location.X + offsetX, Location.Y + offsetY);
         _baseWindowLocation = Location;
     }
 
@@ -312,4 +336,8 @@ public abstract class ThumbnailView : Form, IThumbnailView
             _overlay.Close();
         }
     }
+
+    private static Point SnapToGrid(Point location) => new(
+        (int)Math.Round(location.X / (double)GridSize) * GridSize,
+        (int)Math.Round(location.Y / (double)GridSize) * GridSize);
 }

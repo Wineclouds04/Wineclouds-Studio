@@ -18,8 +18,15 @@
                     <TextBlock Foreground="#64748B" Text="选择要监控的进程窗口，缩略图将置顶显示，点击小窗即可切换到对应窗口。" />
                 </StackPanel>
 
+                <Grid ColumnSpacing="20">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
                 <!-- Process selection list -->
                 <Border
+                    Grid.Column="0"
                     Padding="24"
                     Background="White"
                     BorderBrush="#E2E8F0"
@@ -28,13 +35,20 @@
                     <StackPanel Spacing="12">
                         <Grid ColumnSpacing="12">
                             <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
                             <TextBlock Grid.Column="0" FontSize="16" FontWeight="SemiBold" VerticalAlignment="Center" Text="可用进程" />
+                            <TextBox
+                                x:Name="ProcessFilterBox"
+                                Grid.Column="1"
+                                Margin="12,0,0,0"
+                                PlaceholderText="搜索进程或窗口标题"
+                                TextChanged="ProcessFilterBox_TextChanged" />
                             <Button
                                 x:Name="RefreshProcessesButton"
-                                Grid.Column="1"
+                                Grid.Column="2"
                                 Click="RefreshProcessesButton_Click"
                                 Content="刷新列表">
                                 <Button.Resources>
@@ -83,6 +97,7 @@
 
                 <!-- Thumbnail settings -->
                 <Border
+                    Grid.Column="1"
                     Padding="24"
                     Background="White"
                     BorderBrush="#E2E8F0"
@@ -139,10 +154,19 @@
 
                         <StackPanel Spacing="10">
                             <CheckBox x:Name="AlwaysOnTopCheck" Content="始终置顶" IsChecked="True" />
+                            <CheckBox
+                                x:Name="LockThumbnailPositionCheck"
+                                Click="LockThumbnailPositionCheck_Click"
+                                Content="锁死缩略图" />
+                            <CheckBox
+                                x:Name="SnapThumbnailsToGridCheck"
+                                Click="SnapThumbnailsToGridCheck_Click"
+                                Content="缩略图吸附网格（每 8 像素）" />
                             <CheckBox x:Name="ShowBorderCheck" Click="ShowBorderCheck_Click" Content="荧光绿边框" IsChecked="False" />
                         </StackPanel>
                     </StackPanel>
                 </Border>
+                </Grid>
 
                 <!-- Window Groups -->
                 <Border
@@ -462,14 +486,11 @@
                 </Border>
 
                 <!-- Action buttons -->
-                <Grid ColumnSpacing="12">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
+                <StackPanel
+                    Orientation="Horizontal"
+                    Spacing="12">
                     <Button
                         x:Name="StartButton"
-                        Grid.Column="0"
                         Click="StartButton_Click"
                         Content="开始监控"
                         IsEnabled="True">
@@ -483,7 +504,6 @@
                     </Button>
                     <Button
                         x:Name="StopButton"
-                        Grid.Column="1"
                         Click="StopButton_Click"
                         Content="停止监控"
                         IsEnabled="False">
@@ -495,7 +515,7 @@
                             <SolidColorBrush x:Key="ButtonForegroundDisabled" Color="#9CA3AF" />
                         </Button.Resources>
                     </Button>
-                </Grid>
+                </StackPanel>
             </StackPanel>
         </ScrollViewer>
     </Grid>

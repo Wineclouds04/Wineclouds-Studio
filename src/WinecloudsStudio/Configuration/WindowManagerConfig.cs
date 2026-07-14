@@ -10,6 +10,8 @@ public class WindowManagerConfig
     public int ThumbnailHeight { get; set; } = 180;
     public double ThumbnailOpacity { get; set; } = 0.9;
     public bool AlwaysOnTop { get; set; } = true;
+    public bool LockThumbnailPosition { get; set; } = false;
+    public bool SnapThumbnailsToGrid { get; set; } = false;
     public bool ShowThumbnailFrames { get; set; } = false;
     public bool ShowBorder { get; set; } = false;
     public bool ShowOverlayLabels { get; set; } = true;
