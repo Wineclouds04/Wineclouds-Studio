@@ -1,5 +1,5 @@
 ﻿using Microsoft.UI.Xaml;
-using WinecloudsStudio.Services.Implementation;
+using WinecloudsStudio.Shared.Logging;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Security.Principal;

@@ -1,7 +1,14 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using WinecloudsStudio.Pages;
-using WinecloudsStudio.Services.Implementation;
+using WinecloudsStudio.Modules.Home.Pages;
+using WinecloudsStudio.Modules.Reserved.ModuleC;
+using WinecloudsStudio.Modules.Reserved.ModuleD;
+using WinecloudsStudio.Modules.Reserved.ModuleE;
+using WinecloudsStudio.Modules.Reserved.ModuleF;
+using WinecloudsStudio.Modules.ScreenDetection.Pages;
+using WinecloudsStudio.Modules.Navigation.Pages;
+using WinecloudsStudio.Modules.WindowManager.Pages;
+using WinecloudsStudio.Shared.Logging;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -54,8 +61,8 @@ public sealed partial class MainWindow : Window
         var pageType = navigationKey switch
         {
             "home" => typeof(HomePage),
-            "module-a" => typeof(ModuleAPage),
-            "module-b" => typeof(ModuleBPage),
+            "module-a" => typeof(WindowManagerPage),
+            "module-b" => typeof(ScreenDetectionPage),
             "module-c" => typeof(ModuleCPage),
             "module-d" => typeof(ModuleDPage),
             "module-e" => typeof(ModuleEPage),

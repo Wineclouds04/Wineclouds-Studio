@@ -1,4 +1,4 @@
-using WinecloudsStudio.Detection;
+using WinecloudsStudio.Modules.ScreenDetection.Core;
 
 var tests = new (string Name, Action Run)[]
 {

@@ -90,12 +90,14 @@ dotnet run --project .\tests\WinecloudsStudio.Detection.Tests
 ```text
 WinecloudsStudio.slnx
 ├── src/
-│   ├── WinecloudsStudio/              # WinUI 3 桌面应用
-│   │   ├── Pages/                     # 窗口管理与屏幕区域检测页面
-│   │   ├── ScreenDetection/           # 截屏、选区、预览、提醒和设置持久化
-│   │   ├── Services/                  # 窗口、缩略图、热键和 Win32 交互
-│   │   └── Configuration/             # 窗口布局与分组配置
-│   └── WinecloudsStudio.Detection/    # 颜色分析、连通区域与检测状态机
+│   └── WinecloudsStudio/              # WinUI 3 桌面应用
+│       ├── Modules/
+│       │   ├── Home/                  # 首页
+│       │   ├── WindowManager/         # 页面、模型、配置、服务与缩略图视图
+│       │   ├── ScreenDetection/       # 页面、选区、截图、提醒与检测核心
+│       │   ├── Reserved/              # 预留模块 C–F 的独立目录
+│       │   └── Navigation/            # 导航与兜底页面
+│       └── Shared/                    # 跨模块共享能力（如日志）
 ├── tests/
 │   └── WinecloudsStudio.Detection.Tests/ # 检测核心的独立测试程序
 ├── installer/                         # Inno Setup 安装器定义

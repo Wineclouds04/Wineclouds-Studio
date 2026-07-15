@@ -5,7 +5,7 @@
     <Platform Name="ARM64" />
   </Configurations>
   <Folder Name="/src/">
-    <Project Path="src/WinecloudsStudio.Detection/WinecloudsStudio.Detection.csproj" />
+    <Project Path="src/WinecloudsStudio/Modules/ScreenDetection/Core/WinecloudsStudio.Detection.csproj" />
     <Project Path="src/WinecloudsStudio/WinecloudsStudio.csproj">
       <BuildType Solution="Debug|x64" Project="Release" />
     </Project>
