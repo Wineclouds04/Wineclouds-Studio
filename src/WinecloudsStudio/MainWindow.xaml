@@ -62,7 +62,7 @@
                     Icon="OpenWith"
                     Tag="module-a" />
                 <NavigationViewItem
-                    Content="模块 B"
+                    Content="屏幕区域检测"
                     Foreground="{StaticResource NavigationPaneForegroundBrush}"
                     Icon="Library"
                     Tag="module-b" />

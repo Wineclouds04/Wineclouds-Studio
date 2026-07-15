@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Window
+    x:Class="WinecloudsStudio.ScreenDetection.RegionSelectionWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid
+        x:Name="SelectionSurface"
+        IsTabStop="True"
+        KeyDown="SelectionSurface_KeyDown"
+        PointerMoved="SelectionSurface_PointerMoved"
+        PointerPressed="SelectionSurface_PointerPressed"
+        PointerReleased="SelectionSurface_PointerReleased">
+        <Image x:Name="DesktopImage" Stretch="Fill" />
+        <Grid Background="#66000000">
+            <Canvas>
+                <Border
+                    x:Name="SelectionBorder"
+                    Background="#22FF3B30"
+                    BorderBrush="#FFFF3B30"
+                    BorderThickness="2"
+                    Visibility="Collapsed">
+                    <Border
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        Margin="6"
+                        Padding="8,4"
+                        Background="#DD111827">
+                        <TextBlock
+                            x:Name="SelectionSizeText"
+                            Foreground="White" />
+                    </Border>
+                </Border>
+
+                <Border
+                    Canvas.Left="18"
+                    Canvas.Top="18"
+                    Padding="12,8"
+                    Background="#DD111827"
+                    CornerRadius="6">
+                    <TextBlock Foreground="White" Text="拖动选择检测区域；Esc 取消" />
+                </Border>
+            </Canvas>
+        </Grid>
+    </Grid>
+</Window>

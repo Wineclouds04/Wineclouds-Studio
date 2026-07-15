@@ -1,120 +1,69 @@
 # Wineclouds Studio
 
-> 面向 Windows 多窗口场景的实时桌面预览与快速切换工具。
+> Windows 桌面窗口预览、快速切换与屏幕区域颜色提醒工具。
 
-Wineclouds Studio 将你选定的应用窗口变成可自由摆放、始终置顶的实时缩略图。无需反复切换窗口，也能在桌面上观察多个客户端、远程桌面或工作程序的状态；需要操作时，点击缩略图或按下分组热键即可回到目标窗口。
+Wineclouds Studio 面向需要同时关注多个窗口或屏幕状态的 Windows 用户。它将目标应用窗口显示为可自由摆放的实时缩略图，并提供分组热键切换；也可以持续监测指定屏幕区域，当目标颜色稳定出现时循环播放 MP3 提醒。
 
-窗口预览与循环切换的思路参考 [EVE-O-Preview](https://github.com/Phrynohyas/eve-o-preview)。
+窗口实时预览与循环切换的设计参考了 [EVE-O-Preview](https://github.com/Phrynohyas/eve-o-preview)。
 
-## 出发点
+## 功能概览
 
-多开游戏客户端、管理多台远程桌面或同时处理多个长时间任务时，传统的 Alt+Tab 有两个问题：你需要逐个切换才能确认窗口状态，也很难按固定顺序回到某个窗口。
+### 窗口管理器
 
-Wineclouds Studio 的目标不是替代窗口管理器，而是在不打断当前工作的前提下，让关键窗口始终“看得见、点得到、切得快”。它使用 Windows DWM Thumbnail 显示真实窗口画面，而不是定时截取静态图片；窗口内容变化会直接反映到桌面缩略图上。
+- 通过 DWM Thumbnail 显示目标窗口的实时画面，无需反复切换窗口确认状态。
+- 单击缩略图即可激活对应窗口。
+- 按窗口分组配置前进、后退热键，按固定顺序循环切换。
+- 可调整缩略图尺寸、透明度、边框与置顶状态；支持锁定位置和网格吸附。
+- 自动保存窗口布局、分组、热键和显示设置。
 
-## 核心亮点
+### 屏幕区域检测
 
-- **实时预览，而非截图**：使用 DWM Thumbnail 显示目标窗口的即时画面，适合观察游戏、远程桌面、下载器和业务程序状态。
-- **直接切换**：左键点击任一缩略图即可激活对应窗口，无需先在任务栏或 Alt+Tab 列表中寻找它。
-- **为多开而设计**：将窗口整理为分组，为每个分组配置前进、后退单键热键，按固定顺序循环切换。
-- **不干扰桌面布局**：缩略图支持置顶、透明度、尺寸和边框调节；可锁定位置避免误拖动，并按 8px 网格对齐。
-- **记住你的工作台**：自动保存窗口分组、热键、缩略图显示参数与位置，下次启动无需从头安排。
-- **普通安装体验**：提供传统 Windows 安装包，安装后从开始菜单或桌面快捷方式启动，也可通过 Windows 设置卸载。
+- 在单屏或多屏虚拟桌面上框选待检测区域，并实时预览画面。
+- 按指定 RGB 目标色检测像素，支持色相、饱和度和亮度容差。
+- 使用最少目标像素数与最小连通面积过滤孤立噪点。
+- 通过出现/消失确认帧数减少画面闪动引发的误报。
+- 目标色稳定出现后循环播放本地 MP3 文件，目标色消失后停止并重新布防。
+- 自动保存检测区域、检测参数和声音文件路径。
 
 ## 适用场景
 
-| 场景 | 你可以怎样使用 |
+| 场景 | 使用方式 |
 | --- | --- |
-| 多个游戏客户端 | 将每个角色窗口缩小并固定在屏幕边缘，观察状态后用热键轮流切换。 |
-| 远程桌面与服务器监控 | 同时查看多个远程会话或控制台，有变化时点击缩略图直接进入。 |
-| 长时间任务 | 监看构建、下载、渲染或自动化程序，不必频繁切回原窗口。 |
-| 直播与日常办公 | 将聊天、预览或关键工作窗口保持在可见区域，减少窗口查找。 |
+| 多开客户端 | 将关键窗口固定为实时缩略图，观察状态后通过点击或热键进入对应窗口。 |
+| 远程桌面与任务监看 | 同时查看多个远程会话、构建、下载或渲染任务，避免频繁切换。 |
+| 状态提示监测 | 框选界面中的状态灯、告警条或进度提示颜色，出现目标色时获得声音提醒。 |
+| 多显示器工作台 | 在跨屏区域内选择检测范围，监看副屏上的应用状态。 |
 
-## 工作方式
+## 快速开始
 
-```text
-选择可用进程 → 创建实时缩略图 → 调整并保存布局
-                              ├─ 左键：激活目标窗口
-                              ├─ 右键拖动：调整缩略图位置
-                              └─ 分组热键：按顺序切换窗口
-```
+### 使用窗口管理器
 
-1. 在“窗口管理器”中搜索并勾选需要监控的窗口。
-2. 设置缩略图的大小、透明度、置顶、边框、位置锁定和网格吸附。
-3. 按需将窗口加入分组，并为分组设置前进、后退热键。
-4. 点击“开始监控”，通过缩略图或热键在目标窗口之间切换。
+1. 打开“窗口管理器”，搜索并勾选要关注的窗口。
+2. 按需设置缩略图尺寸、透明度、置顶、位置锁定和网格吸附。
+3. 将窗口加入分组，并为分组设置前进、后退热键。
+4. 点击“开始监控”；之后可点击缩略图，或使用分组热键切换窗口。
 
-## 下载与安装
+### 使用屏幕区域检测
 
-请从项目发布页或开发者提供的下载地址获取 x64 安装包：
+1. 打开“屏幕区域检测”，点击“框选区域”并拖动选择要监测的位置。
+2. 设置目标颜色，或使用“选择颜色”从屏幕画面中取色。
+3. 根据画面情况调整容差、最少目标像素数、最小连通面积与确认帧数。
+4. 选择本地 MP3 提醒声音，点击“开始检测”。
+5. 当目标颜色连续出现到设定帧数时，应用开始循环播放声音；颜色连续消失到设定帧数后，提醒停止并等待下次触发。
 
-```text
-WinecloudsStudio-Setup-<版本号>-win-x64.exe
-```
+## 运行要求
 
-安装步骤：
-
-1. 双击安装包；出现 Windows 权限提示时选择“是”。
-2. 按向导选择安装目录。建议保留默认位置。
-3. 如需桌面入口，勾选“Create a desktop shortcut”。
-4. 安装完成后，从开始菜单或桌面快捷方式启动 Wineclouds Studio。
-
-安装包已携带应用所需的 .NET 和 Windows App SDK 运行时，无需额外安装运行环境。
-
-> Wineclouds Studio 需要激活其他窗口。若目标程序以管理员权限运行，Wineclouds Studio 也需要以管理员权限启动，才能稳定地与其交互。
->
-> 当前安装包未使用正式代码签名证书。Windows 首次运行时可能显示“未知发布者”或 SmartScreen 提示；请只从可信发布地址下载。
-
-## 卸载与本地数据
-
-通过 Windows“设置” → “应用” → “已安装的应用”搜索 `Wineclouds Studio`，选择“卸载”即可；也可以从开始菜单的 Wineclouds Studio 文件夹中打开卸载入口。
-
-卸载程序会删除安装目录。应用的布局、热键、缩略图位置和日志保存在 Windows 本地数据目录中，以便升级后继续使用；如需完全清除，请在卸载后手动删除这些本地数据。
-
-## 项目结构
-
-```text
-WinecloudsStudio.slnx
-├── src/WinecloudsStudio/             # 应用主体
-│   ├── Pages/                        # WinUI 页面与交互：窗口选择、分组、热键
-│   ├── Services/
-│   │   ├── Implementation/           # 进程监控、DWM 缩略图、窗口操作、热键服务
-│   │   ├── Interface/                # 服务边界与依赖抽象
-│   │   └── Interop/                  # DWM、User32、热键等 Win32 调用
-│   ├── Views/                        # 独立缩略图窗体、覆盖层和视图工厂
-│   ├── Configuration/                # 布局、窗口分组与持久化配置
-│   ├── Assets/                       # 应用图标与图像资源
-│   ├── app.manifest                  # 普通 EXE 的权限、DPI 与兼容性配置
-│   └── WinecloudsStudio.csproj       # WinUI 3 / .NET 项目定义
-├── installer/
-│   └── WinecloudsStudio.iss          # Inno Setup 安装器定义
-├── scripts/
-│   └── New-Installer.ps1             # 发布应用并编译安装包
-├── README.md
-└── LICENSE
-```
-
-## 技术实现
-
-| 领域 | 实现 |
-| --- | --- |
-| 主界面 | WinUI 3 / Windows App SDK |
-| 实时窗口预览 | Desktop Window Manager（DWM）Thumbnail API |
-| 缩略图窗口 | Windows Forms 无边框窗体与独立覆盖层 |
-| 目标窗口操作 | User32 P/Invoke |
-| 全局热键 | `RegisterHotKey`、`WM_HOTKEY` 与低级键盘钩子 |
-| 本地配置 | JSON 持久化 |
-| 发布方式 | .NET 自包含 x64 发布 + Inno Setup 安装包 |
+- Windows 10 1809 或更高版本，64 位系统。
+- 若目标应用以管理员权限运行，Wineclouds Studio 也需要以管理员权限启动，才能稳定地激活与操作该窗口。
+- 屏幕区域检测的声音提醒仅接受本地 MP3 文件。
 
 ## 从源码构建
 
 开发环境需要：
 
-- Windows 10 1809 或更高版本，64 位系统。
-- [.NET 10 SDK](https://dotnet.microsoft.com/download)。
-- [Inno Setup](https://jrsoftware.org/isinfo.php)，仅在生成安装包时需要。
-
-运行应用：
+- [.NET 10 SDK](https://dotnet.microsoft.com/download)
+- Windows App SDK（由 NuGet 还原）
+- [Inno Setup](https://jrsoftware.org/isinfo.php)，仅在创建安装包时需要
 
 ```powershell
 dotnet restore WinecloudsStudio.slnx
@@ -122,19 +71,43 @@ dotnet build WinecloudsStudio.slnx --configuration Release --property:Platform=x
 dotnet run --project .\src\WinecloudsStudio
 ```
 
-生成安装包：
+运行检测模块的独立测试程序：
+
+```powershell
+dotnet run --project .\tests\WinecloudsStudio.Detection.Tests
+```
+
+创建安装包：
 
 ```powershell
 .\scripts\New-Installer.ps1
 ```
 
-生成文件位于：
+安装文件输出到 `artifacts\installer\output\`。该目录已被忽略，不应提交到仓库。
+
+## 项目结构
 
 ```text
-artifacts\installer\output\WinecloudsStudio-Setup-1.0.0-win-x64.exe
+WinecloudsStudio.slnx
+├── src/
+│   ├── WinecloudsStudio/              # WinUI 3 桌面应用
+│   │   ├── Pages/                     # 窗口管理与屏幕区域检测页面
+│   │   ├── ScreenDetection/           # 截屏、选区、预览、提醒和设置持久化
+│   │   ├── Services/                  # 窗口、缩略图、热键和 Win32 交互
+│   │   └── Configuration/             # 窗口布局与分组配置
+│   └── WinecloudsStudio.Detection/    # 颜色分析、连通区域与检测状态机
+├── tests/
+│   └── WinecloudsStudio.Detection.Tests/ # 检测核心的独立测试程序
+├── installer/                         # Inno Setup 安装器定义
+├── scripts/                           # 发布与打包脚本
+└── README.md
 ```
 
-`artifacts/` 中的发布产物已被 `.gitignore` 忽略，不应提交到仓库。
+## 安装与卸载
+
+请从项目发布页或开发者提供的可信下载地址获取 x64 安装包。安装后可从开始菜单或桌面快捷方式启动应用；卸载请前往 Windows“设置”→“应用”→“已安装的应用”，搜索 `Wineclouds Studio`。
+
+安装包未使用正式代码签名证书时，Windows 可能显示“未知发布者”或 SmartScreen 提示。请仅从可信发布地址下载安装文件。
 
 ## 许可
 

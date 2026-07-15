@@ -10,6 +10,8 @@ public partial class App : Microsoft.UI.Xaml.Application
 {
     private Window? _window;
 
+    internal Window? MainAppWindow => _window;
+
     public App()
     {
         if (!EnsureElevated())

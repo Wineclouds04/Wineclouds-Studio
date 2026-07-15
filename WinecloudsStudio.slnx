@@ -5,8 +5,12 @@
     <Platform Name="ARM64" />
   </Configurations>
   <Folder Name="/src/">
+    <Project Path="src/WinecloudsStudio.Detection/WinecloudsStudio.Detection.csproj" />
     <Project Path="src/WinecloudsStudio/WinecloudsStudio.csproj">
       <BuildType Solution="Debug|x64" Project="Release" />
     </Project>
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/WinecloudsStudio.Detection.Tests/WinecloudsStudio.Detection.Tests.csproj" />
   </Folder>
 </Solution>
