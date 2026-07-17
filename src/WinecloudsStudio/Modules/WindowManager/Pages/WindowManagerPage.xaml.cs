@@ -17,9 +17,10 @@ namespace WinecloudsStudio.Modules.WindowManager.Pages;
 /// </summary>
 public sealed partial class WindowManagerPage : Page
 {
-    private readonly ThumbnailManager _thumbnailManager;
     private readonly WindowManagerConfigStore _configStore;
     private readonly List<ProcessItem> _processItems = new();
+    private HashSet<string> _savedMonitoredProcesses = new(StringComparer.OrdinalIgnoreCase);
+    private ThumbnailManager _thumbnailManager => ((App)Application.Current).WindowThumbnailManager;
 
     // ---- Group state ----
     private readonly List<WindowGroupConfig> _groups = new();
@@ -32,7 +33,6 @@ public sealed partial class WindowManagerPage : Page
     public WindowManagerPage()
     {
         InitializeComponent();
-        _thumbnailManager = new ThumbnailManager();
         _configStore = new WindowManagerConfigStore();
 
         // Restore saved settings from the previous session
@@ -41,7 +41,6 @@ public sealed partial class WindowManagerPage : Page
         Unloaded += (s, e) =>
         {
             SaveCurrentSettings();
-            _thumbnailManager.Stop();
         };
 
         OpacitySlider.ValueChanged += (s, e) =>
@@ -51,7 +50,18 @@ public sealed partial class WindowManagerPage : Page
             _thumbnailManager.ThumbnailOpacity = val;
         };
 
-        Loaded += (s, e) => RefreshProcessList();
+        Loaded += (s, e) =>
+        {
+            RefreshProcessList();
+            ApplyRunningState();
+        };
+    }
+
+    private void ApplyRunningState()
+    {
+        bool isRunning = _thumbnailManager.IsRunning;
+        StartButton.IsEnabled = !isRunning;
+        StopButton.IsEnabled = isRunning;
     }
 
     // ---- Process list ----
@@ -95,7 +105,8 @@ public sealed partial class WindowManagerPage : Page
                 {
                     ProcessName = processName,
                     WindowTitle = windowTitle,
-                    DisplayText = $"{processName}  —  {windowTitle}"
+                    DisplayText = $"{processName}  —  {windowTitle}",
+                    IsSelected = _savedMonitoredProcesses.Contains(processName),
                 });
             }
             catch
@@ -191,6 +202,9 @@ public sealed partial class WindowManagerPage : Page
     private void LoadSavedSettings()
     {
         var config = _configStore.Load();
+        _savedMonitoredProcesses = new HashSet<string>(
+            config.MonitoredProcesses ?? new List<string>(),
+            StringComparer.OrdinalIgnoreCase);
 
         ThumbWidthBox.Value = config.ThumbnailWidth;
         ThumbHeightBox.Value = config.ThumbnailHeight;
@@ -228,6 +242,11 @@ public sealed partial class WindowManagerPage : Page
             LockThumbnailPosition = LockThumbnailPositionCheck.IsChecked ?? false,
             SnapThumbnailsToGrid = SnapThumbnailsToGridCheck.IsChecked ?? false,
             ShowBorder = ShowBorderCheck.IsChecked ?? false,
+            MonitoredProcesses = _processItems
+                .Where(item => item.IsSelected)
+                .Select(item => item.ProcessName)
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .ToList(),
             Groups = new List<WindowGroupConfig>(_groups),
         };
 

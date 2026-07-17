@@ -8,6 +8,8 @@ internal sealed class ThumbnailOverlay : Form
     private static readonly Color TransparencyColor = Color.FromArgb(0, 0, 1);
     private readonly PictureBox _surface;
     private readonly Label _titleLabel;
+    private string _title = string.Empty;
+    private bool _isExcludedFromCycleGroup;
 
     public ThumbnailOverlay(Form owner,
         MouseEventHandler mouseDown,
@@ -65,9 +67,25 @@ internal sealed class ThumbnailOverlay : Form
         }
     }
 
-    public void SetTitle(string title) => _titleLabel.Text = title;
+    public void SetTitle(string title)
+    {
+        _title = title;
+        UpdateTitle();
+    }
+
+    public void SetCycleGroupExcluded(bool excluded)
+    {
+        _isExcludedFromCycleGroup = excluded;
+        UpdateTitle();
+    }
 
     public void SetLabelVisible(bool visible) => _titleLabel.Visible = visible;
+
+    private void UpdateTitle()
+    {
+        _titleLabel.Text = _isExcludedFromCycleGroup ? $"[已排除] {_title}" : _title;
+        _titleLabel.ForeColor = _isExcludedFromCycleGroup ? Color.OrangeRed : Color.White;
+    }
 
     private static void WireMouseEvents(Control control,
         MouseEventHandler mouseDown,

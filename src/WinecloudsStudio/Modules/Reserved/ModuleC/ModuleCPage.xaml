@@ -8,15 +8,127 @@
     Background="{StaticResource ContentSurfaceBrush}"
     mc:Ignorable="d">
     <Grid Padding="40">
-        <StackPanel Spacing="20">
-            <TextBlock FontSize="30" FontWeight="SemiBold" Text="模块 C" />
-            <TextBlock Foreground="#64748B" Text="模块 C 的服务入口将在此展示。" />
-            <Border MinHeight="220" Padding="28" Background="White" BorderBrush="{StaticResource PlaceholderBorderBrush}" BorderThickness="1" CornerRadius="12">
-                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="8">
-                    <TextBlock HorizontalAlignment="Center" FontSize="18" FontWeight="SemiBold" Text="模块 C" />
-                    <TextBlock HorizontalAlignment="Center" Foreground="#64748B" Text="功能建设中" />
+        <ScrollViewer>
+            <StackPanel Spacing="20">
+                <StackPanel Spacing="4">
+                    <TextBlock FontSize="30" FontWeight="SemiBold" Text="窗口同步" />
+                    <TextBlock Foreground="#64748B" Text="将主控窗口的键盘和鼠标操作同步转发到多个受控窗口。" />
                 </StackPanel>
-            </Border>
-        </StackPanel>
+
+                <Border Padding="20" Background="White" BorderBrush="#E2E8F0" BorderThickness="1" CornerRadius="12">
+                    <StackPanel Spacing="12">
+                        <Grid ColumnSpacing="12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBox x:Name="WindowFilterBox" PlaceholderText="按进程名或窗口标题搜索" TextChanged="WindowFilterBox_TextChanged" />
+                            <Button x:Name="RefreshWindowsButton" Grid.Column="1" Click="RefreshWindowsButton_Click" Content="刷新窗口">
+                                <Button.Resources>
+                                    <SolidColorBrush x:Key="ButtonBackground" Color="#E2E8F0" />
+                                    <SolidColorBrush x:Key="ButtonForeground" Color="#334155" />
+                                    <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#CBD5E1" />
+                                </Button.Resources>
+                            </Button>
+                        </Grid>
+                        <TextBlock x:Name="WindowCountLabel" Foreground="#94A3B8" Text="正在加载窗口…" />
+                    </StackPanel>
+                </Border>
+
+                <Grid ColumnSpacing="20">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <Border Grid.Column="0" Padding="20" Background="White" BorderBrush="#E2E8F0" BorderThickness="1" CornerRadius="12">
+                        <StackPanel Spacing="12">
+                            <TextBlock FontSize="16" FontWeight="SemiBold" Text="1. 主控窗口" />
+                            <TextBlock Foreground="#64748B" FontSize="13" Text="点击整行选择主控窗口；只有它位于前台时才会同步。" />
+                            <ListView x:Name="PrimaryWindowList" Height="300" SelectionMode="None">
+                                <ListView.ItemContainerStyle>
+                                    <Style TargetType="ListViewItem">
+                                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                    </Style>
+                                </ListView.ItemContainerStyle>
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <RadioButton
+                                            Checked="PrimaryWindow_Checked"
+                                            GroupName="PrimaryWindow"
+                                            HorizontalAlignment="Stretch"
+                                            HorizontalContentAlignment="Stretch"
+                                            IsChecked="{Binding IsPrimary, Mode=TwoWay}">
+                                            <TextBlock Padding="2,6" VerticalAlignment="Center" Text="{Binding DisplayText}" TextTrimming="CharacterEllipsis" />
+                                        </RadioButton>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Grid.Column="1" Padding="20" Background="White" BorderBrush="#E2E8F0" BorderThickness="1" CornerRadius="12">
+                        <StackPanel Spacing="12">
+                            <TextBlock FontSize="16" FontWeight="SemiBold" Text="2. 受控窗口" />
+                            <TextBlock Foreground="#64748B" FontSize="13" Text="点击整行勾选一个或多个需要接收同步操作的窗口。" />
+                            <ListView x:Name="TargetWindowList" Height="300" SelectionMode="None">
+                                <ListView.ItemContainerStyle>
+                                    <Style TargetType="ListViewItem">
+                                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                    </Style>
+                                </ListView.ItemContainerStyle>
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <CheckBox
+                                            HorizontalAlignment="Stretch"
+                                            HorizontalContentAlignment="Stretch"
+                                            IsChecked="{Binding IsTarget, Mode=TwoWay}"
+                                            IsEnabled="{Binding CanBeTarget}">
+                                            <TextBlock Padding="2,6" VerticalAlignment="Center" Text="{Binding DisplayText}" TextTrimming="CharacterEllipsis" />
+                                        </CheckBox>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+
+                <Border Padding="20" Background="White" BorderBrush="#E2E8F0" BorderThickness="1" CornerRadius="12">
+                    <StackPanel Spacing="14">
+                        <TextBlock FontSize="16" FontWeight="SemiBold" Text="同步选项" />
+                        <StackPanel Orientation="Horizontal" Spacing="24">
+                            <ToggleSwitch x:Name="KeyboardToggle" Header="键盘同步" IsOn="True" />
+                            <ToggleSwitch x:Name="MouseToggle" Header="鼠标同步" IsOn="True" />
+                            <StackPanel VerticalAlignment="Bottom" Spacing="4">
+                                <Button x:Name="EditBlockedKeysButton" Click="EditBlockedKeysButton_Click" Content="选择不转发按键" />
+                                <TextBlock x:Name="BlockedKeysSummary" Foreground="#64748B" FontSize="12" Text="未选择按键" />
+                            </StackPanel>
+                        </StackPanel>
+                        <InfoBar IsOpen="True" IsClosable="False" Severity="Warning" Title="使用限制" Message="仅转发普通窗口消息；使用 Raw Input、DirectInput 或反作弊输入路径的应用可能不会响应。鼠标仅在主控窗口客户区内同步。" />
+                    </StackPanel>
+                </Border>
+
+                <Border Padding="20" Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="1" CornerRadius="12">
+                    <Grid ColumnSpacing="12">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="Auto" /><ColumnDefinition Width="Auto" /><ColumnDefinition Width="*" /></Grid.ColumnDefinitions>
+                        <Button x:Name="StartButton" Click="StartButton_Click" Content="开始同步">
+                            <Button.Resources>
+                                <SolidColorBrush x:Key="ButtonBackground" Color="#15803D" />
+                                <SolidColorBrush x:Key="ButtonForeground" Color="White" />
+                                <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#16A34A" />
+                            </Button.Resources>
+                        </Button>
+                        <Button x:Name="StopButton" Grid.Column="1" Click="StopButton_Click" Content="停止同步" IsEnabled="False">
+                            <Button.Resources>
+                                <SolidColorBrush x:Key="ButtonBackground" Color="#FEE2E2" />
+                                <SolidColorBrush x:Key="ButtonForeground" Color="#B91C1C" />
+                                <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#FECACA" />
+                            </Button.Resources>
+                        </Button>
+                        <TextBlock x:Name="StatusLabel" Grid.Column="2" VerticalAlignment="Center" Foreground="#64748B" Text="请选择主控窗口和至少一个受控窗口。" />
+                    </Grid>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
     </Grid>
 </Page>

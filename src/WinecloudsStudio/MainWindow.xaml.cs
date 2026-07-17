@@ -20,6 +20,8 @@ namespace WinecloudsStudio;
 /// </summary>
 public sealed partial class MainWindow : Window
 {
+    private readonly Dictionary<string, Page> _modulePages = new(StringComparer.OrdinalIgnoreCase);
+
     public MainWindow()
     {
         Logger.Info("MainWindow", "MainWindow initialization started");
@@ -58,18 +60,29 @@ public sealed partial class MainWindow : Window
 
     private void NavigateTo(string navigationKey)
     {
-        var pageType = navigationKey switch
+        if (!_modulePages.TryGetValue(navigationKey, out Page? page))
         {
-            "home" => typeof(HomePage),
-            "module-a" => typeof(WindowManagerPage),
-            "module-b" => typeof(ScreenDetectionPage),
-            "module-c" => typeof(ModuleCPage),
-            "module-d" => typeof(ModuleDPage),
-            "module-e" => typeof(ModuleEPage),
-            "module-f" => typeof(ModuleFPage),
-            _ => typeof(UnavailablePage)
-        };
+            page = navigationKey switch
+            {
+                "home" => new HomePage(),
+                "module-a" => new WindowManagerPage(),
+                "module-b" => new ScreenDetectionPage(),
+                "module-c" => new ModuleCPage(),
+                "module-d" => new ModuleDPage(),
+                "module-e" => new ModuleEPage(),
+                "module-f" => new ModuleFPage(),
+                _ => new UnavailablePage()
+            };
+            _modulePages[navigationKey] = page;
+        }
 
-        ContentFrame.Navigate(pageType);
+        if (!ReferenceEquals(ContentFrame.Content, page))
+            ContentFrame.Content = page;
+    }
+
+    internal async Task ShutdownModulesAsync()
+    {
+        foreach (ScreenDetectionPage page in _modulePages.Values.OfType<ScreenDetectionPage>())
+            await page.ShutdownAsync();
     }
 }

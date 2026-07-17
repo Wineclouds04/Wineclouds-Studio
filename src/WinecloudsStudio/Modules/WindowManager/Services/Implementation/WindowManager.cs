@@ -1,4 +1,5 @@
 using System.Runtime.InteropServices;
+using WinecloudsStudio.Shared.Logging;
 using WinecloudsStudio.Modules.WindowManager.Services.Interface;
 using WinecloudsStudio.Modules.WindowManager.Services.Interop;
 
@@ -33,16 +34,48 @@ public class WindowManager : IWindowManager
             return;
         }
 
-        User32NativeMethods.SetForegroundWindow(handle);
-        User32NativeMethods.SetFocus(handle);
-
         uint style = User32NativeMethods.GetWindowLong(handle, InteropConstants.GWL_STYLE);
-
         if ((style & InteropConstants.WS_MINIMIZE) == InteropConstants.WS_MINIMIZE)
         {
             User32NativeMethods.ShowWindowAsync(handle, InteropConstants.SW_RESTORE);
         }
 
+        uint currentThread = User32NativeMethods.GetCurrentThreadId();
+        IntPtr foregroundHandle = User32NativeMethods.GetForegroundWindow();
+        uint foregroundThread = foregroundHandle == IntPtr.Zero
+            ? 0
+            : User32NativeMethods.GetWindowThreadProcessId(foregroundHandle, out _);
+        uint targetThread = User32NativeMethods.GetWindowThreadProcessId(handle, out _);
+
+        bool attachedToForeground = foregroundThread != 0
+            && foregroundThread != currentThread
+            && User32NativeMethods.AttachThreadInput(currentThread, foregroundThread, true);
+        bool attachedToTarget = targetThread != 0
+            && targetThread != currentThread
+            && targetThread != foregroundThread
+            && User32NativeMethods.AttachThreadInput(currentThread, targetThread, true);
+
+        try
+        {
+            _ = User32NativeMethods.BringWindowToTop(handle);
+            bool foregroundActivated = User32NativeMethods.SetForegroundWindow(handle);
+            _ = User32NativeMethods.SetActiveWindow(handle);
+            _ = User32NativeMethods.SetFocus(handle);
+            Logger.Debug("WindowManager",
+                $"Activate handle=0x{handle.ToInt64():X}, foreground={foregroundActivated}");
+        }
+        finally
+        {
+            if (attachedToTarget)
+            {
+                _ = User32NativeMethods.AttachThreadInput(currentThread, targetThread, false);
+            }
+
+            if (attachedToForeground)
+            {
+                _ = User32NativeMethods.AttachThreadInput(currentThread, foregroundThread, false);
+            }
+        }
     }
 
     public void MinimizeWindow(IntPtr handle)

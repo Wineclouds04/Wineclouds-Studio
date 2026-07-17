@@ -26,8 +26,9 @@ public class WindowGroupConfig
     public string Name { get; set; } = string.Empty;
 
     /// <summary>
-    /// Ordered list of window keys in cycle order.
-    /// Each key is "processName::windowTitle".
+    /// Ordered list of window keys in cycle order. Each key is
+    /// "processName::windowTitle"; runtime cycling follows the title portion,
+    /// matching the reference EVE-O-Preview cycle behaviour.
     /// </summary>
     public List<string> WindowKeys { get; set; } = new();
 

@@ -1,0 +1,39 @@
+<!-- ThumbnailPopupWindow — WinUI 3 native replacement for ThumbnailView (WinForms Form) + ThumbnailOverlay (WinForms Form).
+     Renders a DWM live thumbnail into the client area with a XAML title label overlay.
+
+     Key design constraint: XAML content renders ABOVE the DWM thumbnail in the
+     compositor z-order. The root Grid MUST have no background so the thumbnail
+     shows through. Border/highlight is drawn as a Border overlay, NOT as a
+     Grid background (which would occlude the thumbnail entirely). -->
+<Window
+    x:Class="WinecloudsStudio.Modules.WindowManager.Views.ThumbnailPopupWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Grid x:Name="RootGrid">
+        <!-- Lime-green border overlay. Toggled via BorderThickness:
+             0 = hidden, 3 = visible border/highlight. IsHitTestVisible=false
+             so clicks pass through to the Grid for drag/activate handling. -->
+        <Border
+            x:Name="HighlightBorder"
+            BorderBrush="Lime"
+            BorderThickness="0"
+            IsHitTestVisible="False" />
+
+        <!-- Title label overlay — dark translucent background, white text. -->
+        <Border
+            x:Name="TitleBorder"
+            VerticalAlignment="Top"
+            HorizontalAlignment="Left"
+            Margin="7,6,0,0"
+            Padding="4,2"
+            Background="#96141414"
+            CornerRadius="2">
+            <TextBlock
+                x:Name="TitleLabel"
+                Foreground="White"
+                FontFamily="Segoe UI"
+                FontSize="9" />
+        </Border>
+    </Grid>
+</Window>

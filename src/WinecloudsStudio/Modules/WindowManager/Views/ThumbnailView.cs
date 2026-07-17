@@ -18,6 +18,7 @@ public abstract class ThumbnailView : Form, IThumbnailView
     private bool _showBorder;
     private bool _positionLocked;
     private bool _snapToGrid;
+    private bool _isExcludedFromCycleGroup;
     private Point _baseMousePosition;
     private Point _baseWindowLocation;
     private Control? _captureControl;
@@ -99,9 +100,28 @@ public abstract class ThumbnailView : Form, IThumbnailView
 
     public bool IsActive { get; private set; }
 
+    [Browsable(false)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    public bool IsExcludedFromCycleGroup
+    {
+        get => _isExcludedFromCycleGroup;
+        set
+        {
+            if (_isExcludedFromCycleGroup == value)
+            {
+                return;
+            }
+
+            _isExcludedFromCycleGroup = value;
+            _overlay.SetCycleGroupExcluded(value);
+        }
+    }
+
     public event Action<IntPtr>? ThumbnailActivated;
 
     public event Action<IntPtr>? ThumbnailMoved;
+
+    public event Action<IntPtr>? ThumbnailCycleGroupToggled;
 
     public bool IsKnownHandle(IntPtr handle) =>
         handle == Id || handle == Handle || handle == _overlay.Handle;
@@ -158,10 +178,6 @@ public abstract class ThumbnailView : Form, IThumbnailView
         }
 
         _snapToGrid = snapToGrid;
-        if (_snapToGrid)
-        {
-            Location = SnapToGrid(Location);
-        }
     }
 
     public void SetHighlight(bool highlighted)
@@ -208,6 +224,7 @@ public abstract class ThumbnailView : Form, IThumbnailView
         {
             ThumbnailActivated = null;
             ThumbnailMoved = null;
+            ThumbnailCycleGroupToggled = null;
             _overlay.Dispose();
         }
 
@@ -256,7 +273,14 @@ public abstract class ThumbnailView : Form, IThumbnailView
         switch (e.Button)
         {
             case MouseButtons.Left:
-                ThumbnailActivated?.Invoke(Id);
+                if (Control.ModifierKeys.HasFlag(Keys.Shift))
+                {
+                    ThumbnailCycleGroupToggled?.Invoke(Id);
+                }
+                else
+                {
+                    ThumbnailActivated?.Invoke(Id);
+                }
                 break;
             case MouseButtons.Right:
                 if (!_positionLocked)
@@ -279,9 +303,7 @@ public abstract class ThumbnailView : Form, IThumbnailView
         int offsetY = mousePosition.Y - _baseMousePosition.Y;
         _baseMousePosition = mousePosition;
 
-        Location = _snapToGrid
-            ? SnapToGrid(new Point(Location.X + offsetX, Location.Y + offsetY))
-            : new Point(Location.X + offsetX, Location.Y + offsetY);
+        Location = new Point(Location.X + offsetX, Location.Y + offsetY);
         _baseWindowLocation = Location;
     }
 
@@ -290,6 +312,10 @@ public abstract class ThumbnailView : Form, IThumbnailView
         if (e.Button == MouseButtons.Right)
         {
             ExitCustomMouseMode();
+            if (_snapToGrid)
+            {
+                Location = SnapToGrid(Location);
+            }
         }
     }
 

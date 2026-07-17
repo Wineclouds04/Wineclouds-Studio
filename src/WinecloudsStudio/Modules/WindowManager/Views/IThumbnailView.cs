@@ -11,9 +11,11 @@ public interface IThumbnailView : IDisposable
     Point ThumbnailLocation { get; set; }
     Size ThumbnailSize { get; set; }
     bool IsActive { get; }
+    bool IsExcludedFromCycleGroup { get; set; }
 
     event Action<IntPtr>? ThumbnailActivated;
     event Action<IntPtr>? ThumbnailMoved;
+    event Action<IntPtr>? ThumbnailCycleGroupToggled;
 
     bool IsKnownHandle(IntPtr handle);
     void ShowThumbnail();

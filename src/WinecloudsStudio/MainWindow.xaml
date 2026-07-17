@@ -51,7 +51,7 @@
                 <NavigationViewItem
                     Content="首页"
                     Foreground="{StaticResource NavigationPaneForegroundBrush}"
-                    Icon="Home"
+                    Icon="Folder"
                     Tag="home" />
                 <NavigationViewItemHeader
                     Content="服务模块"
@@ -59,22 +59,22 @@
                 <NavigationViewItem
                     Content="窗口管理器"
                     Foreground="{StaticResource NavigationPaneForegroundBrush}"
-                    Icon="OpenWith"
+                    Icon="Folder"
                     Tag="module-a" />
                 <NavigationViewItem
                     Content="屏幕区域检测"
                     Foreground="{StaticResource NavigationPaneForegroundBrush}"
-                    Icon="Library"
+                    Icon="Folder"
                     Tag="module-b" />
                 <NavigationViewItem
-                    Content="模块 C"
+                    Content="窗口同步"
                     Foreground="{StaticResource NavigationPaneForegroundBrush}"
                     Icon="Folder"
                     Tag="module-c" />
                 <NavigationViewItem
                     Content="模块 D"
                     Foreground="{StaticResource NavigationPaneForegroundBrush}"
-                    Icon="Library"
+                    Icon="Folder"
                     Tag="module-d" />
                 <NavigationViewItem
                     Content="模块 E"
@@ -84,7 +84,7 @@
                 <NavigationViewItem
                     Content="模块 F"
                     Foreground="{StaticResource NavigationPaneForegroundBrush}"
-                    Icon="Library"
+                    Icon="Folder"
                     Tag="module-f" />
             </NavigationView.MenuItems>
 

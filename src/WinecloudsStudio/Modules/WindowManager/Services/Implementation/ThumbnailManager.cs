@@ -12,6 +12,9 @@ namespace WinecloudsStudio.Modules.WindowManager.Services.Implementation;
 
 public sealed class ThumbnailManager : IThumbnailManager
 {
+    // EVE-O-Preview treats the shared EVE login title as a special multi-instance client.
+    private const string DefaultClientTitle = "EVE";
+
     private readonly IProcessMonitor _processMonitor;
     private readonly IWindowManager _windowManager;
     private readonly ThumbnailViewFactory _viewFactory;
@@ -25,6 +28,7 @@ public sealed class ThumbnailManager : IThumbnailManager
     private HotkeyService? _hotkeyService;
     private List<WindowGroupConfig> _groups = new();
     private IntPtr _activeClient;
+    private string _activeClientTitle = DefaultClientTitle;
     private bool _snapThumbnailsToGrid;
 
     public ThumbnailManager()
@@ -126,6 +130,7 @@ public sealed class ThumbnailManager : IThumbnailManager
         _windowKeys.Clear();
         _processMonitor.ClearMonitoredProcesses();
         _activeClient = IntPtr.Zero;
+        _activeClientTitle = DefaultClientTitle;
         Logger.Info("ThumbnailManager", "Monitoring stopped");
     }
 
@@ -214,9 +219,10 @@ public sealed class ThumbnailManager : IThumbnailManager
     private void RefreshThumbnails()
     {
         IntPtr foregroundClient = ResolveForegroundClientHandle();
-        if (foregroundClient != IntPtr.Zero)
+        if (foregroundClient != IntPtr.Zero
+            && _thumbnailViews.TryGetValue(foregroundClient, out IThumbnailView? foregroundView))
         {
-            _activeClient = foregroundClient;
+            SwitchActiveClient(foregroundClient, foregroundView.Title);
         }
 
         foreach (IThumbnailView view in _thumbnailViews.Values)
@@ -248,12 +254,14 @@ public sealed class ThumbnailManager : IThumbnailManager
     {
         view.ThumbnailActivated += ThumbnailActivated;
         view.ThumbnailMoved += ThumbnailMoved;
+        view.ThumbnailCycleGroupToggled += ThumbnailCycleGroupToggled;
     }
 
     private void UnwireView(IThumbnailView view)
     {
         view.ThumbnailActivated -= ThumbnailActivated;
         view.ThumbnailMoved -= ThumbnailMoved;
+        view.ThumbnailCycleGroupToggled -= ThumbnailCycleGroupToggled;
     }
 
     private void ThumbnailActivated(IntPtr id)
@@ -274,18 +282,22 @@ public sealed class ThumbnailManager : IThumbnailManager
 
     private void ActivateView(IntPtr id)
     {
-        if (!_thumbnailViews.ContainsKey(id))
+        if (!_thumbnailViews.TryGetValue(id, out IThumbnailView? view))
         {
             return;
         }
 
-        _windowManager.ActivateWindow(id);
+        SetActive(view);
+    }
 
-        _activeClient = id;
-        foreach (IThumbnailView view in _thumbnailViews.Values)
+    private void SetActive(IThumbnailView view)
+    {
+        _windowManager.ActivateWindow(view.Id);
+        SwitchActiveClient(view.Id, view.Title);
+        foreach (IThumbnailView thumbnailView in _thumbnailViews.Values)
         {
-            view.SetHighlight(view.Id == id);
-            view.RefreshThumbnail(false);
+            thumbnailView.SetHighlight(thumbnailView.Id == _activeClient);
+            thumbnailView.RefreshThumbnail(thumbnailView.Id == _activeClient);
         }
     }
 
@@ -298,6 +310,18 @@ public sealed class ThumbnailManager : IThumbnailManager
         }
     }
 
+    private void ThumbnailCycleGroupToggled(IntPtr id)
+    {
+        if (!_thumbnailViews.TryGetValue(id, out IThumbnailView? view))
+        {
+            return;
+        }
+
+        view.IsExcludedFromCycleGroup = !view.IsExcludedFromCycleGroup;
+        Logger.Info("ThumbnailManager",
+            $"Cycle group exclusion changed: {view.ProcessName}::{view.Title} -> {view.IsExcludedFromCycleGroup}");
+    }
+
     private void CycleGroup(int groupIndex, bool forward)
     {
         if ((uint)groupIndex >= (uint)_groups.Count)
@@ -305,32 +329,78 @@ public sealed class ThumbnailManager : IThumbnailManager
             return;
         }
 
-        List<IntPtr> orderedHandles = ResolveGroupHandles(_groups[groupIndex]);
-        if (orderedHandles.Count == 0)
+        List<string> clientOrder = ResolveCycleOrder(_groups[groupIndex]);
+        if (clientOrder.Count == 0)
         {
+            Logger.Warn("ThumbnailManager", $"Cycle group {groupIndex} has no available windows");
             return;
         }
 
+        Logger.Debug("ThumbnailManager",
+            $"Cycle group={groupIndex}, forward={forward}, active={_activeClientTitle}, order={string.Join(" -> ", clientOrder)}");
+
         IntPtr foregroundClient = ResolveForegroundClientHandle();
-        if (foregroundClient != IntPtr.Zero)
+        if (foregroundClient != IntPtr.Zero
+            && _thumbnailViews.TryGetValue(foregroundClient, out IThumbnailView? foregroundView))
         {
-            _activeClient = foregroundClient;
+            SwitchActiveClient(foregroundClient, foregroundView.Title);
         }
 
-        int currentIndex = orderedHandles.IndexOf(_activeClient);
-        int targetIndex;
-        if (currentIndex < 0)
+        IEnumerable<string> orderedTitles = forward
+            ? clientOrder
+            : clientOrder.AsEnumerable().Reverse();
+        bool selectNext = false;
+
+        foreach (string title in orderedTitles)
         {
-            targetIndex = forward ? 0 : orderedHandles.Count - 1;
-        }
-        else
-        {
-            targetIndex = forward
-                ? (currentIndex + 1) % orderedHandles.Count
-                : (currentIndex - 1 + orderedHandles.Count) % orderedHandles.Count;
+            if (title.Equals(_activeClientTitle, StringComparison.Ordinal)
+                && !title.Equals(DefaultClientTitle, StringComparison.Ordinal))
+            {
+                selectNext = true;
+                continue;
+            }
+
+            if (title.Equals(_activeClientTitle, StringComparison.Ordinal)
+                && title.Equals(DefaultClientTitle, StringComparison.Ordinal))
+            {
+                if (TryGetNextLoginClient(
+                        forward,
+                        out IThumbnailView? loginClient,
+                        out bool activeLoginIsEligible))
+                {
+                    SetActive(loginClient!);
+                    return;
+                }
+
+                // The active login client was the last instance. The reference
+                // implementation continues into the next configured title.
+                selectNext = activeLoginIsEligible;
+                continue;
+            }
+
+            if (!selectNext)
+            {
+                continue;
+            }
+
+            if (TryGetCycleTarget(title, forward, out IThumbnailView? target))
+            {
+                Logger.Debug("ThumbnailManager", $"Cycle target: {target!.ProcessName}::{target.Title}");
+                SetActive(target!);
+                return;
+            }
         }
 
-        ThumbnailActivated(orderedHandles[targetIndex]);
+        // No later client was available, so wrap back to the first eligible one.
+        foreach (string title in orderedTitles)
+        {
+            if (TryGetCycleTarget(title, forward, out IThumbnailView? target))
+            {
+                Logger.Debug("ThumbnailManager", $"Cycle wrapped target: {target!.ProcessName}::{target.Title}");
+                SetActive(target!);
+                return;
+            }
+        }
     }
 
     private IntPtr ResolveForegroundClientHandle()
@@ -368,22 +438,97 @@ public sealed class ThumbnailManager : IThumbnailManager
         return IntPtr.Zero;
     }
 
-    private List<IntPtr> ResolveGroupHandles(WindowGroupConfig group)
+    private List<string> ResolveCycleOrder(WindowGroupConfig group)
     {
-        var handles = new List<IntPtr>();
+        var titles = new List<string>();
         foreach (string configuredKey in group.WindowKeys)
         {
-            KeyValuePair<IntPtr, string>? match = _windowKeys
-                .FirstOrDefault(entry => entry.Value
-                    .Equals(configuredKey, StringComparison.OrdinalIgnoreCase));
-
-            if (match.HasValue && match.Value.Key != IntPtr.Zero && !handles.Contains(match.Value.Key))
+            string title = GetWindowTitle(configuredKey);
+            if (!string.IsNullOrWhiteSpace(title)
+                && !titles.Contains(title, StringComparer.Ordinal))
             {
-                handles.Add(match.Value.Key);
+                titles.Add(title);
             }
         }
 
-        return handles;
+        if (titles.Count > 0)
+        {
+            return titles;
+        }
+
+        // Empty order means cycle all known client titles in their current view order.
+        foreach (IThumbnailView view in _thumbnailViews.Values)
+        {
+            if (!titles.Contains(view.Title, StringComparer.Ordinal))
+            {
+                titles.Add(view.Title);
+            }
+        }
+
+        return titles;
+    }
+
+    private bool TryGetNextLoginClient(
+        bool forward,
+        out IThumbnailView? nextClient,
+        out bool activeClientIsEligible)
+    {
+        nextClient = null;
+        activeClientIsEligible = false;
+        IEnumerable<IThumbnailView> candidates = GetCycleCandidates(DefaultClientTitle, forward);
+        foreach (IThumbnailView candidate in candidates)
+        {
+            if (candidate.Id == _activeClient)
+            {
+                activeClientIsEligible = true;
+                continue;
+            }
+
+            if (activeClientIsEligible)
+            {
+                nextClient = candidate;
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private bool TryGetCycleTarget(string title, bool forward, out IThumbnailView? target)
+    {
+        target = GetCycleCandidates(title, forward).FirstOrDefault();
+        return target != null;
+    }
+
+    private IEnumerable<IThumbnailView> GetCycleCandidates(string title, bool forward)
+    {
+        IEnumerable<IThumbnailView> candidates = _thumbnailViews.Values.Where(view =>
+            view.Title.Equals(title, StringComparison.Ordinal)
+            && !view.IsExcludedFromCycleGroup);
+
+        return title.Equals(DefaultClientTitle, StringComparison.Ordinal)
+            ? (forward
+                ? candidates.OrderBy(view => view.Id.ToInt64())
+                : candidates.OrderByDescending(view => view.Id.ToInt64()))
+            : candidates;
+    }
+
+    private void SwitchActiveClient(IntPtr foregroundClientHandle, string foregroundClientTitle)
+    {
+        if (_activeClient == foregroundClientHandle)
+        {
+            _activeClientTitle = foregroundClientTitle;
+            return;
+        }
+
+        _activeClient = foregroundClientHandle;
+        _activeClientTitle = foregroundClientTitle;
+    }
+
+    private static string GetWindowTitle(string windowKey)
+    {
+        int separatorIndex = windowKey.IndexOf("::", StringComparison.Ordinal);
+        return separatorIndex < 0 ? windowKey : windowKey[(separatorIndex + 2)..];
     }
 
     private void HotkeyPressed(int groupIndex, bool forward)
@@ -450,6 +595,7 @@ public sealed class ThumbnailManager : IThumbnailManager
         if (_activeClient == handle)
         {
             _activeClient = IntPtr.Zero;
+            _activeClientTitle = DefaultClientTitle;
         }
     }
 

@@ -77,7 +77,7 @@ public sealed partial class ScreenDetectionPage : Page
             StartPreview(GetRegionFromControlsOrSettings());
     }
 
-    private async void Page_Unloaded(object sender, RoutedEventArgs e)
+    internal async Task ShutdownAsync()
     {
         if (_disposed)
             return;
@@ -271,7 +271,7 @@ public sealed partial class ScreenDetectionPage : Page
 
     private void StartPreview(ScreenRegion region)
     {
-        if (_disposed || _detectionTask is { IsCompleted: false })
+        if (_disposed || _detectionTask is { IsCompleted: false } || _previewTask is { IsCompleted: false })
             return;
 
         if (!region.IsValid || !region.IsInside(VirtualScreenService.GetBounds()))

@@ -8,7 +8,7 @@ $ErrorActionPreference = 'Stop'
 
 $repositoryRoot = Split-Path -Parent $PSScriptRoot
 $projectPath = Join-Path $repositoryRoot 'src\WinecloudsStudio\WinecloudsStudio.csproj'
-$installerScript = Join-Path $repositoryRoot 'installer\WinecloudsStudio.iss'
+$installerScript = Join-Path $repositoryRoot 'installer\WinecloudsStudio.nsi'
 $artifactsDirectory = Join-Path $repositoryRoot 'artifacts\installer'
 $publishDirectory = Join-Path $artifactsDirectory 'publish-win-x64'
 $outputDirectory = Join-Path $artifactsDirectory 'output'
@@ -19,16 +19,14 @@ if (-not (Test-Path -LiteralPath $installerScript)) {
 
 $compilerCandidates = @(
     @(
-        (Get-Command ISCC.exe -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty Source),
-        (Join-Path ${env:ProgramFiles(x86)} 'Inno Setup 7\ISCC.exe'),
-        (Join-Path $env:ProgramFiles 'Inno Setup 7\ISCC.exe'),
-        (Join-Path ${env:ProgramFiles(x86)} 'Inno Setup 6\ISCC.exe'),
-        (Join-Path $env:ProgramFiles 'Inno Setup 6\ISCC.exe')
+        (Get-Command makensis.exe -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty Source),
+        (Join-Path ${env:ProgramFiles(x86)} 'NSIS\makensis.exe'),
+        (Join-Path $env:ProgramFiles 'NSIS\makensis.exe')
     ) | Where-Object { $_ -and (Test-Path -LiteralPath $_) }
 )
 
 if ($compilerCandidates.Count -eq 0) {
-    throw 'Inno Setup was not found. Install it from https://jrsoftware.org/isinfo.php, then run this script again.'
+    throw 'NSIS was not found. Install NSIS 3.x, then run this script again.'
 }
 
 $compilerPath = $compilerCandidates[0]
