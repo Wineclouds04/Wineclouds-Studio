@@ -10,7 +10,4 @@
       <BuildType Solution="Debug|x64" Project="Release" />
     </Project>
   </Folder>
-  <Folder Name="/tests/">
-    <Project Path="tests/WinecloudsStudio.Detection.Tests/WinecloudsStudio.Detection.Tests.csproj" />
-  </Folder>
 </Solution>

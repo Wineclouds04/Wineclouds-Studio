@@ -8,6 +8,7 @@ using WinecloudsStudio.Modules.Reserved.ModuleF;
 using WinecloudsStudio.Modules.ScreenDetection.Pages;
 using WinecloudsStudio.Modules.Navigation.Pages;
 using WinecloudsStudio.Modules.WindowManager.Pages;
+using WinecloudsStudio.Shared;
 using WinecloudsStudio.Shared.Logging;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -37,6 +38,7 @@ public sealed partial class MainWindow : Window
 
             Logger.Info("MainWindow", "Loading application icon");
             AppWindow.SetIcon(Path.Combine(AppContext.BaseDirectory, "Assets", "AppIcon.ico"));
+            VersionText.Text = BuildInfo.DisplayVersion;
 
             Logger.Info("MainWindow", "Navigating to home page");
             NavigateTo("home");

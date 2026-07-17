@@ -37,7 +37,6 @@ public sealed partial class ModuleCPage : Page
         Engine.StatusChanged += Engine_StatusChanged;
         KeyboardToggle.IsOn = Engine.KeyboardEnabled;
         MouseToggle.IsOn = Engine.MouseEnabled;
-        UpdateBlockedKeysSummary();
         Logger.Info("ModuleC", "Page loaded; refreshing windows");
         try
         {
@@ -96,6 +95,8 @@ public sealed partial class ModuleCPage : Page
             : _windows.Where(item => item.ProcessName.Contains(filter, StringComparison.OrdinalIgnoreCase)
                 || item.WindowTitle.Contains(filter, StringComparison.OrdinalIgnoreCase)).ToList();
 
+        PrimaryWindowList.ItemsSource = null;
+        TargetWindowList.ItemsSource = null;
         PrimaryWindowList.ItemsSource = visible;
         TargetWindowList.ItemsSource = visible;
         WindowCountLabel.Text = string.IsNullOrEmpty(filter)
@@ -108,15 +109,29 @@ public sealed partial class ModuleCPage : Page
         if (sender is not FrameworkElement { DataContext: SyncWindowItem primary }) return;
 
         foreach (SyncWindowItem item in _windows)
-            item.IsPrimary = ReferenceEquals(item, primary);
+            item.IsPrimary = item.Handle == primary.Handle;
+    }
 
-        ApplyFilter();
+    private void TargetWindow_Checked(object sender, RoutedEventArgs e)
+    {
+        if (sender is FrameworkElement { DataContext: SyncWindowItem target } && !target.IsPrimary)
+            target.IsTarget = true;
+    }
+
+    private void TargetWindow_Unchecked(object sender, RoutedEventArgs e)
+    {
+        if (sender is FrameworkElement { DataContext: SyncWindowItem target })
+            target.IsTarget = false;
     }
 
     private void StartButton_Click(object sender, RoutedEventArgs e)
     {
         SyncWindowItem? primary = _windows.SingleOrDefault(item => item.IsPrimary);
-        List<IntPtr> targets = _windows.Where(item => item.IsTarget).Select(item => item.Handle).ToList();
+        List<IntPtr> targets = _windows
+            .Where(item => item.IsTarget && item.Handle != primary?.Handle)
+            .Select(item => item.Handle)
+            .Distinct()
+            .ToList();
         Logger.Info("ModuleC", $"Start requested: primary={(primary == null ? "none" : primary.ProcessId)}, targets={targets.Count}");
         if (primary == null || targets.Count == 0)
         {
@@ -253,15 +268,6 @@ public sealed partial class ModuleCPage : Page
         foreach ((BlockedKeyOption option, CheckBox checkBox) in choices)
             option.IsBlocked = checkBox.IsChecked == true;
 
-        UpdateBlockedKeysSummary();
-    }
-
-    private void UpdateBlockedKeysSummary()
-    {
-        int count = _blockedKeyOptions.Count(option => option.IsBlocked);
-        BlockedKeysSummary.Text = count == 0
-            ? "未选择按键，所有按键均可转发"
-            : $"已选择 {count} 个按键不转发";
     }
 
     private static List<BlockedKeyOption> CreateBlockedKeyOptions()

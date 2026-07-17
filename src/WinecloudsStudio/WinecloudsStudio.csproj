@@ -1,11 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="BuildCounter.props" />
+
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net10.0-windows10.0.26100.0</TargetFramework>
     <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
     <RootNamespace>WinecloudsStudio</RootNamespace>
     <ApplicationManifest>app.manifest</ApplicationManifest>
-    <Version>1.0.3</Version>
+    <Version>0.1.4</Version>
     <Platforms>x86;x64;ARM64</Platforms>
     <RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == ''">win-$([System.Runtime.InteropServices.RuntimeInformation]::ProcessArchitecture.ToString().ToLowerInvariant())</RuntimeIdentifier>
     <PublishProfile Condition="Exists('Properties\PublishProfiles\win-$(Platform).pubxml')">win-$(Platform).pubxml</PublishProfile>
@@ -52,6 +54,30 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="2.2.0" />
   </ItemGroup>
+
+  <Target
+    Name="PrepareDisplayVersion"
+    BeforeTargets="CoreCompile"
+    Condition="'$(DesignTimeBuild)' != 'true' And '$(IsRestore)' != 'true'">
+    <PropertyGroup>
+      <_NextBuildCounter>$([MSBuild]::Add($(BuildCounter), 1))</_NextBuildCounter>
+    </PropertyGroup>
+    <WriteLinesToFile
+      File="$(MSBuildProjectDirectory)\Shared\BuildInfo.cs"
+      Lines="namespace WinecloudsStudio.Shared%3B&#x0A;&#x0A;internal static class BuildInfo&#x0A;{&#x0A;    public const string DisplayVersion = &quot;$(Version)-($(_NextBuildCounter))&quot;%3B&#x0A;}"
+      Overwrite="true" />
+  </Target>
+
+  <Target
+    Name="PersistBuildCounter"
+    AfterTargets="CoreCompile"
+    DependsOnTargets="PrepareDisplayVersion"
+    Condition="'$(DesignTimeBuild)' != 'true' And '$(IsRestore)' != 'true'">
+    <WriteLinesToFile
+      File="$(MSBuildProjectDirectory)\BuildCounter.props"
+      Lines="&lt;Project&gt;&#x0A;  &lt;PropertyGroup&gt;&#x0A;    &lt;BuildCounter&gt;$(_NextBuildCounter)&lt;/BuildCounter&gt;&#x0A;  &lt;/PropertyGroup&gt;&#x0A;&lt;/Project&gt;"
+      Overwrite="true" />
+  </Target>
 
   <Target Name="CopyAppPriToBuildOutput" AfterTargets="Build">
     <Copy

@@ -73,43 +73,51 @@ public class ProcessMonitor : IProcessMonitor
         updatedProcesses = new List<IProcessInfo>(16);
         removedProcesses = new List<IProcessInfo>(16);
 
-        var knownProcesses = new List<IntPtr>(_processCache.Keys);
+        var knownProcesses = new HashSet<IntPtr>(_processCache.Keys);
 
         foreach (var process in Process.GetProcesses())
         {
-            string processName = process.ProcessName;
-
-            if (!_monitoredProcesses.Contains(processName))
+            using (process)
             {
-                continue;
-            }
-
-            IntPtr mainWindowHandle = process.MainWindowHandle;
-            if (mainWindowHandle == IntPtr.Zero)
-            {
-                continue;
-            }
-
-            string mainWindowTitle = process.MainWindowTitle;
-
-            _processCache.TryGetValue(mainWindowHandle, out string? cachedTitle);
-
-            if (cachedTitle == null)
-            {
-                // New process
-                _processCache.Add(mainWindowHandle, mainWindowTitle);
-                addedProcesses.Add(new ProcessInfo(mainWindowHandle, mainWindowTitle));
-            }
-            else
-            {
-                // Known process — check if title changed
-                if (cachedTitle != mainWindowTitle)
+                try
                 {
-                    _processCache[mainWindowHandle] = mainWindowTitle;
-                    updatedProcesses.Add(new ProcessInfo(mainWindowHandle, mainWindowTitle));
-                }
+                    string processName = process.ProcessName;
+                    if (!_monitoredProcesses.Contains(processName))
+                    {
+                        continue;
+                    }
 
-                knownProcesses.Remove(mainWindowHandle);
+                    IntPtr mainWindowHandle = process.MainWindowHandle;
+                    if (mainWindowHandle == IntPtr.Zero)
+                    {
+                        continue;
+                    }
+
+                    string mainWindowTitle = process.MainWindowTitle;
+                    _processCache.TryGetValue(mainWindowHandle, out string? cachedTitle);
+
+                    if (cachedTitle == null)
+                    {
+                        // New process
+                        _processCache.Add(mainWindowHandle, mainWindowTitle);
+                        addedProcesses.Add(new ProcessInfo(mainWindowHandle, mainWindowTitle));
+                    }
+                    else
+                    {
+                        // Known process — check if title changed
+                        if (cachedTitle != mainWindowTitle)
+                        {
+                            _processCache[mainWindowHandle] = mainWindowTitle;
+                            updatedProcesses.Add(new ProcessInfo(mainWindowHandle, mainWindowTitle));
+                        }
+
+                        knownProcesses.Remove(mainWindowHandle);
+                    }
+                }
+                catch (InvalidOperationException)
+                {
+                    // A process may exit between enumeration and property access.
+                }
             }
         }
 

@@ -80,10 +80,12 @@
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
                                         <CheckBox
+                                            Checked="TargetWindow_Checked"
                                             HorizontalAlignment="Stretch"
                                             HorizontalContentAlignment="Stretch"
                                             IsChecked="{Binding IsTarget, Mode=TwoWay}"
-                                            IsEnabled="{Binding CanBeTarget}">
+                                            IsEnabled="{Binding CanBeTarget}"
+                                            Unchecked="TargetWindow_Unchecked">
                                             <TextBlock Padding="2,6" VerticalAlignment="Center" Text="{Binding DisplayText}" TextTrimming="CharacterEllipsis" />
                                         </CheckBox>
                                     </DataTemplate>
@@ -94,17 +96,24 @@
                 </Grid>
 
                 <Border Padding="20" Background="White" BorderBrush="#E2E8F0" BorderThickness="1" CornerRadius="12">
-                    <StackPanel Spacing="14">
+                    <StackPanel Spacing="16">
                         <TextBlock FontSize="16" FontWeight="SemiBold" Text="同步选项" />
-                        <StackPanel Orientation="Horizontal" Spacing="24">
+                        <Grid ColumnSpacing="32" RowSpacing="12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
                             <ToggleSwitch x:Name="KeyboardToggle" Header="键盘同步" IsOn="True" />
-                            <ToggleSwitch x:Name="MouseToggle" Header="鼠标同步" IsOn="True" />
-                            <StackPanel VerticalAlignment="Bottom" Spacing="4">
-                                <Button x:Name="EditBlockedKeysButton" Click="EditBlockedKeysButton_Click" Content="选择不转发按键" />
-                                <TextBlock x:Name="BlockedKeysSummary" Foreground="#64748B" FontSize="12" Text="未选择按键" />
-                            </StackPanel>
-                        </StackPanel>
-                        <InfoBar IsOpen="True" IsClosable="False" Severity="Warning" Title="使用限制" Message="仅转发普通窗口消息；使用 Raw Input、DirectInput 或反作弊输入路径的应用可能不会响应。鼠标仅在主控窗口客户区内同步。" />
+                            <ToggleSwitch x:Name="MouseToggle" Grid.Column="1" Header="鼠标同步" IsOn="True" />
+                            <Button
+                                x:Name="EditBlockedKeysButton"
+                                Grid.Column="2"
+                                VerticalAlignment="Bottom"
+                                Click="EditBlockedKeysButton_Click"
+                                Content="热键黑名单" />
+                        </Grid>
                     </StackPanel>
                 </Border>
 

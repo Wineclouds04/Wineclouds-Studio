@@ -44,6 +44,14 @@
                 </StackPanel>
             </NavigationView.PaneHeader>
 
+            <NavigationView.PaneFooter>
+                <TextBlock
+                    x:Name="VersionText"
+                    Margin="16,8,12,12"
+                    Foreground="{StaticResource NavigationGroupLabelBrush}"
+                    Text="0.1.4-(0)" />
+            </NavigationView.PaneFooter>
+
             <NavigationView.MenuItems>
                 <NavigationViewItemHeader
                     Content="工作台"

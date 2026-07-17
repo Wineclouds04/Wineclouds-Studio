@@ -297,7 +297,6 @@ public sealed class ThumbnailManager : IThumbnailManager
         foreach (IThumbnailView thumbnailView in _thumbnailViews.Values)
         {
             thumbnailView.SetHighlight(thumbnailView.Id == _activeClient);
-            thumbnailView.RefreshThumbnail(thumbnailView.Id == _activeClient);
         }
     }
 
@@ -539,31 +538,9 @@ public sealed class ThumbnailManager : IThumbnailManager
             return;
         }
 
-        var completion = new TaskCompletionSource<bool>(
-            TaskCreationOptions.RunContinuationsAsynchronously);
-        bool queued = _dispatcher.TryEnqueue(() =>
-        {
-            try
-            {
-                CycleGroup(groupIndex, forward);
-            }
-            finally
-            {
-                completion.TrySetResult(true);
-            }
-        });
-
-        if (!queued)
+        if (!_dispatcher.TryEnqueue(() => CycleGroup(groupIndex, forward)))
         {
             Logger.Warn("ThumbnailManager", "Unable to enqueue group hotkey switch");
-            return;
-        }
-
-        // Keep the low-level keyboard callback active until the reference-style
-        // SetActive path has handled this physical key event.
-        if (!completion.Task.Wait(TimeSpan.FromMilliseconds(250)))
-        {
-            Logger.Warn("ThumbnailManager", "Group hotkey switch exceeded 250 ms");
         }
     }
 
