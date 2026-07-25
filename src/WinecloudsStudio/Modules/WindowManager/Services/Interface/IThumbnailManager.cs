@@ -25,6 +25,8 @@ public interface IThumbnailManager
     bool ShowFrames { get; set; }
     bool ShowOverlayLabels { get; set; }
     bool ShowBorder { get; set; }
+    bool HideActiveClientThumbnail { get; set; }
+    bool MinimizeInactiveClients { get; set; }
 
     /// <summary>Gets the current window groups.</summary>
     IReadOnlyList<WindowGroupConfig> Groups { get; }

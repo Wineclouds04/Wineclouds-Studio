@@ -1,14 +1,59 @@
-# Wineclouds Studio
+<div align="center">
 
-> 面向 Windows 多窗口工作流的桌面工具：实时窗口预览、分组热键切换、屏幕区域颜色检测与多窗口同步。
+<pre>
+██╗    ██╗██╗███╗   ██╗███████╗ ██████╗██╗      ██████╗ ██╗   ██╗██████╗ ███████╗
+██║    ██║██║████╗  ██║██╔════╝██╔════╝██║     ██╔═══██╗██║   ██║██╔══██╗██╔════╝
+██║ █╗ ██║██║██╔██╗ ██║█████╗  ██║     ██║     ██║   ██║██║   ██║██║  ██║███████╗
+██║███╗██║██║██║╚██╗██║██╔══╝  ██║     ██║     ██║   ██║██║   ██║██║  ██║╚════██║
+╚███╔███╔╝██║██║ ╚████║███████╗╚██████╗███████╗╚██████╔╝╚██████╔╝██████╔╝███████║
+ ╚══╝╚══╝ ╚═╝╚═╝  ╚═══╝╚══════╝ ╚═════╝╚══════╝ ╚═════╝  ╚═════╝ ╚═════╝ ╚══════╝
+                 The Windows workspace for multi-window workflows
+</pre>
+
+**面向 Windows 多窗口工作流的桌面效率工具**
+
+将实时窗口预览、分组热键切换、屏幕区域检测与多窗口同步整合到一套现代桌面应用中。
+
+<p>
+  <a href="src/WinecloudsStudio/WinecloudsStudio.csproj"><img src="https://img.shields.io/badge/version-0.1.4-c96b52" alt="Version 0.1.4"></a>
+  <a href="src/WinecloudsStudio/WinecloudsStudio.csproj"><img src="https://img.shields.io/badge/.NET-10.0-512BD4?logo=dotnet&amp;logoColor=white" alt=".NET 10"></a>
+  <a href="src/WinecloudsStudio/WinecloudsStudio.csproj"><img src="https://img.shields.io/badge/WinUI-3-0078D4?logo=windows&amp;logoColor=white" alt="WinUI 3"></a>
+  <a href="src/WinecloudsStudio/WinecloudsStudio.csproj"><img src="https://img.shields.io/badge/Windows_App_SDK-2.2.0-0078D4?logo=windows11&amp;logoColor=white" alt="Windows App SDK 2.2.0"></a>
+  <a href="#运行要求"><img src="https://img.shields.io/badge/Windows-10_1809%2B-00A4EF?logo=windows&amp;logoColor=white" alt="Windows 10 1809 or later"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-22C55E" alt="MIT License"></a>
+</p>
+
+<p>
+  <a href="#能力概览"><strong>功能概览</strong></a>
+  ·
+  <a href="#快速使用">快速使用</a>
+  ·
+  <a href="#从源码构建">开发构建</a>
+  ·
+  <a href="#项目结构">源码结构</a>
+</p>
+
+</div>
 
 Wineclouds Studio 是一个 WinUI 3 桌面应用，帮助用户在多开客户端、远程会话、构建任务或多显示器工作台中持续关注关键窗口和视觉状态。应用以管理员权限运行，以便稳定访问目标窗口、注册全局热键并执行窗口同步操作。
+
+## 本次更新
+
+本次重点改进了窗口管理器（模块 1）的实时预览与窗口切换体验：
+
+- 将检测刷新周期调整为 500 ms，并定期重建 DWM Thumbnail 关系，提升实时性以及黑屏、失效预览的自动恢复能力。
+- 增加窗口激活回退和切换防重入处理，让鼠标点击与分组热键切换更加稳定。
+- 缩略图默认在主屏幕右侧依次排列，并自动修正已经移到屏幕范围外的位置。
+- 改进位置持久化：移动后立即保存，保留未运行窗口的历史位置，窗口标题变化后也能恢复对应布局。
+- 缩略图显示时不再抢占焦点；标题支持过长省略，并自动精简 `EVE - ` 前缀。
+- 尺寸、透明度、置顶、标题和边框设置可在监控运行期间动态生效。
+- 新增“隐藏当前活动窗口的缩略图”和“切换后最小化上一个窗口”两个可选行为。
 
 ## 能力概览
 
 | 模块 | 能力 |
 | --- | --- |
-| 窗口管理器 | 基于 DWM Thumbnail 的实时窗口缩略图、置顶显示、布局保存、点击激活与分组循环切换。 |
+| 窗口管理器 | 基于 DWM Thumbnail 的实时窗口缩略图、自愈刷新、自动排列与布局保存；支持点击激活、稳定焦点切换、活动窗口隐藏、非活动窗口最小化和分组热键循环。 |
 | 屏幕区域检测 | 框选虚拟桌面区域，按 HSV 容差、目标像素数、连通面积和确认帧数识别指定颜色；触发后循环播放本地 MP3。 |
 | 多窗口同步 | 选择主控窗口和受控窗口，将鼠标与键盘输入同步到目标窗口组。 |
 | 预留模块 | 模块 D–F 保留独立页面和导航入口，便于按模块继续扩展。 |
@@ -47,9 +92,10 @@ flowchart TB
 ### 窗口管理器
 
 1. 在“窗口管理器”中刷新并选择要关注的窗口。
-2. 设置缩略图尺寸、透明度、置顶、位置锁定与网格吸附。
+2. 设置缩略图尺寸、透明度、置顶、标题、边框、位置锁定与网格吸附；这些显示设置可在监控期间动态调整。
 3. 创建窗口分组并配置前进、后退热键。
-4. 开始监控；可点击缩略图激活窗口，或用分组热键循环切换。
+4. 按需启用“隐藏当前活动窗口的缩略图”或“切换后最小化上一个窗口”。
+5. 开始监控；可点击缩略图激活窗口，或用分组热键循环切换。
 
 ### 屏幕区域检测
 

@@ -37,12 +37,15 @@ internal sealed class ThumbnailOverlay : Form
 
         _titleLabel = new Label
         {
-            AutoSize = true,
+            AutoEllipsis = true,
+            AutoSize = false,
             BackColor = Color.FromArgb(150, 20, 20, 20),
             ForeColor = Color.White,
             Font = new Font("Segoe UI", 9F, FontStyle.Regular),
             Location = new Point(7, 6),
             Padding = new Padding(4, 2, 4, 2),
+            Size = new Size(160, 23),
+            TextAlign = ContentAlignment.MiddleLeft,
             Cursor = Cursors.Hand
         };
 
@@ -62,9 +65,17 @@ internal sealed class ThumbnailOverlay : Form
         get
         {
             CreateParams parameters = base.CreateParams;
-            parameters.ExStyle |= (int)WinecloudsStudio.Modules.WindowManager.Services.Interop.InteropConstants.WS_EX_TOOLWINDOW;
+            parameters.ExStyle |= (int)(
+                WinecloudsStudio.Modules.WindowManager.Services.Interop.InteropConstants.WS_EX_TOOLWINDOW
+                | WinecloudsStudio.Modules.WindowManager.Services.Interop.InteropConstants.WS_EX_NOACTIVATE);
             return parameters;
         }
+    }
+
+    public void SyncBounds(Rectangle screenBounds)
+    {
+        Bounds = screenBounds;
+        _titleLabel.Width = Math.Max(40, screenBounds.Width - 14);
     }
 
     public void SetTitle(string title)
@@ -83,7 +94,13 @@ internal sealed class ThumbnailOverlay : Form
 
     private void UpdateTitle()
     {
-        _titleLabel.Text = _isExcludedFromCycleGroup ? $"[已排除] {_title}" : _title;
+        string displayTitle = _title.StartsWith(
+            "EVE - ",
+            StringComparison.OrdinalIgnoreCase)
+            ? _title[6..]
+            : _title;
+        _titleLabel.Text =
+            _isExcludedFromCycleGroup ? $"[已排除] {displayTitle}" : displayTitle;
         _titleLabel.ForeColor = _isExcludedFromCycleGroup ? Color.OrangeRed : Color.White;
     }
 

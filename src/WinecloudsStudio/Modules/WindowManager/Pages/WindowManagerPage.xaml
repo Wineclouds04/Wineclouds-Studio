@@ -153,7 +153,24 @@
                         </StackPanel>
 
                         <StackPanel Spacing="10">
-                            <CheckBox x:Name="AlwaysOnTopCheck" Content="始终置顶" IsChecked="True" />
+                            <CheckBox
+                                x:Name="AlwaysOnTopCheck"
+                                Click="AlwaysOnTopCheck_Click"
+                                Content="始终置顶"
+                                IsChecked="True" />
+                            <CheckBox
+                                x:Name="ShowOverlayLabelsCheck"
+                                Click="ShowOverlayLabelsCheck_Click"
+                                Content="显示窗口标题"
+                                IsChecked="True" />
+                            <CheckBox
+                                x:Name="HideActiveClientThumbnailCheck"
+                                Click="HideActiveClientThumbnailCheck_Click"
+                                Content="隐藏当前活动窗口的缩略图" />
+                            <CheckBox
+                                x:Name="MinimizeInactiveClientsCheck"
+                                Click="MinimizeInactiveClientsCheck_Click"
+                                Content="切换后最小化上一个窗口" />
                             <CheckBox
                                 x:Name="LockThumbnailPositionCheck"
                                 Click="LockThumbnailPositionCheck_Click"

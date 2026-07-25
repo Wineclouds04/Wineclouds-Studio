@@ -11,6 +11,8 @@ namespace WinecloudsStudio.Modules.WindowManager.Services.Implementation;
 /// </summary>
 public class WindowManager : IWindowManager
 {
+    private int _isCurrentlySwitching;
+
     public WindowManager()
     {
         // Composition is always enabled on Windows 8+
@@ -21,6 +23,7 @@ public class WindowManager : IWindowManager
     }
 
     public bool IsCompositionEnabled { get; }
+    public bool IsCurrentlySwitching => Volatile.Read(ref _isCurrentlySwitching) != 0;
 
     public IntPtr GetForegroundWindowHandle()
     {
@@ -29,52 +32,75 @@ public class WindowManager : IWindowManager
 
     public void ActivateWindow(IntPtr handle)
     {
-        if (handle == IntPtr.Zero)
+        if (handle == IntPtr.Zero
+            || !User32NativeMethods.IsWindow(handle)
+            || Interlocked.Exchange(ref _isCurrentlySwitching, 1) != 0)
         {
             return;
         }
 
-        uint style = User32NativeMethods.GetWindowLong(handle, InteropConstants.GWL_STYLE);
-        if ((style & InteropConstants.WS_MINIMIZE) == InteropConstants.WS_MINIMIZE)
-        {
-            User32NativeMethods.ShowWindowAsync(handle, InteropConstants.SW_RESTORE);
-        }
-
-        uint currentThread = User32NativeMethods.GetCurrentThreadId();
-        IntPtr foregroundHandle = User32NativeMethods.GetForegroundWindow();
-        uint foregroundThread = foregroundHandle == IntPtr.Zero
-            ? 0
-            : User32NativeMethods.GetWindowThreadProcessId(foregroundHandle, out _);
-        uint targetThread = User32NativeMethods.GetWindowThreadProcessId(handle, out _);
-
-        bool attachedToForeground = foregroundThread != 0
-            && foregroundThread != currentThread
-            && User32NativeMethods.AttachThreadInput(currentThread, foregroundThread, true);
-        bool attachedToTarget = targetThread != 0
-            && targetThread != currentThread
-            && targetThread != foregroundThread
-            && User32NativeMethods.AttachThreadInput(currentThread, targetThread, true);
-
         try
         {
-            _ = User32NativeMethods.BringWindowToTop(handle);
-            bool foregroundActivated = User32NativeMethods.SetForegroundWindow(handle);
-            _ = User32NativeMethods.SetActiveWindow(handle);
-            _ = User32NativeMethods.SetFocus(handle);
-            Logger.Debug("WindowManager",
-                $"Activate handle=0x{handle.ToInt64():X}, foreground={foregroundActivated}");
+            uint style = User32NativeMethods.GetWindowLong(handle, InteropConstants.GWL_STYLE);
+            if ((style & InteropConstants.WS_MINIMIZE) == InteropConstants.WS_MINIMIZE)
+            {
+                _ = User32NativeMethods.ShowWindowAsync(handle, InteropConstants.SW_RESTORE);
+            }
+
+            uint currentThread = User32NativeMethods.GetCurrentThreadId();
+            IntPtr foregroundHandle = User32NativeMethods.GetForegroundWindow();
+            uint foregroundThread = foregroundHandle == IntPtr.Zero
+                ? 0
+                : User32NativeMethods.GetWindowThreadProcessId(foregroundHandle, out _);
+            uint targetThread = User32NativeMethods.GetWindowThreadProcessId(handle, out _);
+
+            bool attachedToForeground = foregroundThread != 0
+                && foregroundThread != currentThread
+                && User32NativeMethods.AttachThreadInput(currentThread, foregroundThread, true);
+            bool attachedToTarget = targetThread != 0
+                && targetThread != currentThread
+                && targetThread != foregroundThread
+                && User32NativeMethods.AttachThreadInput(currentThread, targetThread, true);
+
+            try
+            {
+                _ = User32NativeMethods.BringWindowToTop(handle);
+                bool foregroundActivated = User32NativeMethods.SetForegroundWindow(handle);
+                _ = User32NativeMethods.SetActiveWindow(handle);
+                _ = User32NativeMethods.SetFocus(handle);
+
+                if (!foregroundActivated
+                    || User32NativeMethods.GetForegroundWindow() != handle)
+                {
+                    User32NativeMethods.SwitchToThisWindow(handle, false);
+                    foregroundActivated =
+                        User32NativeMethods.GetForegroundWindow() == handle;
+                }
+
+                Logger.Debug("WindowManager",
+                    $"Activate handle=0x{handle.ToInt64():X}, foreground={foregroundActivated}");
+            }
+            finally
+            {
+                if (attachedToTarget)
+                {
+                    _ = User32NativeMethods.AttachThreadInput(currentThread, targetThread, false);
+                }
+
+                if (attachedToForeground)
+                {
+                    _ = User32NativeMethods.AttachThreadInput(currentThread, foregroundThread, false);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.Error("WindowManager",
+                $"Unable to activate handle=0x{handle.ToInt64():X}: {ex}");
         }
         finally
         {
-            if (attachedToTarget)
-            {
-                _ = User32NativeMethods.AttachThreadInput(currentThread, targetThread, false);
-            }
-
-            if (attachedToForeground)
-            {
-                _ = User32NativeMethods.AttachThreadInput(currentThread, foregroundThread, false);
-            }
+            Volatile.Write(ref _isCurrentlySwitching, 0);
         }
     }
 

@@ -34,13 +34,25 @@ public class ThumbnailWindowPositionStore
     /// </summary>
     public void SavePositions(Dictionary<string, (int X, int Y)> positions)
     {
-        var data = positions.ToDictionary(
-            kvp => kvp.Key.ToLowerInvariant(),
-            kvp => new WindowPosition { X = kvp.Value.X, Y = kvp.Value.Y });
+        Dictionary<string, WindowPosition> data = Load();
+        foreach (KeyValuePair<string, (int X, int Y)> entry in positions)
+        {
+            data[entry.Key.ToLowerInvariant()] = new WindowPosition
+            {
+                X = entry.Value.X,
+                Y = entry.Value.Y
+            };
+        }
 
         var json = JsonSerializer.Serialize(data, new JsonSerializerOptions { WriteIndented = true });
         File.WriteAllText(_filePath, json);
     }
+
+    public void SavePosition(string key, int x, int y) =>
+        SavePositions(new Dictionary<string, (int X, int Y)>
+        {
+            [key] = (x, y)
+        });
 
     private Dictionary<string, WindowPosition> Load()
     {

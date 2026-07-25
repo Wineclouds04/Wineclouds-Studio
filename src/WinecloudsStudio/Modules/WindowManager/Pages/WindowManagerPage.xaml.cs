@@ -50,6 +50,9 @@ public sealed partial class WindowManagerPage : Page
             _thumbnailManager.ThumbnailOpacity = val;
         };
 
+        ThumbWidthBox.ValueChanged += (s, e) => ApplyThumbnailSize();
+        ThumbHeightBox.ValueChanged += (s, e) => ApplyThumbnailSize();
+
         Loaded += (s, e) =>
         {
             RefreshProcessList();
@@ -69,6 +72,33 @@ public sealed partial class WindowManagerPage : Page
     private void ShowBorderCheck_Click(object sender, RoutedEventArgs e)
     {
         _thumbnailManager.ShowBorder = ShowBorderCheck.IsChecked ?? false;
+    }
+
+    private void AlwaysOnTopCheck_Click(object sender, RoutedEventArgs e)
+    {
+        _thumbnailManager.AlwaysOnTop = AlwaysOnTopCheck.IsChecked ?? true;
+    }
+
+    private void ShowOverlayLabelsCheck_Click(object sender, RoutedEventArgs e)
+    {
+        _thumbnailManager.ShowOverlayLabels =
+            ShowOverlayLabelsCheck.IsChecked ?? true;
+    }
+
+    private void HideActiveClientThumbnailCheck_Click(
+        object sender,
+        RoutedEventArgs e)
+    {
+        _thumbnailManager.HideActiveClientThumbnail =
+            HideActiveClientThumbnailCheck.IsChecked ?? false;
+    }
+
+    private void MinimizeInactiveClientsCheck_Click(
+        object sender,
+        RoutedEventArgs e)
+    {
+        _thumbnailManager.MinimizeInactiveClients =
+            MinimizeInactiveClientsCheck.IsChecked ?? false;
     }
 
     private void LockThumbnailPositionCheck_Click(object sender, RoutedEventArgs e)
@@ -195,6 +225,24 @@ public sealed partial class WindowManagerPage : Page
         _thumbnailManager.LockThumbnailPosition = LockThumbnailPositionCheck.IsChecked ?? false;
         _thumbnailManager.SnapThumbnailsToGrid = SnapThumbnailsToGridCheck.IsChecked ?? false;
         _thumbnailManager.ShowBorder = ShowBorderCheck.IsChecked ?? false;
+        _thumbnailManager.ShowOverlayLabels =
+            ShowOverlayLabelsCheck.IsChecked ?? true;
+        _thumbnailManager.HideActiveClientThumbnail =
+            HideActiveClientThumbnailCheck.IsChecked ?? false;
+        _thumbnailManager.MinimizeInactiveClients =
+            MinimizeInactiveClientsCheck.IsChecked ?? false;
+    }
+
+    private void ApplyThumbnailSize()
+    {
+        if (double.IsNaN(ThumbWidthBox.Value)
+            || double.IsNaN(ThumbHeightBox.Value))
+        {
+            return;
+        }
+
+        _thumbnailManager.ThumbnailWidth = (int)ThumbWidthBox.Value;
+        _thumbnailManager.ThumbnailHeight = (int)ThumbHeightBox.Value;
     }
 
     // ---- Settings persistence ----
@@ -213,8 +261,13 @@ public sealed partial class WindowManagerPage : Page
         LockThumbnailPositionCheck.IsChecked = config.LockThumbnailPosition;
         SnapThumbnailsToGridCheck.IsChecked = config.SnapThumbnailsToGrid;
         ShowBorderCheck.IsChecked = config.ShowBorder;
+        ShowOverlayLabelsCheck.IsChecked = config.ShowOverlayLabels;
+        HideActiveClientThumbnailCheck.IsChecked =
+            config.HideActiveClientThumbnail;
+        MinimizeInactiveClientsCheck.IsChecked =
+            config.MinimizeInactiveClients;
 
-        _thumbnailManager.ThumbnailOpacity = config.ThumbnailOpacity;
+        ApplySettings();
 
         // Restore groups
         _groups.Clear();
@@ -242,6 +295,12 @@ public sealed partial class WindowManagerPage : Page
             LockThumbnailPosition = LockThumbnailPositionCheck.IsChecked ?? false,
             SnapThumbnailsToGrid = SnapThumbnailsToGridCheck.IsChecked ?? false,
             ShowBorder = ShowBorderCheck.IsChecked ?? false,
+            ShowOverlayLabels =
+                ShowOverlayLabelsCheck.IsChecked ?? true,
+            HideActiveClientThumbnail =
+                HideActiveClientThumbnailCheck.IsChecked ?? false,
+            MinimizeInactiveClients =
+                MinimizeInactiveClientsCheck.IsChecked ?? false,
             MonitoredProcesses = _processItems
                 .Where(item => item.IsSelected)
                 .Select(item => item.ProcessName)

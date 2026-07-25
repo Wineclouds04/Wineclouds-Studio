@@ -19,6 +19,8 @@ public abstract class ThumbnailView : Form, IThumbnailView
     private bool _positionLocked;
     private bool _snapToGrid;
     private bool _isExcludedFromCycleGroup;
+    private bool _isTopMost;
+    private double _opacity = 1.0;
     private Point _baseMousePosition;
     private Point _baseWindowLocation;
     private Control? _captureControl;
@@ -143,6 +145,21 @@ public abstract class ThumbnailView : Form, IThumbnailView
         RefreshThumbnail(true);
     }
 
+    public void HideThumbnail()
+    {
+        if (_overlay.Visible)
+        {
+            _overlay.Hide();
+        }
+
+        if (Visible)
+        {
+            Hide();
+        }
+
+        IsActive = false;
+    }
+
     public void RefreshThumbnail(bool forceRefresh)
     {
         RefreshLiveThumbnail(forceRefresh);
@@ -158,14 +175,35 @@ public abstract class ThumbnailView : Form, IThumbnailView
             normalized = 1.0;
         }
 
-        Opacity = normalized;
-        _overlay.Opacity = normalized > 0.8 ? 1.0 : 1.0 - (1.0 - normalized) / 2.0;
+        if (Math.Abs(normalized - _opacity) < 0.01)
+        {
+            return;
+        }
+
+        try
+        {
+            Opacity = normalized;
+            _overlay.Opacity =
+                normalized > 0.8 ? 1.0 : 1.0 - (1.0 - normalized) / 2.0;
+            _opacity = normalized;
+        }
+        catch (Win32Exception)
+        {
+            // WinForms can briefly reject opacity changes while a native
+            // window handle is being recreated. The next refresh retries.
+        }
     }
 
     public void SetTopMost(bool topMost)
     {
+        if (_isTopMost == topMost)
+        {
+            return;
+        }
+
         TopMost = topMost;
         _overlay.TopMost = topMost;
+        _isTopMost = topMost;
     }
 
     public void SetPositionLocked(bool locked) => _positionLocked = locked;
@@ -209,10 +247,14 @@ public abstract class ThumbnailView : Form, IThumbnailView
         get
         {
             CreateParams parameters = base.CreateParams;
-            parameters.ExStyle |= (int)InteropConstants.WS_EX_TOOLWINDOW;
+            parameters.ExStyle |= (int)(
+                InteropConstants.WS_EX_TOOLWINDOW
+                | InteropConstants.WS_EX_NOACTIVATE);
             return parameters;
         }
     }
+
+    protected override bool ShowWithoutActivation => true;
 
     protected abstract void RefreshLiveThumbnail(bool forceRefresh);
 
@@ -233,12 +275,20 @@ public abstract class ThumbnailView : Form, IThumbnailView
 
     private Rectangle GetThumbnailBounds()
     {
-        int inset = _showBorder || _highlighted ? BorderWidth : 0;
-        return new Rectangle(
-            inset,
-            inset,
-            Math.Max(1, ClientSize.Width - inset * 2),
-            Math.Max(1, ClientSize.Height - inset * 2));
+        if (!_showBorder && !_highlighted)
+        {
+            return new Rectangle(Point.Empty, ClientSize);
+        }
+
+        int baseWidth = Math.Max(1, ClientSize.Width);
+        int baseHeight = Math.Max(1, ClientSize.Height);
+        int contentHeight = Math.Max(1, baseHeight - BorderWidth * 2);
+        int contentWidth = Math.Min(
+            Math.Max(1, baseWidth - BorderWidth * 2),
+            (int)Math.Round(contentHeight * (baseWidth / (double)baseHeight)));
+        int left = (baseWidth - contentWidth) / 2;
+
+        return new Rectangle(left, BorderWidth, contentWidth, contentHeight);
     }
 
     private void ApplyBorder()
@@ -255,7 +305,7 @@ public abstract class ThumbnailView : Form, IThumbnailView
             return;
         }
 
-        _overlay.Bounds = new Rectangle(PointToScreen(Point.Empty), ClientSize);
+        _overlay.SyncBounds(new Rectangle(PointToScreen(Point.Empty), ClientSize));
     }
 
     private void MouseEnterHandler(object? sender, EventArgs e)
@@ -304,17 +354,23 @@ public abstract class ThumbnailView : Form, IThumbnailView
         _baseMousePosition = mousePosition;
 
         Location = new Point(Location.X + offsetX, Location.Y + offsetY);
-        _baseWindowLocation = Location;
     }
 
     private void MouseUpHandler(object? sender, MouseEventArgs e)
     {
         if (e.Button == MouseButtons.Right)
         {
+            bool locationChanged =
+                _customMouseMode && Location != _baseWindowLocation;
             ExitCustomMouseMode();
             if (_snapToGrid)
             {
                 Location = SnapToGrid(Location);
+            }
+
+            if (locationChanged || Location != _baseWindowLocation)
+            {
+                ThumbnailMoved?.Invoke(Id);
             }
         }
     }
@@ -341,11 +397,6 @@ public abstract class ThumbnailView : Form, IThumbnailView
     private void MoveHandler(object? sender, EventArgs e)
     {
         SyncOverlay();
-        if (_customMouseMode && Location != _baseWindowLocation)
-        {
-            _baseWindowLocation = Location;
-        }
-        ThumbnailMoved?.Invoke(Id);
     }
 
     private void ResizeHandler(object? sender, EventArgs e)

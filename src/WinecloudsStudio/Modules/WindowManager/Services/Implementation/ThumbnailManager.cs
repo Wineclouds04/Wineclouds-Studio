@@ -14,6 +14,10 @@ public sealed class ThumbnailManager : IThumbnailManager
 {
     // EVE-O-Preview treats the shared EVE login title as a special multi-instance client.
     private const string DefaultClientTitle = "EVE";
+    private const int RefreshPeriodMilliseconds = 500;
+    private const int ForcedRefreshCycleThreshold = 2;
+    private const int ThumbnailGap = 12;
+    private const int ScreenMargin = 16;
 
     private readonly IProcessMonitor _processMonitor;
     private readonly IWindowManager _windowManager;
@@ -30,6 +34,7 @@ public sealed class ThumbnailManager : IThumbnailManager
     private IntPtr _activeClient;
     private string _activeClientTitle = DefaultClientTitle;
     private bool _snapThumbnailsToGrid;
+    private int _refreshCycleCount;
 
     public ThumbnailManager()
     {
@@ -66,6 +71,8 @@ public sealed class ThumbnailManager : IThumbnailManager
     public bool ShowFrames { get; set; }
     public bool ShowOverlayLabels { get; set; }
     public bool ShowBorder { get; set; }
+    public bool HideActiveClientThumbnail { get; set; }
+    public bool MinimizeInactiveClients { get; set; }
     public bool IsRunning => _updateTimer?.IsEnabled ?? false;
     public IReadOnlyList<WindowGroupConfig> Groups => _groups.AsReadOnly();
 
@@ -99,7 +106,7 @@ public sealed class ThumbnailManager : IThumbnailManager
 
         _updateTimer = new DispatcherTimer
         {
-            Interval = TimeSpan.FromSeconds(1)
+            Interval = TimeSpan.FromMilliseconds(RefreshPeriodMilliseconds)
         };
         _updateTimer.Tick += UpdateTimerTick;
         _updateTimer.Start();
@@ -131,6 +138,7 @@ public sealed class ThumbnailManager : IThumbnailManager
         _processMonitor.ClearMonitoredProcesses();
         _activeClient = IntPtr.Zero;
         _activeClientTitle = DefaultClientTitle;
+        _refreshCycleCount = 0;
         Logger.Info("ThumbnailManager", "Monitoring stopped");
     }
 
@@ -186,7 +194,8 @@ public sealed class ThumbnailManager : IThumbnailManager
             _windowKeys[process.Handle] = positionKey;
             (int X, int Y)? savedPosition = _positionStore.GetPosition(positionKey);
             var position = savedPosition.HasValue
-                ? new Point(savedPosition.Value.X, savedPosition.Value.Y)
+                ? EnsurePositionIsVisible(
+                    new Point(savedPosition.Value.X, savedPosition.Value.Y))
                 : GetDefaultPosition();
 
             IThumbnailView view = _viewFactory.Create(
@@ -206,7 +215,18 @@ public sealed class ThumbnailManager : IThumbnailManager
         {
             if (_thumbnailViews.TryGetValue(process.Handle, out IThumbnailView? view))
             {
+                string processName = GetCachedProcessName(process.Handle);
+                string newPositionKey = MakeWindowKey(processName, process.Title);
                 view.Title = process.Title;
+                _windowKeys[process.Handle] = newPositionKey;
+
+                (int X, int Y)? savedPosition =
+                    _positionStore.GetPosition(newPositionKey);
+                if (savedPosition.HasValue)
+                {
+                    view.ThumbnailLocation = EnsurePositionIsVisible(
+                        new Point(savedPosition.Value.X, savedPosition.Value.Y));
+                }
             }
         }
 
@@ -225,9 +245,28 @@ public sealed class ThumbnailManager : IThumbnailManager
             SwitchActiveClient(foregroundClient, foregroundView.Title);
         }
 
+        _refreshCycleCount++;
+        bool forceRefresh =
+            _refreshCycleCount >= ForcedRefreshCycleThreshold;
+        if (forceRefresh)
+        {
+            _refreshCycleCount = 0;
+        }
+
         foreach (IThumbnailView view in _thumbnailViews.Values)
         {
-            ApplyViewSettings(view, forceRefresh: false);
+            if (HideActiveClientThumbnail && view.Id == _activeClient)
+            {
+                view.HideThumbnail();
+                continue;
+            }
+
+            if (!view.IsActive)
+            {
+                view.ShowThumbnail();
+            }
+
+            ApplyViewSettings(view, forceRefresh);
         }
     }
 
@@ -304,6 +343,23 @@ public sealed class ThumbnailManager : IThumbnailManager
     {
         if (_thumbnailViews.TryGetValue(id, out IThumbnailView? view))
         {
+            string positionKey = _windowKeys.TryGetValue(id, out string? cachedKey)
+                ? cachedKey
+                : MakeWindowKey(view.ProcessName, view.Title);
+
+            try
+            {
+                _positionStore.SavePosition(
+                    positionKey,
+                    view.ThumbnailLocation.X,
+                    view.ThumbnailLocation.Y);
+            }
+            catch (Exception ex)
+            {
+                Logger.Warn("ThumbnailManager",
+                    $"Unable to save thumbnail position: {ex.Message}");
+            }
+
             Logger.Debug("ThumbnailManager",
                 $"Thumbnail moved: {view.ProcessName}::{view.Title} -> {view.ThumbnailLocation.X},{view.ThumbnailLocation.Y}");
         }
@@ -323,7 +379,8 @@ public sealed class ThumbnailManager : IThumbnailManager
 
     private void CycleGroup(int groupIndex, bool forward)
     {
-        if ((uint)groupIndex >= (uint)_groups.Count)
+        if ((uint)groupIndex >= (uint)_groups.Count
+            || _windowManager.IsCurrentlySwitching)
         {
             return;
         }
@@ -520,8 +577,18 @@ public sealed class ThumbnailManager : IThumbnailManager
             return;
         }
 
+        IntPtr previousClient = _activeClient;
         _activeClient = foregroundClientHandle;
         _activeClientTitle = foregroundClientTitle;
+
+        if (MinimizeInactiveClients
+            && previousClient != IntPtr.Zero
+            && previousClient != foregroundClientHandle
+            && _thumbnailViews.ContainsKey(previousClient)
+            && !_windowManager.IsWindowMinimized(previousClient))
+        {
+            _windowManager.MinimizeWindow(previousClient);
+        }
     }
 
     private static string GetWindowTitle(string windowKey)
@@ -596,8 +663,58 @@ public sealed class ThumbnailManager : IThumbnailManager
 
     private Point GetDefaultPosition()
     {
-        int offset = _thumbnailViews.Count * 30;
-        return new Point(100 + offset, 100 + offset);
+        Rectangle workingArea =
+            System.Windows.Forms.Screen.PrimaryScreen?.WorkingArea
+            ?? System.Windows.Forms.SystemInformation.VirtualScreen;
+        int availableHeight = Math.Max(
+            ThumbnailHeight,
+            workingArea.Height - ScreenMargin * 2);
+        int rows = Math.Max(
+            1,
+            (availableHeight + ThumbnailGap)
+            / Math.Max(1, ThumbnailHeight + ThumbnailGap));
+        int index = _thumbnailViews.Count;
+        int row = index % rows;
+        int column = index / rows;
+
+        int x = workingArea.Right
+            - ScreenMargin
+            - ThumbnailWidth
+            - column * (ThumbnailWidth + ThumbnailGap);
+        int y = workingArea.Top
+            + ScreenMargin
+            + row * (ThumbnailHeight + ThumbnailGap);
+
+        return EnsurePositionIsVisible(new Point(x, y));
+    }
+
+    private Point EnsurePositionIsVisible(Point position)
+    {
+        var bounds = new Rectangle(
+            position,
+            new Size(
+                Math.Max(1, ThumbnailWidth),
+                Math.Max(1, ThumbnailHeight)));
+
+        bool isVisible = System.Windows.Forms.Screen.AllScreens.Any(screen =>
+        {
+            Rectangle visiblePart = Rectangle.Intersect(
+                screen.WorkingArea,
+                bounds);
+            return visiblePart.Width >= 32 && visiblePart.Height >= 32;
+        });
+
+        if (isVisible)
+        {
+            return position;
+        }
+
+        Rectangle fallback =
+            System.Windows.Forms.Screen.PrimaryScreen?.WorkingArea
+            ?? System.Windows.Forms.SystemInformation.VirtualScreen;
+        return new Point(
+            Math.Max(fallback.Left, fallback.Right - ThumbnailWidth - ScreenMargin),
+            Math.Max(fallback.Top, fallback.Top + ScreenMargin));
     }
 
     private void StopTimer()

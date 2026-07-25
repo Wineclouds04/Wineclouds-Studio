@@ -15,6 +15,8 @@ public class WindowManagerConfig
     public bool ShowThumbnailFrames { get; set; } = false;
     public bool ShowBorder { get; set; } = false;
     public bool ShowOverlayLabels { get; set; } = true;
+    public bool HideActiveClientThumbnail { get; set; } = false;
+    public bool MinimizeInactiveClients { get; set; } = false;
     public List<string> MonitoredProcesses { get; set; } = new();
     public List<WindowGroupConfig> Groups { get; set; } = new();
 }

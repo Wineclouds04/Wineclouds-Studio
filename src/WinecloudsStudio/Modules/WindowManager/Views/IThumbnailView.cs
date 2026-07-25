@@ -19,6 +19,7 @@ public interface IThumbnailView : IDisposable
 
     bool IsKnownHandle(IntPtr handle);
     void ShowThumbnail();
+    void HideThumbnail();
     void RefreshThumbnail(bool forceRefresh);
     void SetOpacity(double opacity);
     void SetTopMost(bool topMost);

@@ -153,6 +153,12 @@ public sealed partial class ThumbnailPopupWindow : Window, IThumbnailView
         Activate();
     }
 
+    public void HideThumbnail()
+    {
+        AppWindow.Hide();
+        _activated = false;
+    }
+
     public void RefreshThumbnail(bool forceRefresh)
     {
         if (_hwnd == IntPtr.Zero) return;

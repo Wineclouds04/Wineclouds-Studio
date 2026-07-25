@@ -71,6 +71,10 @@ public class DwmThumbnail : IDwmThumbnail
         catch (COMException)
         {
         }
+        finally
+        {
+            _handle = IntPtr.Zero;
+        }
     }
 
     public void Move(int left, int top, int right, int bottom)

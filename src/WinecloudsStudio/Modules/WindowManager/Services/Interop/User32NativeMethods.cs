@@ -19,6 +19,9 @@ public static class User32NativeMethods
     public static extern bool SetForegroundWindow(IntPtr window);
 
     [DllImport("user32.dll")]
+    public static extern void SwitchToThisWindow(IntPtr window, bool altTab);
+
+    [DllImport("user32.dll")]
     public static extern IntPtr SetFocus(IntPtr window);
 
     [DllImport("user32.dll")]
@@ -37,6 +40,10 @@ public static class User32NativeMethods
 
     [DllImport("user32.dll")]
     public static extern bool ShowWindowAsync(IntPtr hWnd, int nCmdShow);
+
+    [DllImport("user32.dll")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    public static extern bool IsWindow(IntPtr hWnd);
 
     [DllImport("user32.dll")]
     public static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);

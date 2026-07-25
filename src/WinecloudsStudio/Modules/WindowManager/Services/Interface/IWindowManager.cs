@@ -7,6 +7,7 @@ namespace WinecloudsStudio.Modules.WindowManager.Services.Interface;
 public interface IWindowManager
 {
     bool IsCompositionEnabled { get; }
+    bool IsCurrentlySwitching { get; }
 
     IntPtr GetForegroundWindowHandle();
     void ActivateWindow(IntPtr handle);
