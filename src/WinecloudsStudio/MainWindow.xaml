@@ -90,9 +90,9 @@
                     Icon="Folder"
                     Tag="module-e" />
                 <NavigationViewItem
-                    Content="模块 F"
+                    Content="软件更新"
                     Foreground="{StaticResource NavigationPaneForegroundBrush}"
-                    Icon="Folder"
+                    Icon="Download"
                     Tag="module-f" />
             </NavigationView.MenuItems>
 

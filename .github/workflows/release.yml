@@ -1,0 +1,113 @@
+name: Build and publish Windows release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Set up .NET 10
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Install NSIS
+        shell: powershell
+        run: choco install nsis --no-progress --yes
+
+      - name: Verify release version
+        shell: powershell
+        run: |
+          [xml]$project = Get-Content -LiteralPath "src\WinecloudsStudio\WinecloudsStudio.csproj"
+          $projectVersion = @(
+            $project.Project.PropertyGroup |
+              ForEach-Object { $_.Version } |
+              Where-Object { $_ }
+          ) | Select-Object -First 1
+          $tagVersion = "${{ github.ref_name }}".TrimStart("v")
+          if ($projectVersion -ne $tagVersion) {
+            throw "Tag version $tagVersion does not match project version $projectVersion."
+          }
+
+      - name: Build NSIS installer
+        shell: powershell
+        run: .\scripts\New-Installer.ps1 -Configuration Release
+
+      - name: Generate checksum
+        id: artifact
+        shell: powershell
+        run: |
+          $version = "${{ github.ref_name }}".TrimStart("v")
+          $installer = Join-Path $PWD "artifacts\installer\output\WinecloudsStudio-Setup-$version-win-x64.exe"
+          if (-not (Test-Path -LiteralPath $installer)) {
+            throw "Installer was not produced: $installer"
+          }
+          $hash = (Get-FileHash -LiteralPath $installer -Algorithm SHA256).Hash.ToLowerInvariant()
+          $checksum = "$installer.sha256"
+          "$hash  $([IO.Path]::GetFileName($installer))" |
+            Set-Content -LiteralPath $checksum -Encoding ascii
+          "installer=$installer" >> $env:GITHUB_OUTPUT
+          "checksum=$checksum" >> $env:GITHUB_OUTPUT
+
+      - name: Create or update GitHub Release
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $tag = "${{ github.ref_name }}"
+          $installer = "${{ steps.artifact.outputs.installer }}"
+          $checksum = "${{ steps.artifact.outputs.checksum }}"
+          gh release view $tag *> $null
+          if ($LASTEXITCODE -eq 0) {
+            gh release upload $tag $installer $checksum --clobber
+          }
+          else {
+            gh release create $tag $installer $checksum `
+              --verify-tag `
+              --generate-notes `
+              --title $tag
+          }
+
+      - name: Generate and upload update manifest
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $tag = "${{ github.ref_name }}"
+          $version = $tag.TrimStart("v")
+          $installer = Get-Item -LiteralPath "${{ steps.artifact.outputs.installer }}"
+          $release = gh release view $tag --json name,body,publishedAt,url |
+            ConvertFrom-Json
+          $hash = (Get-FileHash -LiteralPath $installer.FullName -Algorithm SHA256).Hash.ToLowerInvariant()
+          $manifest = [ordered]@{
+            schemaVersion = 1
+            version = $version
+            tagName = $tag
+            name = $release.name
+            releaseNotes = $release.body
+            releasePageUrl = $release.url
+            publishedAt = $release.publishedAt
+            installer = [ordered]@{
+              name = $installer.Name
+              downloadUrl = "https://github.com/${{ github.repository }}/releases/download/$tag/$($installer.Name)"
+              size = $installer.Length
+              sha256 = $hash
+            }
+          }
+          $manifestPath = Join-Path $installer.DirectoryName "update.json"
+          $manifest |
+            ConvertTo-Json -Depth 4 |
+            Set-Content -LiteralPath $manifestPath -Encoding utf8
+          gh release upload $tag $manifestPath --clobber

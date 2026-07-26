@@ -15,7 +15,7 @@
 将实时窗口预览、分组热键切换、屏幕区域检测与多窗口同步整合到一套现代桌面应用中。
 
 <p>
-  <a href="src/WinecloudsStudio/WinecloudsStudio.csproj"><img src="https://img.shields.io/badge/version-0.1.4-c96b52" alt="Version 0.1.4"></a>
+  <a href="src/WinecloudsStudio/WinecloudsStudio.csproj"><img src="https://img.shields.io/badge/version-0.1.6-c96b52" alt="Version 0.1.6"></a>
   <a href="src/WinecloudsStudio/WinecloudsStudio.csproj"><img src="https://img.shields.io/badge/.NET-10.0-512BD4?logo=dotnet&amp;logoColor=white" alt=".NET 10"></a>
   <a href="src/WinecloudsStudio/WinecloudsStudio.csproj"><img src="https://img.shields.io/badge/WinUI-3-0078D4?logo=windows&amp;logoColor=white" alt="WinUI 3"></a>
   <a href="src/WinecloudsStudio/WinecloudsStudio.csproj"><img src="https://img.shields.io/badge/Windows_App_SDK-2.2.0-0078D4?logo=windows11&amp;logoColor=white" alt="Windows App SDK 2.2.0"></a>
@@ -48,6 +48,7 @@ Wineclouds Studio 是一个 WinUI 3 桌面应用，帮助用户在多开客户�
 - 缩略图显示时不再抢占焦点；标题支持过长省略，并自动精简 `EVE - ` 前缀。
 - 尺寸、透明度、置顶、标题和边框设置可在监控运行期间动态生效。
 - 新增“隐藏当前活动窗口的缩略图”和“切换后最小化上一个窗口”两个可选行为。
+- 模块 F 升级为“软件更新”：通过 GitHub Releases 检查正式版本，下载 Windows x64 NSIS 安装包，完成 SHA-256 校验后在程序退出时启动安装。
 
 ## 能力概览
 
@@ -56,7 +57,8 @@ Wineclouds Studio 是一个 WinUI 3 桌面应用，帮助用户在多开客户�
 | 窗口管理器 | 基于 DWM Thumbnail 的实时窗口缩略图、自愈刷新、自动排列与布局保存；支持点击激活、稳定焦点切换、活动窗口隐藏、非活动窗口最小化和分组热键循环。 |
 | 屏幕区域检测 | 框选虚拟桌面区域，按 HSV 容差、目标像素数、连通面积和确认帧数识别指定颜色；触发后循环播放本地 MP3。 |
 | 多窗口同步 | 选择主控窗口和受控窗口，将鼠标与键盘输入同步到目标窗口组。 |
-| 预留模块 | 模块 D–F 保留独立页面和导航入口，便于按模块继续扩展。 |
+| 软件更新 | 从 GitHub Releases 检查最新正式版、展示版本说明、下载并校验 NSIS 安装包，然后在当前程序完全退出后启动安装。 |
+| 预留模块 | 模块 D–E 保留独立页面和导航入口，便于按模块继续扩展。 |
 
 ## 适用场景
 
@@ -72,7 +74,8 @@ flowchart TB
     App[App / MainWindow\nWinUI 3 导航壳] --> A[窗口管理器]
     App --> B[屏幕区域检测]
     App --> C[多窗口同步]
-    App --> D[预留模块 D-F]
+    App --> F[软件更新]
+    App --> D[预留模块 D-E]
 
     A --> A1[DWM Thumbnail]
     A --> A2[全局热键]
@@ -82,6 +85,9 @@ flowchart TB
     B --> B3[MP3 循环播放]
     B --> B4[检测配置存储]
     C --> C1[原生键鼠钩子]
+    F --> F1[GitHub Release 清单]
+    F --> F2[安装包下载与 SHA-256 校验]
+    F --> F3[退出后启动 NSIS]
     App --> L[共享日志]
 ```
 
@@ -110,6 +116,13 @@ flowchart TB
 2. 选择一个主控窗口和至少一个受控窗口。
 3. 启动同步后，在主控窗口中的鼠标、键盘操作会转发至受控窗口。
 4. 停止同步或退出应用即可释放钩子与关联资源。
+
+### 软件更新
+
+1. 打开“软件更新”，程序会自动检查 GitHub 上的最新正式 Release。
+2. 有新版本时查看版本说明和安装包信息，然后点击“下载并安装”。
+3. 程序会校验 Release 中 `update.json` 提供的 SHA-256 摘要；校验通过后自动退出并启动 NSIS 安装向导。
+4. Release 标签、项目版本和安装包文件名必须使用相同版本，例如 `v0.1.6`、`0.1.6` 和 `WinecloudsStudio-Setup-0.1.6-win-x64.exe`。
 
 ## 运行要求
 
@@ -140,6 +153,29 @@ dotnet run --project .\src\WinecloudsStudio\WinecloudsStudio.csproj
 
 安装包输出到 `artifacts\installer\output\`，发布载荷输出到 `artifacts\installer\publish-win-x64\`。两者都是可再生产物，不应提交到版本库。
 
+## 发布更新版本
+
+仓库包含 `.github/workflows/release.yml`。发布正式更新时：
+
+1. 修改 `src/WinecloudsStudio/WinecloudsStudio.csproj` 中的 `Version`。
+2. 提交并推送代码，确认 `main` 构建正常。
+3. 创建与项目版本完全一致的标签，例如：
+
+```powershell
+git tag v0.1.6
+git push origin v0.1.6
+```
+
+标签推送后，GitHub Actions 会自动：
+
+- 配置 .NET 10 和 NSIS。
+- 生成 Windows x64 自包含安装器。
+- 生成对应的 `.sha256` 校验文件。
+- 创建 GitHub Release，或覆盖同一标签下的旧安装包资产。
+- 生成并上传包含版本、下载地址、文件大小和 SHA-256 的 `update.json`。
+
+软件更新模块通过 `releases/latest/download/update.json` 获取最新正式版，不消耗 GitHub REST API 配额。清单中的 Release 标签、项目版本、安装包文件名和 SHA-256 必须相互一致，否则客户端会拒绝安装。
+
 ## 项目结构
 
 ```text
@@ -152,7 +188,7 @@ WinecloudsStudio.slnx
 │   │   ├── Home/                     # 首页
 │   │   ├── WindowManager/            # 缩略图、热键、窗口配置与 Windows API 互操作
 │   │   ├── ScreenDetection/          # 捕获、颜色识别、状态机、提醒与配置
-│   │   ├── Reserved/                 # 多窗口同步及预留模块 D-F
+│   │   ├── Reserved/                 # 多窗口同步、软件更新及预留模块 D-E
 │   │   └── Navigation/               # 未实现模块的兜底页面
 │   └── Shared/Logging/               # 异步文件日志
 ├── installer/                        # NSIS 安装器定义
