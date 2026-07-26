@@ -115,7 +115,10 @@ jobs:
             }
           }
           $manifestPath = Join-Path $installer.DirectoryName "update.json"
-          $manifest |
-            ConvertTo-Json -Depth 4 |
-            Set-Content -LiteralPath $manifestPath -Encoding utf8
+          $manifestJson = $manifest | ConvertTo-Json -Depth 4
+          [IO.File]::WriteAllText(
+            $manifestPath,
+            $manifestJson,
+            [Text.UTF8Encoding]::new($false)
+          )
           gh release upload $tag $manifestPath --clobber
