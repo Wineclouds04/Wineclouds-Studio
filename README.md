@@ -12,10 +12,10 @@
 
 **面向 Windows 多窗口工作流的桌面效率工具**
 
-将实时窗口预览、分组热键切换、屏幕区域检测与多窗口同步整合到一套现代桌面应用中。
+将本机硬件概览、实时窗口预览、分组热键切换、屏幕区域检测与多窗口同步整合到一套现代桌面应用中。
 
 <p>
-  <a href="src/WinecloudsStudio/WinecloudsStudio.csproj"><img src="https://img.shields.io/badge/version-0.1.6-c96b52" alt="Version 0.1.6"></a>
+  <a href="src/WinecloudsStudio/WinecloudsStudio.csproj"><img src="https://img.shields.io/badge/version-0.1.7-c96b52" alt="Version 0.1.7"></a>
   <a href="src/WinecloudsStudio/WinecloudsStudio.csproj"><img src="https://img.shields.io/badge/.NET-10.0-512BD4?logo=dotnet&amp;logoColor=white" alt=".NET 10"></a>
   <a href="src/WinecloudsStudio/WinecloudsStudio.csproj"><img src="https://img.shields.io/badge/WinUI-3-0078D4?logo=windows&amp;logoColor=white" alt="WinUI 3"></a>
   <a href="src/WinecloudsStudio/WinecloudsStudio.csproj"><img src="https://img.shields.io/badge/Windows_App_SDK-2.2.0-0078D4?logo=windows11&amp;logoColor=white" alt="Windows App SDK 2.2.0"></a>
@@ -37,32 +37,33 @@
 
 Wineclouds Studio 是一个 WinUI 3 桌面应用，帮助用户在多开客户端、远程会话、构建任务或多显示器工作台中持续关注关键窗口和视觉状态。应用以管理员权限运行，以便稳定访问目标窗口、注册全局热键并执行窗口同步操作。
 
-## 本次更新
+## 0.1.7 本次更新
 
-本次重点改进了窗口管理器（模块 1）的实时预览与窗口切换体验：
+本次更新完善工作台首页并加入本机硬件信息模块：
 
-- 将检测刷新周期调整为 500 ms，并定期重建 DWM Thumbnail 关系，提升实时性以及黑屏、失效预览的自动恢复能力。
-- 增加窗口激活回退和切换防重入处理，让鼠标点击与分组热键切换更加稳定。
-- 缩略图默认在主屏幕右侧依次排列，并自动修正已经移到屏幕范围外的位置。
-- 改进位置持久化：移动后立即保存，保留未运行窗口的历史位置，窗口标题变化后也能恢复对应布局。
-- 缩略图显示时不再抢占焦点；标题支持过长省略，并自动精简 `EVE - ` 前缀。
-- 尺寸、透明度、置顶、标题和边框设置可在监控运行期间动态生效。
-- 新增“隐藏当前活动窗口的缩略图”和“切换后最小化上一个窗口”两个可选行为。
-- 模块 F 升级为“软件更新”：通过 GitHub Releases 检查正式版本，下载 Windows x64 NSIS 安装包，完成 SHA-256 校验后在程序退出时启动安装。
+- 重做首页：上半区展示居中的 WINECLOUDS 字符 Logo，并以逐字符打印动画呈现 Logo 与英文副标题。
+- 首页下半区增加实时窗口预览、屏幕区域检测和多窗口同步能力卡片。
+- 在“窗口管理器”前新增“硬件信息”，通过 Windows WMI 读取型号、系统、运行时间、处理器、主板、内存、显卡、显示器、磁盘、声卡与物理网卡。
+- 硬件信息采用后台读取、每秒更新时间和手动刷新；单项读取失败时降级显示，不阻塞整个页面。
+- 导航品牌副标题更新为“酒云工作台”，并将“窗口同步”调整到“屏幕区域检测”之前。
+- 保留 0.1.6 引入的软件更新能力：通过 GitHub Releases 下载并校验 Windows x64 NSIS 安装包。
 
 ## 能力概览
 
 | 模块 | 能力 |
 | --- | --- |
+| 首页 | 居中的 WINECLOUDS 字符 Logo 逐字打印，并集中展示三个核心工作流入口与当前构建版本。 |
+| 硬件信息 | 读取本机型号、Windows 版本、运行时间以及 CPU、主板、内存、显卡、显示器、磁盘、声卡和物理网卡信息。 |
 | 窗口管理器 | 基于 DWM Thumbnail 的实时窗口缩略图、自愈刷新、自动排列与布局保存；支持点击激活、稳定焦点切换、活动窗口隐藏、非活动窗口最小化和分组热键循环。 |
-| 屏幕区域检测 | 框选虚拟桌面区域，按 HSV 容差、目标像素数、连通面积和确认帧数识别指定颜色；触发后循环播放本地 MP3。 |
 | 多窗口同步 | 选择主控窗口和受控窗口，将鼠标与键盘输入同步到目标窗口组。 |
+| 屏幕区域检测 | 框选虚拟桌面区域，按 HSV 容差、目标像素数、连通面积和确认帧数识别指定颜色；触发后循环播放本地 MP3。 |
 | 软件更新 | 从 GitHub Releases 检查最新正式版、展示版本说明、下载并校验 NSIS 安装包，然后在当前程序完全退出后启动安装。 |
 | 预留模块 | 模块 D–E 保留独立页面和导航入口，便于按模块继续扩展。 |
 
 ## 适用场景
 
 - 多开应用：将关键客户端以实时缩略图固定在桌面上，通过点击或热键快速切换。
+- 设备盘点：快速查看当前电脑的 Windows 版本与主要硬件配置，便于排查和记录。
 - 状态监看：监测远程桌面、构建任务、下载进度或告警区域的颜色变化。
 - 多显示器协作：在整个虚拟桌面范围内选择检测区域，持续关注副屏状态。
 - 重复性窗口操作：将一个窗口的鼠标、键盘输入同步到多个受控窗口。
@@ -71,12 +72,17 @@ Wineclouds Studio 是一个 WinUI 3 桌面应用，帮助用户在多开客户�
 
 ```mermaid
 flowchart TB
-    App[App / MainWindow\nWinUI 3 导航壳] --> A[窗口管理器]
+    App[App / MainWindow\nWinUI 3 导航壳] --> H[首页]
+    App --> I[硬件信息]
+    App --> A[窗口管理器]
     App --> B[屏幕区域检测]
     App --> C[多窗口同步]
     App --> F[软件更新]
     App --> D[预留模块 D-E]
 
+    H --> H1[逐字符 Logo 动画]
+    I --> I1[WMI 硬件与系统查询]
+    I --> I2[运行时间与手动刷新]
     A --> A1[DWM Thumbnail]
     A --> A2[全局热键]
     A --> A3[窗口配置存储]
@@ -94,6 +100,13 @@ flowchart TB
 核心代码均位于 `src/WinecloudsStudio`：页面负责交互与生命周期，服务层封装 Windows API 和业务能力，`Core` 保持屏幕颜色分析与状态机的独立性，`Shared/Logging` 提供全局日志能力。
 
 ## 快速使用
+
+### 硬件信息
+
+1. 打开“硬件信息”，应用会在后台读取本机 Windows 与主要硬件配置。
+2. 顶部卡片显示机型、系统版本和实时运行时间，下方清单展示各类设备详情。
+3. 硬件发生变化或需要重新查询时，点击“刷新信息”。
+4. 页面只读取本机信息，不修改 BIOS、驱动、注册表或硬件配置。
 
 ### 窗口管理器
 
@@ -122,7 +135,7 @@ flowchart TB
 1. 打开“软件更新”，程序会自动检查 GitHub 上的最新正式 Release。
 2. 有新版本时查看版本说明和安装包信息，然后点击“下载并安装”。
 3. 程序会校验 Release 中 `update.json` 提供的 SHA-256 摘要；校验通过后自动退出并启动 NSIS 安装向导。
-4. Release 标签、项目版本和安装包文件名必须使用相同版本，例如 `v0.1.6`、`0.1.6` 和 `WinecloudsStudio-Setup-0.1.6-win-x64.exe`。
+4. Release 标签、项目版本和安装包文件名必须使用相同版本，例如 `v0.1.7`、`0.1.7` 和 `WinecloudsStudio-Setup-0.1.7-win-x64.exe`。
 
 ## 运行要求
 
@@ -162,8 +175,8 @@ dotnet run --project .\src\WinecloudsStudio\WinecloudsStudio.csproj
 3. 创建与项目版本完全一致的标签，例如：
 
 ```powershell
-git tag v0.1.6
-git push origin v0.1.6
+git tag v0.1.7
+git push origin v0.1.7
 ```
 
 标签推送后，GitHub Actions 会自动：
@@ -185,7 +198,8 @@ WinecloudsStudio.slnx
 │   ├── MainWindow.xaml(.cs)          # 导航壳与模块页面缓存
 │   ├── Assets/                       # 应用图标和资源
 │   ├── Modules/
-│   │   ├── Home/                     # 首页
+│   │   ├── Home/                     # 逐字符 Logo 与工作流概览首页
+│   │   ├── SystemInformation/        # WMI 硬件读取、运行时间与信息页面
 │   │   ├── WindowManager/            # 缩略图、热键、窗口配置与 Windows API 互操作
 │   │   ├── ScreenDetection/          # 捕获、颜色识别、状态机、提醒与配置
 │   │   ├── Reserved/                 # 多窗口同步、软件更新及预留模块 D-E

@@ -40,7 +40,7 @@
                     <TextBlock
                         Margin="0,4,0,0"
                         Foreground="{StaticResource NavigationGroupLabelBrush}"
-                        Text="桌面服务平台" />
+                        Text="酒云工作台" />
                 </StackPanel>
             </NavigationView.PaneHeader>
 
@@ -65,20 +65,25 @@
                     Content="服务模块"
                     Foreground="{StaticResource NavigationGroupLabelBrush}" />
                 <NavigationViewItem
+                    Content="硬件信息"
+                    Foreground="{StaticResource NavigationPaneForegroundBrush}"
+                    Icon="Setting"
+                    Tag="system-information" />
+                <NavigationViewItem
                     Content="窗口管理器"
                     Foreground="{StaticResource NavigationPaneForegroundBrush}"
                     Icon="Folder"
                     Tag="module-a" />
                 <NavigationViewItem
-                    Content="屏幕区域检测"
-                    Foreground="{StaticResource NavigationPaneForegroundBrush}"
-                    Icon="Folder"
-                    Tag="module-b" />
-                <NavigationViewItem
                     Content="窗口同步"
                     Foreground="{StaticResource NavigationPaneForegroundBrush}"
                     Icon="Folder"
                     Tag="module-c" />
+                <NavigationViewItem
+                    Content="屏幕区域检测"
+                    Foreground="{StaticResource NavigationPaneForegroundBrush}"
+                    Icon="Folder"
+                    Tag="module-b" />
                 <NavigationViewItem
                     Content="模块 D"
                     Foreground="{StaticResource NavigationPaneForegroundBrush}"

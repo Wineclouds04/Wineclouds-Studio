@@ -1,0 +1,404 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Page
+    x:Class="WinecloudsStudio.Modules.SystemInformation.Pages.SystemInformationPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{StaticResource ContentSurfaceBrush}"
+    mc:Ignorable="d">
+
+    <Grid Padding="40">
+        <ScrollViewer>
+            <StackPanel
+                MaxWidth="1280"
+                HorizontalAlignment="Stretch"
+                Spacing="20">
+                <Grid ColumnSpacing="20">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Spacing="5">
+                        <TextBlock
+                            FontSize="30"
+                            FontWeight="SemiBold"
+                            Foreground="#0F172A"
+                            Text="硬件信息" />
+                        <TextBlock
+                            Foreground="#64748B"
+                            Text="读取这台电脑的 Windows 系统与主要硬件配置。" />
+                    </StackPanel>
+
+                    <StackPanel
+                        Grid.Column="1"
+                        VerticalAlignment="Center"
+                        Orientation="Horizontal"
+                        Spacing="10">
+                        <ProgressRing
+                            x:Name="LoadingRing"
+                            Width="22"
+                            Height="22"
+                            IsActive="False"
+                            Visibility="Collapsed" />
+                        <Button
+                            x:Name="RefreshButton"
+                            Click="RefreshButton_Click"
+                            Content="刷新信息" />
+                    </StackPanel>
+                </Grid>
+
+                <InfoBar
+                    x:Name="StatusInfoBar"
+                    IsClosable="False"
+                    IsOpen="True"
+                    Message="正在准备读取本机硬件信息。"
+                    Severity="Informational"
+                    Title="硬件信息" />
+
+                <Grid ColumnSpacing="16">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <Border
+                        Grid.Column="0"
+                        MinHeight="150"
+                        Padding="22"
+                        Background="#EFF6FF"
+                        BorderBrush="#BFDBFE"
+                        BorderThickness="1"
+                        CornerRadius="12">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Border
+                                Width="42"
+                                Height="42"
+                                Background="#DBEAFE"
+                                CornerRadius="10">
+                                <SymbolIcon
+                                    Foreground="#2563EB"
+                                    Symbol="Setting" />
+                            </Border>
+                            <StackPanel
+                                Grid.Column="1"
+                                Margin="16,0,0,0"
+                                VerticalAlignment="Center"
+                                Spacing="8">
+                                <TextBlock
+                                    Foreground="#2563EB"
+                                    Text="型号信息" />
+                                <TextBlock
+                                    x:Name="ModelSummaryText"
+                                    FontSize="17"
+                                    FontWeight="SemiBold"
+                                    Foreground="#0F172A"
+                                    Text="正在读取…"
+                                    TextWrapping="Wrap" />
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <Border
+                        Grid.Column="1"
+                        MinHeight="150"
+                        Padding="22"
+                        Background="#ECFEFF"
+                        BorderBrush="#A5F3FC"
+                        BorderThickness="1"
+                        CornerRadius="12">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Border
+                                Width="42"
+                                Height="42"
+                                Background="#CFFAFE"
+                                CornerRadius="10">
+                                <SymbolIcon
+                                    Foreground="#0891B2"
+                                    Symbol="Document" />
+                            </Border>
+                            <StackPanel
+                                Grid.Column="1"
+                                Margin="16,0,0,0"
+                                VerticalAlignment="Center"
+                                Spacing="8">
+                                <TextBlock
+                                    Foreground="#0891B2"
+                                    Text="系统信息" />
+                                <TextBlock
+                                    x:Name="OperatingSystemText"
+                                    FontSize="17"
+                                    FontWeight="SemiBold"
+                                    Foreground="#0F172A"
+                                    Text="正在读取…"
+                                    TextWrapping="Wrap" />
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <Border
+                        Grid.Column="2"
+                        MinHeight="150"
+                        Padding="22"
+                        Background="#FFF7ED"
+                        BorderBrush="#FED7AA"
+                        BorderThickness="1"
+                        CornerRadius="12">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Border
+                                Width="42"
+                                Height="42"
+                                Background="#FFEDD5"
+                                CornerRadius="10">
+                                <SymbolIcon
+                                    Foreground="#D97706"
+                                    Symbol="Clock" />
+                            </Border>
+                            <StackPanel
+                                Grid.Column="1"
+                                Margin="16,0,0,0"
+                                VerticalAlignment="Center"
+                                Spacing="8">
+                                <TextBlock
+                                    Foreground="#D97706"
+                                    Text="运行时间" />
+                                <TextBlock
+                                    x:Name="UptimeText"
+                                    FontFamily="Consolas"
+                                    FontSize="17"
+                                    FontWeight="SemiBold"
+                                    Foreground="#0F172A"
+                                    Text="正在计算…" />
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                </Grid>
+
+                <Border
+                    Padding="24"
+                    Background="White"
+                    BorderBrush="#E2E8F0"
+                    BorderThickness="1"
+                    CornerRadius="12">
+                    <StackPanel Spacing="0">
+                        <Grid Margin="0,0,0,14">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock
+                                FontSize="18"
+                                FontWeight="SemiBold"
+                                Foreground="#0F172A"
+                                Text="详细信息" />
+                            <TextBlock
+                                x:Name="RefreshedAtText"
+                                Grid.Column="1"
+                                VerticalAlignment="Center"
+                                Foreground="#94A3B8"
+                                Text="尚未刷新" />
+                        </Grid>
+
+                        <Border
+                            Padding="0,14"
+                            BorderBrush="#E2E8F0"
+                            BorderThickness="0,1,0,0">
+                            <Grid ColumnSpacing="18">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="96" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock
+                                    FontWeight="SemiBold"
+                                    Foreground="#475569"
+                                    Text="处理器" />
+                                <TextBlock
+                                    x:Name="ProcessorText"
+                                    Grid.Column="1"
+                                    Foreground="#0F172A"
+                                    IsTextSelectionEnabled="True"
+                                    Text="正在读取…"
+                                    TextWrapping="Wrap" />
+                            </Grid>
+                        </Border>
+
+                        <Border
+                            Padding="0,14"
+                            BorderBrush="#E2E8F0"
+                            BorderThickness="0,1,0,0">
+                            <Grid ColumnSpacing="18">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="96" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock
+                                    FontWeight="SemiBold"
+                                    Foreground="#475569"
+                                    Text="主板" />
+                                <TextBlock
+                                    x:Name="MotherboardText"
+                                    Grid.Column="1"
+                                    Foreground="#0F172A"
+                                    IsTextSelectionEnabled="True"
+                                    Text="正在读取…"
+                                    TextWrapping="Wrap" />
+                            </Grid>
+                        </Border>
+
+                        <Border
+                            Padding="0,14"
+                            BorderBrush="#E2E8F0"
+                            BorderThickness="0,1,0,0">
+                            <Grid ColumnSpacing="18">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="96" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock
+                                    FontWeight="SemiBold"
+                                    Foreground="#475569"
+                                    Text="内存" />
+                                <TextBlock
+                                    x:Name="MemoryText"
+                                    Grid.Column="1"
+                                    Foreground="#0F172A"
+                                    IsTextSelectionEnabled="True"
+                                    Text="正在读取…"
+                                    TextWrapping="Wrap" />
+                            </Grid>
+                        </Border>
+
+                        <Border
+                            Padding="0,14"
+                            BorderBrush="#E2E8F0"
+                            BorderThickness="0,1,0,0">
+                            <Grid ColumnSpacing="18">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="96" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock
+                                    FontWeight="SemiBold"
+                                    Foreground="#475569"
+                                    Text="显卡" />
+                                <TextBlock
+                                    x:Name="GraphicsText"
+                                    Grid.Column="1"
+                                    Foreground="#0F172A"
+                                    IsTextSelectionEnabled="True"
+                                    Text="正在读取…"
+                                    TextWrapping="Wrap" />
+                            </Grid>
+                        </Border>
+
+                        <Border
+                            Padding="0,14"
+                            BorderBrush="#E2E8F0"
+                            BorderThickness="0,1,0,0">
+                            <Grid ColumnSpacing="18">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="96" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock
+                                    FontWeight="SemiBold"
+                                    Foreground="#475569"
+                                    Text="显示器" />
+                                <TextBlock
+                                    x:Name="DisplaysText"
+                                    Grid.Column="1"
+                                    Foreground="#0F172A"
+                                    IsTextSelectionEnabled="True"
+                                    Text="正在读取…"
+                                    TextWrapping="Wrap" />
+                            </Grid>
+                        </Border>
+
+                        <Border
+                            Padding="0,14"
+                            BorderBrush="#E2E8F0"
+                            BorderThickness="0,1,0,0">
+                            <Grid ColumnSpacing="18">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="96" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock
+                                    FontWeight="SemiBold"
+                                    Foreground="#475569"
+                                    Text="磁盘" />
+                                <TextBlock
+                                    x:Name="StorageText"
+                                    Grid.Column="1"
+                                    Foreground="#0F172A"
+                                    IsTextSelectionEnabled="True"
+                                    Text="正在读取…"
+                                    TextWrapping="Wrap" />
+                            </Grid>
+                        </Border>
+
+                        <Border
+                            Padding="0,14"
+                            BorderBrush="#E2E8F0"
+                            BorderThickness="0,1,0,0">
+                            <Grid ColumnSpacing="18">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="96" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock
+                                    FontWeight="SemiBold"
+                                    Foreground="#475569"
+                                    Text="声卡" />
+                                <TextBlock
+                                    x:Name="AudioText"
+                                    Grid.Column="1"
+                                    Foreground="#0F172A"
+                                    IsTextSelectionEnabled="True"
+                                    Text="正在读取…"
+                                    TextWrapping="Wrap" />
+                            </Grid>
+                        </Border>
+
+                        <Border
+                            Padding="0,14"
+                            BorderBrush="#E2E8F0"
+                            BorderThickness="0,1,0,0">
+                            <Grid ColumnSpacing="18">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="96" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock
+                                    FontWeight="SemiBold"
+                                    Foreground="#475569"
+                                    Text="网卡" />
+                                <TextBlock
+                                    x:Name="NetworkText"
+                                    Grid.Column="1"
+                                    Foreground="#0F172A"
+                                    IsTextSelectionEnabled="True"
+                                    Text="正在读取…"
+                                    TextWrapping="Wrap" />
+                            </Grid>
+                        </Border>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Page>

@@ -7,22 +7,221 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Background="{StaticResource ContentSurfaceBrush}"
     mc:Ignorable="d">
+
     <Grid Padding="40">
-        <StackPanel Spacing="20">
-            <TextBlock FontSize="30" FontWeight="SemiBold" Text="首页" />
-            <TextBlock Foreground="#64748B" Text="工作台概览将在此展示。" />
-            <Border
-                MinHeight="220"
-                Padding="28"
-                Background="White"
-                BorderBrush="{StaticResource PlaceholderBorderBrush}"
-                BorderThickness="1"
-                CornerRadius="12">
-                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="8">
-                    <TextBlock HorizontalAlignment="Center" FontSize="18" FontWeight="SemiBold" Text="首页模块" />
-                    <TextBlock HorizontalAlignment="Center" Foreground="#64748B" Text="功能建设中" />
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" MinHeight="300" />
+            <RowDefinition Height="*" MinHeight="300" />
+        </Grid.RowDefinitions>
+
+        <Border
+            Grid.Row="0"
+            Background="#F4F7FA"
+            BorderBrush="#E8EDF3"
+            BorderThickness="1"
+            CornerRadius="14">
+            <Grid Padding="36">
+                <Viewbox
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    Stretch="Uniform"
+                    StretchDirection="DownOnly">
+                    <Grid
+                        Width="2300"
+                        Height="470"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="350" />
+                            <RowDefinition Height="120" />
+                        </Grid.RowDefinitions>
+
+                        <Grid
+                            Grid.Row="0"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center">
+                            <TextBlock
+                                x:Name="LogoAccentCyanText"
+                                Margin="3,3,0,0"
+                                FontFamily="Consolas"
+                                FontSize="42"
+                                FontWeight="Bold"
+                                Foreground="#0EA5E9"
+                                IsHitTestVisible="False"
+                                LineHeight="50"
+                                Opacity="0.9" />
+                            <TextBlock
+                                x:Name="LogoAccentAmberText"
+                                Margin="-3,-2,0,0"
+                                FontFamily="Consolas"
+                                FontSize="42"
+                                FontWeight="Bold"
+                                Foreground="#F59E0B"
+                                IsHitTestVisible="False"
+                                LineHeight="50"
+                                Opacity="0.8" />
+                            <TextBlock
+                                x:Name="LogoText"
+                                FontFamily="Consolas"
+                                FontSize="42"
+                                FontWeight="Bold"
+                                Foreground="#111827"
+                                LineHeight="50" />
+                        </Grid>
+
+                        <Grid
+                            Grid.Row="1"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Top">
+                            <TextBlock
+                                x:Name="TaglineAccentCyanText"
+                                Margin="2,2,0,0"
+                                FontFamily="Consolas"
+                                FontSize="27"
+                                Foreground="#0EA5E9"
+                                IsHitTestVisible="False"
+                                Opacity="0.85" />
+                            <TextBlock
+                                x:Name="TaglineAccentAmberText"
+                                Margin="-2,-1,0,0"
+                                FontFamily="Consolas"
+                                FontSize="27"
+                                Foreground="#F59E0B"
+                                IsHitTestVisible="False"
+                                Opacity="0.75" />
+                            <TextBlock
+                                x:Name="TaglineText"
+                                FontFamily="Consolas"
+                                FontSize="27"
+                                Foreground="#111827" />
+                        </Grid>
+                    </Grid>
+                </Viewbox>
+            </Grid>
+        </Border>
+
+        <Grid
+            Grid.Row="1"
+            Margin="0,24,0,0"
+            RowSpacing="18">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <Grid ColumnSpacing="20">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Spacing="5">
+                    <TextBlock
+                        FontSize="24"
+                        FontWeight="SemiBold"
+                        Foreground="#0F172A"
+                        Text="多窗口工作流，一眼掌控" />
+                    <TextBlock
+                        Foreground="#64748B"
+                        Text="把实时预览、视觉检测与输入同步放进同一个 Windows 工作台。" />
                 </StackPanel>
-            </Border>
-        </StackPanel>
+
+                <Border
+                    Grid.Column="1"
+                    Padding="12,7"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Background="#EFF6FF"
+                    CornerRadius="16">
+                    <TextBlock
+                        x:Name="VersionText"
+                        FontFamily="Consolas"
+                        Foreground="#1D4ED8"
+                        Text="0.0.0" />
+                </Border>
+            </Grid>
+
+            <Grid
+                Grid.Row="1"
+                ColumnSpacing="16">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <Border
+                    Grid.Column="0"
+                    Padding="24"
+                    Background="#F8FAFC"
+                    BorderBrush="#E2E8F0"
+                    BorderThickness="1"
+                    CornerRadius="12">
+                    <StackPanel VerticalAlignment="Center" Spacing="9">
+                        <TextBlock
+                            FontFamily="Consolas"
+                            Foreground="#2563EB"
+                            Text="01 / LIVE" />
+                        <TextBlock
+                            FontSize="18"
+                            FontWeight="SemiBold"
+                            Foreground="#0F172A"
+                            Text="实时窗口预览" />
+                        <TextBlock
+                            Foreground="#64748B"
+                            Text="持续查看关键窗口，通过分组热键快速切换焦点。"
+                            TextWrapping="Wrap" />
+                    </StackPanel>
+                </Border>
+
+                <Border
+                    Grid.Column="1"
+                    Padding="24"
+                    Background="#F8FAFC"
+                    BorderBrush="#E2E8F0"
+                    BorderThickness="1"
+                    CornerRadius="12">
+                    <StackPanel VerticalAlignment="Center" Spacing="9">
+                        <TextBlock
+                            FontFamily="Consolas"
+                            Foreground="#0891B2"
+                            Text="02 / WATCH" />
+                        <TextBlock
+                            FontSize="18"
+                            FontWeight="SemiBold"
+                            Foreground="#0F172A"
+                            Text="屏幕区域检测" />
+                        <TextBlock
+                            Foreground="#64748B"
+                            Text="监测指定区域的颜色变化，在关键状态出现时提醒。"
+                            TextWrapping="Wrap" />
+                    </StackPanel>
+                </Border>
+
+                <Border
+                    Grid.Column="2"
+                    Padding="24"
+                    Background="#F8FAFC"
+                    BorderBrush="#E2E8F0"
+                    BorderThickness="1"
+                    CornerRadius="12">
+                    <StackPanel VerticalAlignment="Center" Spacing="9">
+                        <TextBlock
+                            FontFamily="Consolas"
+                            Foreground="#D97706"
+                            Text="03 / SYNC" />
+                        <TextBlock
+                            FontSize="18"
+                            FontWeight="SemiBold"
+                            Foreground="#0F172A"
+                            Text="多窗口同步" />
+                        <TextBlock
+                            Foreground="#64748B"
+                            Text="选择主控窗口，将鼠标与键盘操作同步到目标窗口组。"
+                            TextWrapping="Wrap" />
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </Grid>
     </Grid>
 </Page>

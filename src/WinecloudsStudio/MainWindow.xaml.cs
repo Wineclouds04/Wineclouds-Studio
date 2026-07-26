@@ -7,6 +7,7 @@ using WinecloudsStudio.Modules.Reserved.ModuleE;
 using WinecloudsStudio.Modules.Reserved.ModuleF;
 using WinecloudsStudio.Modules.ScreenDetection.Pages;
 using WinecloudsStudio.Modules.Navigation.Pages;
+using WinecloudsStudio.Modules.SystemInformation.Pages;
 using WinecloudsStudio.Modules.WindowManager.Pages;
 using WinecloudsStudio.Shared;
 using WinecloudsStudio.Shared.Logging;
@@ -67,6 +68,7 @@ public sealed partial class MainWindow : Window
             page = navigationKey switch
             {
                 "home" => new HomePage(),
+                "system-information" => new SystemInformationPage(),
                 "module-a" => new WindowManagerPage(),
                 "module-b" => new ScreenDetectionPage(),
                 "module-c" => new ModuleCPage(),
