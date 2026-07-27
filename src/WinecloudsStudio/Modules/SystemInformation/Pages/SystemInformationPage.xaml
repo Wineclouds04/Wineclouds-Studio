@@ -5,7 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    Background="{StaticResource ContentSurfaceBrush}"
+    Background="{ThemeResource ContentSurfaceBrush}"
     mc:Ignorable="d">
 
     <Grid Padding="40">
@@ -24,10 +24,10 @@
                         <TextBlock
                             FontSize="30"
                             FontWeight="SemiBold"
-                            Foreground="#0F172A"
+                            Foreground="{ThemeResource AppTextPrimaryBrush}"
                             Text="硬件信息" />
                         <TextBlock
-                            Foreground="#64748B"
+                            Foreground="{ThemeResource AppTextSecondaryBrush}"
                             Text="读取这台电脑的 Windows 系统与主要硬件配置。" />
                     </StackPanel>
 
@@ -68,7 +68,7 @@
                         Grid.Column="0"
                         MinHeight="150"
                         Padding="22"
-                        Background="#EFF6FF"
+                        Background="{ThemeResource AppAccentSubtleBrush}"
                         BorderBrush="#BFDBFE"
                         BorderThickness="1"
                         CornerRadius="12">
@@ -80,10 +80,10 @@
                             <Border
                                 Width="42"
                                 Height="42"
-                                Background="#DBEAFE"
+                                Background="{ThemeResource AppAccentSubtleBrush}"
                                 CornerRadius="10">
                                 <SymbolIcon
-                                    Foreground="#2563EB"
+                                    Foreground="{ThemeResource AppAccentBrush}"
                                     Symbol="Setting" />
                             </Border>
                             <StackPanel
@@ -92,13 +92,13 @@
                                 VerticalAlignment="Center"
                                 Spacing="8">
                                 <TextBlock
-                                    Foreground="#2563EB"
+                                    Foreground="{ThemeResource AppAccentBrush}"
                                     Text="型号信息" />
                                 <TextBlock
                                     x:Name="ModelSummaryText"
                                     FontSize="17"
                                     FontWeight="SemiBold"
-                                    Foreground="#0F172A"
+                                    Foreground="{ThemeResource AppTextPrimaryBrush}"
                                     Text="正在读取…"
                                     TextWrapping="Wrap" />
                             </StackPanel>
@@ -139,7 +139,7 @@
                                     x:Name="OperatingSystemText"
                                     FontSize="17"
                                     FontWeight="SemiBold"
-                                    Foreground="#0F172A"
+                                    Foreground="{ThemeResource AppTextPrimaryBrush}"
                                     Text="正在读取…"
                                     TextWrapping="Wrap" />
                             </StackPanel>
@@ -181,7 +181,7 @@
                                     FontFamily="Consolas"
                                     FontSize="17"
                                     FontWeight="SemiBold"
-                                    Foreground="#0F172A"
+                                    Foreground="{ThemeResource AppTextPrimaryBrush}"
                                     Text="正在计算…" />
                             </StackPanel>
                         </Grid>
@@ -190,8 +190,8 @@
 
                 <Border
                     Padding="24"
-                    Background="White"
-                    BorderBrush="#E2E8F0"
+                    Background="{ThemeResource AppCardBackgroundBrush}"
+                    BorderBrush="{ThemeResource AppBorderBrush}"
                     BorderThickness="1"
                     CornerRadius="12">
                     <StackPanel Spacing="0">
@@ -203,19 +203,19 @@
                             <TextBlock
                                 FontSize="18"
                                 FontWeight="SemiBold"
-                                Foreground="#0F172A"
+                                Foreground="{ThemeResource AppTextPrimaryBrush}"
                                 Text="详细信息" />
                             <TextBlock
                                 x:Name="RefreshedAtText"
                                 Grid.Column="1"
                                 VerticalAlignment="Center"
-                                Foreground="#94A3B8"
+                                Foreground="{ThemeResource AppTextTertiaryBrush}"
                                 Text="尚未刷新" />
                         </Grid>
 
                         <Border
                             Padding="0,14"
-                            BorderBrush="#E2E8F0"
+                            BorderBrush="{ThemeResource AppBorderBrush}"
                             BorderThickness="0,1,0,0">
                             <Grid ColumnSpacing="18">
                                 <Grid.ColumnDefinitions>
@@ -224,12 +224,12 @@
                                 </Grid.ColumnDefinitions>
                                 <TextBlock
                                     FontWeight="SemiBold"
-                                    Foreground="#475569"
+                                    Foreground="{ThemeResource AppTextSecondaryBrush}"
                                     Text="处理器" />
                                 <TextBlock
                                     x:Name="ProcessorText"
                                     Grid.Column="1"
-                                    Foreground="#0F172A"
+                                    Foreground="{ThemeResource AppTextPrimaryBrush}"
                                     IsTextSelectionEnabled="True"
                                     Text="正在读取…"
                                     TextWrapping="Wrap" />
@@ -238,7 +238,7 @@
 
                         <Border
                             Padding="0,14"
-                            BorderBrush="#E2E8F0"
+                            BorderBrush="{ThemeResource AppBorderBrush}"
                             BorderThickness="0,1,0,0">
                             <Grid ColumnSpacing="18">
                                 <Grid.ColumnDefinitions>
@@ -247,12 +247,12 @@
                                 </Grid.ColumnDefinitions>
                                 <TextBlock
                                     FontWeight="SemiBold"
-                                    Foreground="#475569"
+                                    Foreground="{ThemeResource AppTextSecondaryBrush}"
                                     Text="主板" />
                                 <TextBlock
                                     x:Name="MotherboardText"
                                     Grid.Column="1"
-                                    Foreground="#0F172A"
+                                    Foreground="{ThemeResource AppTextPrimaryBrush}"
                                     IsTextSelectionEnabled="True"
                                     Text="正在读取…"
                                     TextWrapping="Wrap" />
@@ -261,7 +261,7 @@
 
                         <Border
                             Padding="0,14"
-                            BorderBrush="#E2E8F0"
+                            BorderBrush="{ThemeResource AppBorderBrush}"
                             BorderThickness="0,1,0,0">
                             <Grid ColumnSpacing="18">
                                 <Grid.ColumnDefinitions>
@@ -270,12 +270,12 @@
                                 </Grid.ColumnDefinitions>
                                 <TextBlock
                                     FontWeight="SemiBold"
-                                    Foreground="#475569"
+                                    Foreground="{ThemeResource AppTextSecondaryBrush}"
                                     Text="内存" />
                                 <TextBlock
                                     x:Name="MemoryText"
                                     Grid.Column="1"
-                                    Foreground="#0F172A"
+                                    Foreground="{ThemeResource AppTextPrimaryBrush}"
                                     IsTextSelectionEnabled="True"
                                     Text="正在读取…"
                                     TextWrapping="Wrap" />
@@ -284,7 +284,7 @@
 
                         <Border
                             Padding="0,14"
-                            BorderBrush="#E2E8F0"
+                            BorderBrush="{ThemeResource AppBorderBrush}"
                             BorderThickness="0,1,0,0">
                             <Grid ColumnSpacing="18">
                                 <Grid.ColumnDefinitions>
@@ -293,12 +293,12 @@
                                 </Grid.ColumnDefinitions>
                                 <TextBlock
                                     FontWeight="SemiBold"
-                                    Foreground="#475569"
+                                    Foreground="{ThemeResource AppTextSecondaryBrush}"
                                     Text="显卡" />
                                 <TextBlock
                                     x:Name="GraphicsText"
                                     Grid.Column="1"
-                                    Foreground="#0F172A"
+                                    Foreground="{ThemeResource AppTextPrimaryBrush}"
                                     IsTextSelectionEnabled="True"
                                     Text="正在读取…"
                                     TextWrapping="Wrap" />
@@ -307,7 +307,7 @@
 
                         <Border
                             Padding="0,14"
-                            BorderBrush="#E2E8F0"
+                            BorderBrush="{ThemeResource AppBorderBrush}"
                             BorderThickness="0,1,0,0">
                             <Grid ColumnSpacing="18">
                                 <Grid.ColumnDefinitions>
@@ -316,12 +316,12 @@
                                 </Grid.ColumnDefinitions>
                                 <TextBlock
                                     FontWeight="SemiBold"
-                                    Foreground="#475569"
+                                    Foreground="{ThemeResource AppTextSecondaryBrush}"
                                     Text="显示器" />
                                 <TextBlock
                                     x:Name="DisplaysText"
                                     Grid.Column="1"
-                                    Foreground="#0F172A"
+                                    Foreground="{ThemeResource AppTextPrimaryBrush}"
                                     IsTextSelectionEnabled="True"
                                     Text="正在读取…"
                                     TextWrapping="Wrap" />
@@ -330,7 +330,7 @@
 
                         <Border
                             Padding="0,14"
-                            BorderBrush="#E2E8F0"
+                            BorderBrush="{ThemeResource AppBorderBrush}"
                             BorderThickness="0,1,0,0">
                             <Grid ColumnSpacing="18">
                                 <Grid.ColumnDefinitions>
@@ -339,12 +339,12 @@
                                 </Grid.ColumnDefinitions>
                                 <TextBlock
                                     FontWeight="SemiBold"
-                                    Foreground="#475569"
+                                    Foreground="{ThemeResource AppTextSecondaryBrush}"
                                     Text="磁盘" />
                                 <TextBlock
                                     x:Name="StorageText"
                                     Grid.Column="1"
-                                    Foreground="#0F172A"
+                                    Foreground="{ThemeResource AppTextPrimaryBrush}"
                                     IsTextSelectionEnabled="True"
                                     Text="正在读取…"
                                     TextWrapping="Wrap" />
@@ -353,7 +353,7 @@
 
                         <Border
                             Padding="0,14"
-                            BorderBrush="#E2E8F0"
+                            BorderBrush="{ThemeResource AppBorderBrush}"
                             BorderThickness="0,1,0,0">
                             <Grid ColumnSpacing="18">
                                 <Grid.ColumnDefinitions>
@@ -362,12 +362,12 @@
                                 </Grid.ColumnDefinitions>
                                 <TextBlock
                                     FontWeight="SemiBold"
-                                    Foreground="#475569"
+                                    Foreground="{ThemeResource AppTextSecondaryBrush}"
                                     Text="声卡" />
                                 <TextBlock
                                     x:Name="AudioText"
                                     Grid.Column="1"
-                                    Foreground="#0F172A"
+                                    Foreground="{ThemeResource AppTextPrimaryBrush}"
                                     IsTextSelectionEnabled="True"
                                     Text="正在读取…"
                                     TextWrapping="Wrap" />
@@ -376,7 +376,7 @@
 
                         <Border
                             Padding="0,14"
-                            BorderBrush="#E2E8F0"
+                            BorderBrush="{ThemeResource AppBorderBrush}"
                             BorderThickness="0,1,0,0">
                             <Grid ColumnSpacing="18">
                                 <Grid.ColumnDefinitions>
@@ -385,12 +385,12 @@
                                 </Grid.ColumnDefinitions>
                                 <TextBlock
                                     FontWeight="SemiBold"
-                                    Foreground="#475569"
+                                    Foreground="{ThemeResource AppTextSecondaryBrush}"
                                     Text="网卡" />
                                 <TextBlock
                                     x:Name="NetworkText"
                                     Grid.Column="1"
-                                    Foreground="#0F172A"
+                                    Foreground="{ThemeResource AppTextPrimaryBrush}"
                                     IsTextSelectionEnabled="True"
                                     Text="正在读取…"
                                     TextWrapping="Wrap" />

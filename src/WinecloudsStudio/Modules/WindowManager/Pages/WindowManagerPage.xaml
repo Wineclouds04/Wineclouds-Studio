@@ -6,7 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:models="using:WinecloudsStudio.Modules.WindowManager.Models"
-    Background="{StaticResource ContentSurfaceBrush}"
+    Background="{ThemeResource ContentSurfaceBrush}"
     mc:Ignorable="d">
 
     <Grid Padding="40">
@@ -15,7 +15,7 @@
                 <!-- Title -->
                 <StackPanel Spacing="4">
                     <TextBlock FontSize="30" FontWeight="SemiBold" Text="窗口管理器" />
-                    <TextBlock Foreground="#64748B" Text="选择要监控的进程窗口，缩略图将置顶显示，点击小窗即可切换到对应窗口。" />
+                    <TextBlock Foreground="{ThemeResource AppTextSecondaryBrush}" Text="选择要监控的进程窗口，缩略图将置顶显示，点击小窗即可切换到对应窗口。" />
                 </StackPanel>
 
                 <Grid ColumnSpacing="20">
@@ -28,8 +28,8 @@
                 <Border
                     Grid.Column="0"
                     Padding="24"
-                    Background="White"
-                    BorderBrush="#E2E8F0"
+                    Background="{ThemeResource AppCardBackgroundBrush}"
+                    BorderBrush="{ThemeResource AppBorderBrush}"
                     BorderThickness="1"
                     CornerRadius="12">
                     <StackPanel Spacing="12">
@@ -60,7 +60,7 @@
                         </Grid>
                         <ListView
                             x:Name="ProcessList"
-                            Height="280"
+                            Height="400"
                             SelectionMode="None">
                             <ListView.ItemsPanel>
                                 <ItemsPanelTemplate>
@@ -69,7 +69,7 @@
                             </ListView.ItemsPanel>
                             <ListView.ItemTemplate>
                                 <DataTemplate x:DataType="models:ProcessItem">
-                                    <Grid ColumnSpacing="12" Padding="2,4">
+                                    <Grid ColumnSpacing="12" Padding="2,2">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto" />
                                             <ColumnDefinition Width="*" />
@@ -90,7 +90,7 @@
                         </ListView>
                         <TextBlock
                             x:Name="ProcessCountLabel"
-                            Foreground="#94A3B8"
+                            Foreground="{ThemeResource AppTextTertiaryBrush}"
                             Text="共 0 个带窗口的进程" />
                     </StackPanel>
                 </Border>
@@ -99,8 +99,8 @@
                 <Border
                     Grid.Column="1"
                     Padding="24"
-                    Background="White"
-                    BorderBrush="#E2E8F0"
+                    Background="{ThemeResource AppCardBackgroundBrush}"
+                    BorderBrush="{ThemeResource AppBorderBrush}"
                     BorderThickness="1"
                     CornerRadius="12">
                     <StackPanel Spacing="16">
@@ -112,7 +112,7 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <StackPanel Grid.Column="0" Spacing="6">
-                                <TextBlock Foreground="#64748B" Text="宽度" />
+                                <TextBlock Foreground="{ThemeResource AppTextSecondaryBrush}" Text="宽度" />
                                 <NumberBox
                                     x:Name="ThumbWidthBox"
                                     Maximum="800"
@@ -120,7 +120,7 @@
                                     Value="280" />
                             </StackPanel>
                             <StackPanel Grid.Column="1" Spacing="6">
-                                <TextBlock Foreground="#64748B" Text="高度" />
+                                <TextBlock Foreground="{ThemeResource AppTextSecondaryBrush}" Text="高度" />
                                 <NumberBox
                                     x:Name="ThumbHeightBox"
                                     Maximum="600"
@@ -136,7 +136,7 @@
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Grid.Column="0" Foreground="#64748B" Text="透明度" />
+                                <TextBlock Grid.Column="0" Foreground="{ThemeResource AppTextSecondaryBrush}" Text="透明度" />
                                 <Slider
                                     x:Name="OpacitySlider"
                                     Grid.Column="1"
@@ -147,7 +147,7 @@
                                 <TextBlock
                                     x:Name="OpacityValueLabel"
                                     Grid.Column="2"
-                                    Foreground="#64748B"
+                                    Foreground="{ThemeResource AppTextSecondaryBrush}"
                                     Text="0.9" />
                             </Grid>
                         </StackPanel>
@@ -188,8 +188,8 @@
                 <!-- Window Groups -->
                 <Border
                     Padding="24"
-                    Background="White"
-                    BorderBrush="#E2E8F0"
+                    Background="{ThemeResource AppCardBackgroundBrush}"
+                    BorderBrush="{ThemeResource AppBorderBrush}"
                     BorderThickness="1"
                     CornerRadius="12">
                     <StackPanel Spacing="12">
@@ -228,23 +228,23 @@
                                         </Grid.ColumnDefinitions>
                                         <StackPanel Grid.Column="0" VerticalAlignment="Center">
                                             <TextBlock FontWeight="SemiBold" Text="{x:Bind GroupName}" />
-                                            <TextBlock Foreground="#94A3B8" FontSize="12" Text="{x:Bind DetailsText}" />
+                                            <TextBlock Foreground="{ThemeResource AppTextTertiaryBrush}" FontSize="12" Text="{x:Bind DetailsText}" />
                                         </StackPanel>
                                         <StackPanel Grid.Column="1" HorizontalAlignment="Right" Orientation="Horizontal" Spacing="4">
                                             <TextBlock
                                                 VerticalAlignment="Center"
                                                 FontSize="12"
-                                                Foreground="#64748B"
+                                                Foreground="{ThemeResource AppTextSecondaryBrush}"
                                                 Text="{x:Bind ForwardHotkeyText}" />
                                             <TextBlock
                                                 VerticalAlignment="Center"
                                                 FontSize="12"
-                                                Foreground="#94A3B8"
+                                                Foreground="{ThemeResource AppTextTertiaryBrush}"
                                                 Text="/" />
                                             <TextBlock
                                                 VerticalAlignment="Center"
                                                 FontSize="12"
-                                                Foreground="#64748B"
+                                                Foreground="{ThemeResource AppTextSecondaryBrush}"
                                                 Text="{x:Bind BackwardHotkeyText}" />
                                         </StackPanel>
                                     </Grid>
@@ -261,7 +261,7 @@
                             <TextBlock
                                 x:Name="GroupCountLabel"
                                 Grid.Column="0"
-                                Foreground="#94A3B8"
+                                Foreground="{ThemeResource AppTextTertiaryBrush}"
                                 VerticalAlignment="Center"
                                 Text="共 0 个分组" />
                             <Button
@@ -298,8 +298,8 @@
                         <Border
                             x:Name="GroupEditorPanel"
                             Padding="16"
-                            Background="#F8FAFC"
-                            BorderBrush="#E2E8F0"
+                            Background="{ThemeResource AppSubtleBackgroundBrush}"
+                            BorderBrush="{ThemeResource AppBorderBrush}"
                             BorderThickness="1"
                             CornerRadius="8"
                             Visibility="Collapsed">
@@ -308,13 +308,13 @@
 
                                 <!-- Group name -->
                                 <StackPanel Spacing="4">
-                                    <TextBlock Foreground="#64748B" FontSize="13" Text="分组名称" />
+                                    <TextBlock Foreground="{ThemeResource AppTextSecondaryBrush}" FontSize="13" Text="分组名称" />
                                     <TextBox x:Name="GroupNameBox" PlaceholderText="输入分组名称" />
                                 </StackPanel>
 
                                 <!-- Forward hotkey -->
                                 <StackPanel Spacing="4">
-                                    <TextBlock Foreground="#64748B" FontSize="13" Text="正向循环热键" />
+                                    <TextBlock Foreground="{ThemeResource AppTextSecondaryBrush}" FontSize="13" Text="正向循环热键" />
                                     <Grid ColumnSpacing="8">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*" />
@@ -326,7 +326,7 @@
                                             VerticalAlignment="Center"
                                             FontSize="14"
                                             FontWeight="SemiBold"
-                                            Foreground="#334155"
+                                            Foreground="{ThemeResource AppTextSecondaryBrush}"
                                             Text="未设置" />
                                         <Button
                                             x:Name="SelectForwardKeyButton"
@@ -345,7 +345,7 @@
 
                                 <!-- Backward hotkey -->
                                 <StackPanel Spacing="4">
-                                    <TextBlock Foreground="#64748B" FontSize="13" Text="反向循环热键" />
+                                    <TextBlock Foreground="{ThemeResource AppTextSecondaryBrush}" FontSize="13" Text="反向循环热键" />
                                     <Grid ColumnSpacing="8">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*" />
@@ -357,7 +357,7 @@
                                             VerticalAlignment="Center"
                                             FontSize="14"
                                             FontWeight="SemiBold"
-                                            Foreground="#334155"
+                                            Foreground="{ThemeResource AppTextSecondaryBrush}"
                                             Text="未设置" />
                                         <Button
                                             x:Name="SelectBackwardKeyButton"
@@ -385,7 +385,7 @@
 
                                 <!-- Window ordering -->
                                 <StackPanel Spacing="4">
-                                    <TextBlock Foreground="#64748B" FontSize="13" Text="窗口顺序 (由上到下 = 循环正向顺序)" />
+                                    <TextBlock Foreground="{ThemeResource AppTextSecondaryBrush}" FontSize="13" Text="窗口顺序 (由上到下 = 循环正向顺序)" />
                                     <ListView
                                         x:Name="GroupWindowList"
                                         Height="120"

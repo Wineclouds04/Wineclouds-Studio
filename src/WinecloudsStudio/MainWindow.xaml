@@ -11,20 +11,28 @@
     <Window.SystemBackdrop>
         <MicaBackdrop />
     </Window.SystemBackdrop>
-
-    <Grid RequestedTheme="Light">
+    <Grid x:Name="RootLayout">
+        <Grid.Resources>
+            <Style x:Key="NavigationFluentIconStyle" TargetType="FontIcon">
+                <Setter Property="FontFamily" Value="{StaticResource SymbolThemeFontFamily}" />
+                <Setter Property="FontSize" Value="20" />
+            </Style>
+        </Grid.Resources>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <TitleBar x:Name="AppTitleBar" Background="White" Title="WinecloudsStudio" />
+        <TitleBar
+            x:Name="AppTitleBar"
+            Background="{ThemeResource TitleBarBackgroundBrush}"
+            Title="WinecloudsStudio" />
 
         <NavigationView
             x:Name="NavigationView"
             Grid.Row="1"
             AlwaysShowHeader="True"
-            Background="{StaticResource NavigationPaneBrush}"
+            Background="{ThemeResource NavigationPaneBrush}"
             IsBackButtonVisible="Collapsed"
             IsSettingsVisible="False"
             ItemInvoked="NavigationView_ItemInvoked"
@@ -35,11 +43,11 @@
                     <TextBlock
                         FontSize="20"
                         FontWeight="SemiBold"
-                        Foreground="{StaticResource NavigationPaneForegroundBrush}"
+                        Foreground="{ThemeResource NavigationPaneForegroundBrush}"
                         Text="Wineclouds Studio" />
                     <TextBlock
                         Margin="0,4,0,0"
-                        Foreground="{StaticResource NavigationGroupLabelBrush}"
+                        Foreground="{ThemeResource NavigationGroupLabelBrush}"
                         Text="酒云工作台" />
                 </StackPanel>
             </NavigationView.PaneHeader>
@@ -48,57 +56,102 @@
                 <TextBlock
                     x:Name="VersionText"
                     Margin="16,8,12,12"
-                    Foreground="{StaticResource NavigationGroupLabelBrush}"
+                    Foreground="{ThemeResource NavigationGroupLabelBrush}"
                     Text="0.1.4-(0)" />
             </NavigationView.PaneFooter>
 
             <NavigationView.MenuItems>
                 <NavigationViewItemHeader
                     Content="工作台"
-                    Foreground="{StaticResource NavigationGroupLabelBrush}" />
+                    Foreground="{ThemeResource NavigationGroupLabelBrush}" />
                 <NavigationViewItem
                     Content="首页"
-                    Foreground="{StaticResource NavigationPaneForegroundBrush}"
-                    Icon="Folder"
-                    Tag="home" />
+                    Foreground="{ThemeResource NavigationPaneForegroundBrush}"
+                    Tag="home">
+                    <NavigationViewItem.Icon>
+                        <FontIcon
+                            Glyph="&#xE80F;"
+                            Style="{StaticResource NavigationFluentIconStyle}" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
                 <NavigationViewItemHeader
                     Content="服务模块"
-                    Foreground="{StaticResource NavigationGroupLabelBrush}" />
+                    Foreground="{ThemeResource NavigationGroupLabelBrush}" />
                 <NavigationViewItem
                     Content="硬件信息"
-                    Foreground="{StaticResource NavigationPaneForegroundBrush}"
-                    Icon="Setting"
-                    Tag="system-information" />
+                    Foreground="{ThemeResource NavigationPaneForegroundBrush}"
+                    Tag="system-information">
+                    <NavigationViewItem.Icon>
+                        <FontIcon
+                            Glyph="&#xE7FB;"
+                            Style="{StaticResource NavigationFluentIconStyle}" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
                 <NavigationViewItem
                     Content="窗口管理器"
-                    Foreground="{StaticResource NavigationPaneForegroundBrush}"
-                    Icon="Folder"
-                    Tag="module-a" />
+                    Foreground="{ThemeResource NavigationPaneForegroundBrush}"
+                    Tag="module-a">
+                    <NavigationViewItem.Icon>
+                        <FontIcon
+                            Glyph="&#xE7C4;"
+                            Style="{StaticResource NavigationFluentIconStyle}" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
                 <NavigationViewItem
                     Content="窗口同步"
-                    Foreground="{StaticResource NavigationPaneForegroundBrush}"
-                    Icon="Folder"
-                    Tag="module-c" />
+                    Foreground="{ThemeResource NavigationPaneForegroundBrush}"
+                    Tag="module-c">
+                    <NavigationViewItem.Icon>
+                        <FontIcon
+                            Glyph="&#xE8F9;"
+                            Style="{StaticResource NavigationFluentIconStyle}" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
                 <NavigationViewItem
                     Content="屏幕区域检测"
-                    Foreground="{StaticResource NavigationPaneForegroundBrush}"
-                    Icon="Folder"
-                    Tag="module-b" />
+                    Foreground="{ThemeResource NavigationPaneForegroundBrush}"
+                    Tag="module-b">
+                    <NavigationViewItem.Icon>
+                        <FontIcon
+                            Glyph="&#xE8FE;"
+                            Style="{StaticResource NavigationFluentIconStyle}" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
                 <NavigationViewItem
                     Content="模块 D"
-                    Foreground="{StaticResource NavigationPaneForegroundBrush}"
-                    Icon="Folder"
-                    Tag="module-d" />
+                    Foreground="{ThemeResource NavigationPaneForegroundBrush}"
+                    Tag="module-d">
+                    <NavigationViewItem.Icon>
+                        <FontIcon
+                            Glyph="&#xE7C3;"
+                            Style="{StaticResource NavigationFluentIconStyle}" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
                 <NavigationViewItem
                     Content="模块 E"
-                    Foreground="{StaticResource NavigationPaneForegroundBrush}"
-                    Icon="Folder"
-                    Tag="module-e" />
+                    Foreground="{ThemeResource NavigationPaneForegroundBrush}"
+                    Tag="module-e">
+                    <NavigationViewItem.Icon>
+                        <FontIcon
+                            Glyph="&#xE8F1;"
+                            Style="{StaticResource NavigationFluentIconStyle}" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
                 <NavigationViewItem
                     Content="软件更新"
-                    Foreground="{StaticResource NavigationPaneForegroundBrush}"
+                    Foreground="{ThemeResource NavigationPaneForegroundBrush}"
                     Icon="Download"
                     Tag="module-f" />
+                <NavigationViewItem
+                    Content="设置"
+                    Foreground="{ThemeResource NavigationPaneForegroundBrush}"
+                    Icon="Setting"
+                    Tag="settings" />
+                <NavigationViewItem
+                    Content="登录"
+                    Foreground="{ThemeResource NavigationPaneForegroundBrush}"
+                    Icon="Contact"
+                    Tag="login" />
             </NavigationView.MenuItems>
 
             <NavigationView.Content>
