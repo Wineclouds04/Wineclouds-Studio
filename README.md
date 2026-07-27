@@ -12,10 +12,10 @@
 
 **面向 Windows 多窗口工作流的桌面效率工具**
 
-将本机硬件概览、实时窗口预览、分组热键切换、屏幕区域检测与多窗口同步整合到一套现代桌面应用中。
+将本机硬件概览、实时窗口预览、分组热键切换、屏幕区域检测、多窗口同步、主题设置与账号入口整合到一套现代桌面应用中。
 
 <p>
-  <a href="src/WinecloudsStudio/WinecloudsStudio.csproj"><img src="https://img.shields.io/badge/version-0.1.7-c96b52" alt="Version 0.1.7"></a>
+  <a href="src/WinecloudsStudio/WinecloudsStudio.csproj"><img src="https://img.shields.io/badge/version-0.1.8-c96b52" alt="Version 0.1.8"></a>
   <a href="src/WinecloudsStudio/WinecloudsStudio.csproj"><img src="https://img.shields.io/badge/.NET-10.0-512BD4?logo=dotnet&amp;logoColor=white" alt=".NET 10"></a>
   <a href="src/WinecloudsStudio/WinecloudsStudio.csproj"><img src="https://img.shields.io/badge/WinUI-3-0078D4?logo=windows&amp;logoColor=white" alt="WinUI 3"></a>
   <a href="src/WinecloudsStudio/WinecloudsStudio.csproj"><img src="https://img.shields.io/badge/Windows_App_SDK-2.2.0-0078D4?logo=windows11&amp;logoColor=white" alt="Windows App SDK 2.2.0"></a>
@@ -37,27 +37,32 @@
 
 Wineclouds Studio 是一个 WinUI 3 桌面应用，帮助用户在多开客户端、远程会话、构建任务或多显示器工作台中持续关注关键窗口和视觉状态。应用以管理员权限运行，以便稳定访问目标窗口、注册全局热键并执行窗口同步操作。
 
-## 0.1.7 本次更新
+## 0.1.8
 
-本次更新完善工作台首页并加入本机硬件信息模块：
+0.1.8 新增和调整了以下能力：
 
-- 重做首页：上半区展示居中的 WINECLOUDS 字符 Logo，并以逐字符打印动画呈现 Logo 与英文副标题。
-- 首页下半区增加实时窗口预览、屏幕区域检测和多窗口同步能力卡片。
-- 在“窗口管理器”前新增“硬件信息”，通过 Windows WMI 读取型号、系统、运行时间、处理器、主板、内存、显卡、显示器、磁盘、声卡与物理网卡。
-- 硬件信息采用后台读取、每秒更新时间和手动刷新；单项读取失败时降级显示，不阻塞整个页面。
-- 导航品牌副标题更新为“酒云工作台”，并将“窗口同步”调整到“屏幕区域检测”之前。
-- 保留 0.1.6 引入的软件更新能力：通过 GitHub Releases 下载并校验 Windows x64 NSIS 安装包。
+- 首页升级为六项能力概览，覆盖硬件信息、窗口管理、窗口同步、屏幕区域检测、设置中心与账号入口。
+- 主窗口默认以 `1440 × 900` 居中启动，并在较小工作区中自动收缩。
+- 主导航改用 Windows 11 Segoe Fluent Icons，明暗主题下保持统一的单色线框风格。
+- 新增设置中心，可选择“极简白”“极夜黑”或跟随系统，并设置关闭主窗口时直接退出或最小化到系统托盘。
+- 新增超级调色盘，首批提供极简白与极夜黑两套内置主题，其他配色入口暂时预留。
+- 新增“关于 Wineclouds”，展示开发者“酒酒的云”、版本、项目与许可证信息。
+- 登录模块提供登录、注册、找回密码、验证码和微信登录的界面与本地输入校验；账号后端服务尚未接入。
+- 调整窗口管理器的进程列表密度，并统一监控、同步和检测模块的启动／停止按钮样式。
 
 ## 能力概览
 
 | 模块 | 能力 |
 | --- | --- |
-| 首页 | 居中的 WINECLOUDS 字符 Logo 逐字打印，并集中展示三个核心工作流入口与当前构建版本。 |
+| 首页 | 居中的 WINECLOUDS 字符 Logo 逐字打印，并集中展示六项工作台能力与当前构建版本。 |
 | 硬件信息 | 读取本机型号、Windows 版本、运行时间以及 CPU、主板、内存、显卡、显示器、磁盘、声卡和物理网卡信息。 |
 | 窗口管理器 | 基于 DWM Thumbnail 的实时窗口缩略图、自愈刷新、自动排列与布局保存；支持点击激活、稳定焦点切换、活动窗口隐藏、非活动窗口最小化和分组热键循环。 |
 | 多窗口同步 | 选择主控窗口和受控窗口，将鼠标与键盘输入同步到目标窗口组。 |
 | 屏幕区域检测 | 框选虚拟桌面区域，按 HSV 容差、目标像素数、连通面积和确认帧数识别指定颜色；触发后循环播放本地 MP3。 |
 | 软件更新 | 从 GitHub Releases 检查最新正式版、展示版本说明、下载并校验 NSIS 安装包，然后在当前程序完全退出后启动安装。 |
+| 设置中心 | 持久化极简白、极夜黑、跟随系统主题和主窗口关闭行为；支持系统托盘恢复与退出。 |
+| 超级调色盘 | 提供主题实时预览与内置配色选择；当前开放极简白和极夜黑，更多主题预留。 |
+| 登录 | 提供 Wineclouds 账号登录、注册、找回密码及微信登录的界面预览与本地输入校验，后端服务暂未接入。 |
 | 预留模块 | 模块 D–E 保留独立页面和导航入口，便于按模块继续扩展。 |
 
 ## 适用场景
@@ -67,6 +72,7 @@ Wineclouds Studio 是一个 WinUI 3 桌面应用，帮助用户在多开客户�
 - 状态监看：监测远程桌面、构建任务、下载进度或告警区域的颜色变化。
 - 多显示器协作：在整个虚拟桌面范围内选择检测区域，持续关注副屏状态。
 - 重复性窗口操作：将一个窗口的鼠标、键盘输入同步到多个受控窗口。
+- 个性化工作台：在极简白、极夜黑或系统主题之间切换，并按习惯配置关闭与托盘行为。
 
 ## 架构
 
@@ -78,6 +84,8 @@ flowchart TB
     App --> B[屏幕区域检测]
     App --> C[多窗口同步]
     App --> F[软件更新]
+    App --> S[设置中心]
+    App --> U[登录]
     App --> D[预留模块 D-E]
 
     H --> H1[逐字符 Logo 动画]
@@ -94,6 +102,11 @@ flowchart TB
     F --> F1[GitHub Release 清单]
     F --> F2[安装包下载与 SHA-256 校验]
     F --> F3[退出后启动 NSIS]
+    S --> S1[主题与超级调色盘]
+    S --> S2[关闭行为配置]
+    S --> S3[系统托盘]
+    U --> U1[登录／注册／找回密码界面]
+    U --> U2[本地输入校验]
     App --> L[共享日志]
 ```
 
@@ -135,7 +148,20 @@ flowchart TB
 1. 打开“软件更新”，程序会自动检查 GitHub 上的最新正式 Release。
 2. 有新版本时查看版本说明和安装包信息，然后点击“下载并安装”。
 3. 程序会校验 Release 中 `update.json` 提供的 SHA-256 摘要；校验通过后自动退出并启动 NSIS 安装向导。
-4. Release 标签、项目版本和安装包文件名必须使用相同版本，例如 `v0.1.7`、`0.1.7` 和 `WinecloudsStudio-Setup-0.1.7-win-x64.exe`。
+4. Release 标签、项目版本和安装包文件名必须使用相同版本，例如 `v0.1.8`、`0.1.8` 和 `WinecloudsStudio-Setup-0.1.8-win-x64.exe`。
+
+### 设置、主题与托盘
+
+1. 打开“设置”，在“外观与行为”中选择极简白、极夜黑或跟随 Windows 系统主题。
+2. 在“超级调色盘”中查看实时主题预览，并选择当前开放的内置配色。
+3. 选择关闭主窗口时“直接退出应用”或“最小化到系统托盘”。
+4. 启用托盘模式后，可双击托盘图标恢复窗口，或通过右键菜单退出。
+
+### Wineclouds 账号
+
+1. 打开“登录”，可切换登录、注册和找回密码三个界面。
+2. 页面会校验邮箱格式、密码长度和六位数字验证码。
+3. 当前账号、验证码和微信登录后端尚未接入；界面不会显示虚假的登录成功状态。
 
 ## 运行要求
 
@@ -175,8 +201,8 @@ dotnet run --project .\src\WinecloudsStudio\WinecloudsStudio.csproj
 3. 创建与项目版本完全一致的标签，例如：
 
 ```powershell
-git tag v0.1.7
-git push origin v0.1.7
+git tag v0.1.8
+git push origin v0.1.8
 ```
 
 标签推送后，GitHub Actions 会自动：
@@ -202,6 +228,8 @@ WinecloudsStudio.slnx
 │   │   ├── SystemInformation/        # WMI 硬件读取、运行时间与信息页面
 │   │   ├── WindowManager/            # 缩略图、热键、窗口配置与 Windows API 互操作
 │   │   ├── ScreenDetection/          # 捕获、颜色识别、状态机、提醒与配置
+│   │   ├── Settings/                 # 主题、调色盘、托盘关闭行为与关于页面
+│   │   ├── Login/                    # 账号交互界面与本地输入校验
 │   │   ├── Reserved/                 # 多窗口同步、软件更新及预留模块 D-E
 │   │   └── Navigation/               # 未实现模块的兜底页面
 │   └── Shared/Logging/               # 异步文件日志
@@ -218,6 +246,7 @@ WinecloudsStudio.slnx
 | --- | --- |
 | `window_manager_config.json` | 窗口管理器的缩略图、分组与显示配置。 |
 | `screen-region-detector.json` | 屏幕区域检测参数与声音文件路径。 |
+| `application-settings.json` | 全局主题和主窗口关闭行为。 |
 | `logs\wineclouds_yyyyMMdd.log` | 按天滚动的运行日志。 |
 
 日志对未处理异常和未观察任务异常进行记录；错误级别消息会立即落盘，普通消息由后台线程批量刷新。日志默认保留最近 7 天，适合在启动失败、热键注册失败、窗口操作失败或检测异常时提供排查依据。
@@ -228,6 +257,7 @@ WinecloudsStudio.slnx
 - **热键无法注册**：该组合键可能已被其他程序占用；更换为未占用的键位后重试。
 - **颜色检测误报**：提高最少目标像素数或最小连通面积，适当收紧颜色容差，并增加确认帧数。
 - **没有声音提醒**：确认选择的是可读取的本地 MP3 文件，且 Windows 当前音频输出可用。
+- **关闭窗口后程序仍在运行**：在设置中选择了“最小化到系统托盘”；可从托盘菜单退出，或改回“直接退出应用”。
 
 ## 发布约定
 

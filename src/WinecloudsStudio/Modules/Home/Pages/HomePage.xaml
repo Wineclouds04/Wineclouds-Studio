@@ -5,21 +5,21 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    Background="{StaticResource ContentSurfaceBrush}"
+    Background="{ThemeResource ContentSurfaceBrush}"
     mc:Ignorable="d">
 
-    <Grid Padding="40">
+    <Grid Padding="28">
         <Grid.RowDefinitions>
-            <RowDefinition Height="*" MinHeight="300" />
-            <RowDefinition Height="*" MinHeight="300" />
+            <RowDefinition Height="*" MinHeight="260" />
+            <RowDefinition Height="*" MinHeight="260" />
         </Grid.RowDefinitions>
 
         <Border
             Grid.Row="0"
-            Background="#F4F7FA"
-            BorderBrush="#E8EDF3"
+            Background="{ThemeResource AppSubtleBackgroundBrush}"
+            BorderBrush="{ThemeResource AppBorderBrush}"
             BorderThickness="1"
-            CornerRadius="14">
+            CornerRadius="18">
             <Grid Padding="36">
                 <Viewbox
                     HorizontalAlignment="Stretch"
@@ -65,7 +65,7 @@
                                 FontFamily="Consolas"
                                 FontSize="42"
                                 FontWeight="Bold"
-                                Foreground="#111827"
+                                Foreground="{ThemeResource AppTextPrimaryBrush}"
                                 LineHeight="50" />
                         </Grid>
 
@@ -93,7 +93,7 @@
                                 x:Name="TaglineText"
                                 FontFamily="Consolas"
                                 FontSize="27"
-                                Foreground="#111827" />
+                                Foreground="{ThemeResource AppTextPrimaryBrush}" />
                         </Grid>
                     </Grid>
                 </Viewbox>
@@ -119,11 +119,11 @@
                     <TextBlock
                         FontSize="24"
                         FontWeight="SemiBold"
-                        Foreground="#0F172A"
-                        Text="多窗口工作流，一眼掌控" />
+                        Foreground="{ThemeResource AppTextPrimaryBrush}"
+                        Text="一体化 Windows 工作台" />
                     <TextBlock
-                        Foreground="#64748B"
-                        Text="把实时预览、视觉检测与输入同步放进同一个 Windows 工作台。" />
+                        Foreground="{ThemeResource AppTextSecondaryBrush}"
+                        Text="从硬件概览、多窗口工作流到主题与账号入口，都集中在 Wineclouds Studio。" />
                 </StackPanel>
 
                 <Border
@@ -131,93 +131,173 @@
                     Padding="12,7"
                     HorizontalAlignment="Right"
                     VerticalAlignment="Center"
-                    Background="#EFF6FF"
+                    Background="{ThemeResource AppAccentSubtleBrush}"
                     CornerRadius="16">
                     <TextBlock
                         x:Name="VersionText"
                         FontFamily="Consolas"
-                        Foreground="#1D4ED8"
+                        Foreground="{ThemeResource AppAccentBrush}"
                         Text="0.0.0" />
                 </Border>
             </Grid>
 
             <Grid
                 Grid.Row="1"
-                ColumnSpacing="16">
+                ColumnSpacing="14"
+                RowSpacing="14">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
 
                 <Border
                     Grid.Column="0"
-                    Padding="24"
-                    Background="#F8FAFC"
-                    BorderBrush="#E2E8F0"
+                    Padding="18"
+                    Background="{ThemeResource AppSubtleBackgroundBrush}"
+                    BorderBrush="{ThemeResource AppBorderBrush}"
                     BorderThickness="1"
-                    CornerRadius="12">
-                    <StackPanel VerticalAlignment="Center" Spacing="9">
+                    CornerRadius="14">
+                    <StackPanel VerticalAlignment="Center" Spacing="7">
                         <TextBlock
                             FontFamily="Consolas"
-                            Foreground="#2563EB"
-                            Text="01 / LIVE" />
+                            Foreground="{ThemeResource AppAccentBrush}"
+                            Text="01 / SYSTEM" />
                         <TextBlock
-                            FontSize="18"
+                            FontSize="17"
                             FontWeight="SemiBold"
-                            Foreground="#0F172A"
-                            Text="实时窗口预览" />
+                            Foreground="{ThemeResource AppTextPrimaryBrush}"
+                            Text="硬件信息" />
                         <TextBlock
-                            Foreground="#64748B"
-                            Text="持续查看关键窗口，通过分组热键快速切换焦点。"
+                            Foreground="{ThemeResource AppTextSecondaryBrush}"
+                            Text="快速查看 Windows、处理器、显卡、内存和主要设备。"
                             TextWrapping="Wrap" />
                     </StackPanel>
                 </Border>
 
                 <Border
                     Grid.Column="1"
-                    Padding="24"
-                    Background="#F8FAFC"
-                    BorderBrush="#E2E8F0"
+                    Padding="18"
+                    Background="{ThemeResource AppSubtleBackgroundBrush}"
+                    BorderBrush="{ThemeResource AppBorderBrush}"
                     BorderThickness="1"
-                    CornerRadius="12">
-                    <StackPanel VerticalAlignment="Center" Spacing="9">
+                    CornerRadius="14">
+                    <StackPanel VerticalAlignment="Center" Spacing="7">
                         <TextBlock
                             FontFamily="Consolas"
-                            Foreground="#0891B2"
-                            Text="02 / WATCH" />
+                            Foreground="{ThemeResource AppAccentBrush}"
+                            Text="02 / LIVE" />
                         <TextBlock
-                            FontSize="18"
+                            FontSize="17"
                             FontWeight="SemiBold"
-                            Foreground="#0F172A"
-                            Text="屏幕区域检测" />
+                            Foreground="{ThemeResource AppTextPrimaryBrush}"
+                            Text="窗口管理器" />
                         <TextBlock
-                            Foreground="#64748B"
-                            Text="监测指定区域的颜色变化，在关键状态出现时提醒。"
+                            Foreground="{ThemeResource AppTextSecondaryBrush}"
+                            Text="置顶预览关键窗口，通过分组热键快速切换焦点。"
                             TextWrapping="Wrap" />
                     </StackPanel>
                 </Border>
 
                 <Border
                     Grid.Column="2"
-                    Padding="24"
-                    Background="#F8FAFC"
-                    BorderBrush="#E2E8F0"
+                    Padding="18"
+                    Background="{ThemeResource AppSubtleBackgroundBrush}"
+                    BorderBrush="{ThemeResource AppBorderBrush}"
                     BorderThickness="1"
-                    CornerRadius="12">
-                    <StackPanel VerticalAlignment="Center" Spacing="9">
+                    CornerRadius="14">
+                    <StackPanel VerticalAlignment="Center" Spacing="7">
                         <TextBlock
                             FontFamily="Consolas"
                             Foreground="#D97706"
                             Text="03 / SYNC" />
                         <TextBlock
-                            FontSize="18"
+                            FontSize="17"
                             FontWeight="SemiBold"
-                            Foreground="#0F172A"
+                            Foreground="{ThemeResource AppTextPrimaryBrush}"
                             Text="多窗口同步" />
                         <TextBlock
-                            Foreground="#64748B"
+                            Foreground="{ThemeResource AppTextSecondaryBrush}"
                             Text="选择主控窗口，将鼠标与键盘操作同步到目标窗口组。"
+                            TextWrapping="Wrap" />
+                    </StackPanel>
+                </Border>
+
+                <Border
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    Padding="18"
+                    Background="{ThemeResource AppSubtleBackgroundBrush}"
+                    BorderBrush="{ThemeResource AppBorderBrush}"
+                    BorderThickness="1"
+                    CornerRadius="14">
+                    <StackPanel VerticalAlignment="Center" Spacing="7">
+                        <TextBlock
+                            FontFamily="Consolas"
+                            Foreground="#0891B2"
+                            Text="04 / WATCH" />
+                        <TextBlock
+                            FontSize="17"
+                            FontWeight="SemiBold"
+                            Foreground="{ThemeResource AppTextPrimaryBrush}"
+                            Text="屏幕区域检测" />
+                        <TextBlock
+                            Foreground="{ThemeResource AppTextSecondaryBrush}"
+                            Text="监测指定区域的颜色变化，在关键状态出现时提醒。"
+                            TextWrapping="Wrap" />
+                    </StackPanel>
+                </Border>
+
+                <Border
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    Padding="18"
+                    Background="{ThemeResource AppSubtleBackgroundBrush}"
+                    BorderBrush="{ThemeResource AppBorderBrush}"
+                    BorderThickness="1"
+                    CornerRadius="14">
+                    <StackPanel VerticalAlignment="Center" Spacing="7">
+                        <TextBlock
+                            FontFamily="Consolas"
+                            Foreground="#A855F7"
+                            Text="05 / PERSONALIZE" />
+                        <TextBlock
+                            FontSize="17"
+                            FontWeight="SemiBold"
+                            Foreground="{ThemeResource AppTextPrimaryBrush}"
+                            Text="设置与超级调色盘" />
+                        <TextBlock
+                            Foreground="{ThemeResource AppTextSecondaryBrush}"
+                            Text="切换极简白、极夜黑、系统主题和托盘关闭行为。"
+                            TextWrapping="Wrap" />
+                    </StackPanel>
+                </Border>
+
+                <Border
+                    Grid.Row="1"
+                    Grid.Column="2"
+                    Padding="18"
+                    Background="{ThemeResource AppSubtleBackgroundBrush}"
+                    BorderBrush="{ThemeResource AppBorderBrush}"
+                    BorderThickness="1"
+                    CornerRadius="14">
+                    <StackPanel VerticalAlignment="Center" Spacing="7">
+                        <TextBlock
+                            FontFamily="Consolas"
+                            Foreground="#16A34A"
+                            Text="06 / ACCOUNT" />
+                        <TextBlock
+                            FontSize="17"
+                            FontWeight="SemiBold"
+                            Foreground="{ThemeResource AppTextPrimaryBrush}"
+                            Text="Wineclouds 账号" />
+                        <TextBlock
+                            Foreground="{ThemeResource AppTextSecondaryBrush}"
+                            Text="预览登录、注册、找回密码与微信登录交互入口。"
                             TextWrapping="Wrap" />
                     </StackPanel>
                 </Border>

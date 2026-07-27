@@ -5,7 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    Background="{StaticResource ContentSurfaceBrush}"
+    Background="{ThemeResource ContentSurfaceBrush}"
     mc:Ignorable="d">
 
     <Grid Padding="40">
@@ -17,7 +17,7 @@
                         FontWeight="SemiBold"
                         Text="软件更新" />
                     <TextBlock
-                        Foreground="#64748B"
+                        Foreground="{ThemeResource AppTextSecondaryBrush}"
                         Text="从 GitHub Releases 检查、下载并安装 Wineclouds Studio 正式版本。" />
                 </StackPanel>
 
@@ -30,13 +30,13 @@
                     <Border
                         Grid.Column="0"
                         Padding="22"
-                        Background="White"
-                        BorderBrush="#E2E8F0"
+                        Background="{ThemeResource AppCardBackgroundBrush}"
+                        BorderBrush="{ThemeResource AppBorderBrush}"
                         BorderThickness="1"
                         CornerRadius="12">
                         <StackPanel Spacing="8">
                             <TextBlock
-                                Foreground="#64748B"
+                                Foreground="{ThemeResource AppTextSecondaryBrush}"
                                 Text="当前版本" />
                             <TextBlock
                                 x:Name="CurrentVersionText"
@@ -44,7 +44,7 @@
                                 FontWeight="SemiBold"
                                 Text="0.0.0" />
                             <TextBlock
-                                Foreground="#94A3B8"
+                                Foreground="{ThemeResource AppTextTertiaryBrush}"
                                 Text="本机正在运行的程序版本与构建号" />
                         </StackPanel>
                     </Border>
@@ -52,8 +52,8 @@
                     <Border
                         Grid.Column="1"
                         Padding="22"
-                        Background="White"
-                        BorderBrush="#E2E8F0"
+                        Background="{ThemeResource AppCardBackgroundBrush}"
+                        BorderBrush="{ThemeResource AppBorderBrush}"
                         BorderThickness="1"
                         CornerRadius="12">
                         <Grid ColumnSpacing="12">
@@ -63,7 +63,7 @@
                             </Grid.ColumnDefinitions>
                             <StackPanel Grid.Column="0" Spacing="8">
                                 <TextBlock
-                                    Foreground="#64748B"
+                                    Foreground="{ThemeResource AppTextSecondaryBrush}"
                                     Text="GitHub 最新正式版" />
                                 <TextBlock
                                     x:Name="LatestVersionText"
@@ -72,7 +72,7 @@
                                     Text="尚未检查" />
                                 <TextBlock
                                     x:Name="PublishedAtText"
-                                    Foreground="#94A3B8"
+                                    Foreground="{ThemeResource AppTextTertiaryBrush}"
                                     Text="点击按钮获取最新版本" />
                             </StackPanel>
                             <ProgressRing
@@ -98,8 +98,8 @@
                 <Border
                     x:Name="ReleaseDetailsCard"
                     Padding="24"
-                    Background="White"
-                    BorderBrush="#E2E8F0"
+                    Background="{ThemeResource AppCardBackgroundBrush}"
+                    BorderBrush="{ThemeResource AppBorderBrush}"
                     BorderThickness="1"
                     CornerRadius="12"
                     Visibility="Collapsed">
@@ -117,7 +117,7 @@
                                     Text="版本信息" />
                                 <TextBlock
                                     x:Name="InstallerInfoText"
-                                    Foreground="#64748B"
+                                    Foreground="{ThemeResource AppTextSecondaryBrush}"
                                     Text="Windows x64 安装包" />
                             </StackPanel>
                             <Button
@@ -135,14 +135,14 @@
                             <Border
                                 MaxHeight="240"
                                 Padding="14"
-                                Background="#F8FAFC"
-                                BorderBrush="#E2E8F0"
+                                Background="{ThemeResource AppSubtleBackgroundBrush}"
+                                BorderBrush="{ThemeResource AppBorderBrush}"
                                 BorderThickness="1"
                                 CornerRadius="8">
                                 <ScrollViewer>
                                     <TextBlock
                                         x:Name="ReleaseNotesText"
-                                        Foreground="#334155"
+                                        Foreground="{ThemeResource AppTextSecondaryBrush}"
                                         IsTextSelectionEnabled="True"
                                         Text="暂无版本说明。"
                                         TextWrapping="Wrap" />
@@ -163,7 +163,7 @@
                                 Value="0" />
                             <TextBlock
                                 x:Name="DownloadProgressText"
-                                Foreground="#64748B"
+                                Foreground="{ThemeResource AppTextSecondaryBrush}"
                                 Text="准备下载…" />
                         </StackPanel>
 
@@ -190,8 +190,8 @@
 
                 <Border
                     Padding="20"
-                    Background="#F8FAFC"
-                    BorderBrush="#E2E8F0"
+                    Background="{ThemeResource AppSubtleBackgroundBrush}"
+                    BorderBrush="{ThemeResource AppBorderBrush}"
                     BorderThickness="1"
                     CornerRadius="12">
                     <Grid ColumnSpacing="16">
@@ -204,7 +204,7 @@
                                 FontWeight="SemiBold"
                                 Text="安全更新流程" />
                             <TextBlock
-                                Foreground="#64748B"
+                                Foreground="{ThemeResource AppTextSecondaryBrush}"
                                 Text="程序只接受 Wineclouds04/Wineclouds-Studio 正式 Release 的 update.json 清单及 Windows x64 安装包，并使用清单中的 SHA-256 摘要完成校验。安装器将在当前程序完全退出后启动。"
                                 TextWrapping="Wrap" />
                         </StackPanel>

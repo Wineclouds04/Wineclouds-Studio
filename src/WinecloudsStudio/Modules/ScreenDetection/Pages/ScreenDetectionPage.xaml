@@ -6,7 +6,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    Background="{StaticResource ContentSurfaceBrush}"
+    Background="{ThemeResource ContentSurfaceBrush}"
     Loaded="Page_Loaded"
     mc:Ignorable="d">
     <ScrollViewer HorizontalScrollBarVisibility="Disabled">
@@ -17,7 +17,7 @@
             <StackPanel Spacing="5">
                 <TextBlock FontSize="30" FontWeight="SemiBold" Text="屏幕区域检测" />
                 <TextBlock
-                    Foreground="#64748B"
+                    Foreground="{ThemeResource AppTextSecondaryBrush}"
                     Text="监控指定屏幕区域；目标色块稳定出现时循环播放提醒声音。"
                     TextWrapping="Wrap" />
             </StackPanel>
@@ -37,8 +37,8 @@
                     </Grid.RowDefinitions>
                 <Border
                     Padding="20"
-                    Background="White"
-                    BorderBrush="{StaticResource PlaceholderBorderBrush}"
+                    Background="{ThemeResource AppCardBackgroundBrush}"
+                    BorderBrush="{ThemeResource PlaceholderBorderBrush}"
                     BorderThickness="1"
                     CornerRadius="12">
                     <StackPanel Spacing="10">
@@ -68,8 +68,8 @@
                 <Border
                     Grid.Row="1"
                     Padding="20"
-                    Background="White"
-                    BorderBrush="{StaticResource PlaceholderBorderBrush}"
+                    Background="{ThemeResource AppCardBackgroundBrush}"
+                    BorderBrush="{ThemeResource PlaceholderBorderBrush}"
                     BorderThickness="1"
                     CornerRadius="12">
                     <StackPanel Spacing="12">
@@ -89,7 +89,7 @@
                                 Grid.Column="1"
                                 Width="48"
                                 Height="30"
-                                BorderBrush="#CBD5E1"
+                                BorderBrush="{ThemeResource AppBorderBrush}"
                                 BorderThickness="1"
                                 CornerRadius="6" />
                             <TextBlock
@@ -125,7 +125,7 @@
                             <TextBlock
                                 x:Name="AudioFileText"
                                 Grid.Column="1"
-                                Foreground="#64748B"
+                                Foreground="{ThemeResource AppTextSecondaryBrush}"
                                 Text="未选择 MP3"
                                 TextTrimming="CharacterEllipsis"
                                 VerticalAlignment="Center" />
@@ -140,8 +140,8 @@
                 <Border
                     Grid.Row="3"
                     Padding="20"
-                    Background="White"
-                    BorderBrush="{StaticResource PlaceholderBorderBrush}"
+                    Background="{ThemeResource AppCardBackgroundBrush}"
+                    BorderBrush="{ThemeResource PlaceholderBorderBrush}"
                     BorderThickness="1"
                     CornerRadius="12">
                     <StackPanel Spacing="16">
@@ -172,8 +172,8 @@
             <Border
                 Grid.Row="2"
                 Padding="20"
-                Background="White"
-                BorderBrush="{StaticResource PlaceholderBorderBrush}"
+                Background="{ThemeResource AppCardBackgroundBrush}"
+                BorderBrush="{ThemeResource PlaceholderBorderBrush}"
                 BorderThickness="1"
                 CornerRadius="12">
                 <Grid ColumnSpacing="16">
@@ -183,11 +183,27 @@
                     </Grid.ColumnDefinitions>
                     <StackPanel Spacing="5">
                         <TextBlock x:Name="StateText" FontSize="24" FontWeight="SemiBold" Text="未开始" />
-                        <TextBlock x:Name="MetricsText" Foreground="#64748B" Text="等待开始检测" />
+                        <TextBlock x:Name="MetricsText" Foreground="{ThemeResource AppTextSecondaryBrush}" Text="等待开始检测" />
                     </StackPanel>
                     <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
-                        <Button x:Name="StartButton" Click="StartButton_Click" Content="开始检测" />
-                        <Button x:Name="StopButton" Click="StopButton_Click" Content="停止" IsEnabled="False" />
+                        <Button x:Name="StartButton" Click="StartButton_Click" Content="开始检测">
+                            <Button.Resources>
+                                <SolidColorBrush x:Key="ButtonBackground" Color="#16A34A" />
+                                <SolidColorBrush x:Key="ButtonForeground" Color="White" />
+                                <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#22C55E" />
+                                <SolidColorBrush x:Key="ButtonBackgroundDisabled" Color="#D1D5DB" />
+                                <SolidColorBrush x:Key="ButtonForegroundDisabled" Color="#9CA3AF" />
+                            </Button.Resources>
+                        </Button>
+                        <Button x:Name="StopButton" Click="StopButton_Click" Content="停止" IsEnabled="False">
+                            <Button.Resources>
+                                <SolidColorBrush x:Key="ButtonBackground" Color="#DC2626" />
+                                <SolidColorBrush x:Key="ButtonForeground" Color="White" />
+                                <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#EF4444" />
+                                <SolidColorBrush x:Key="ButtonBackgroundDisabled" Color="#D1D5DB" />
+                                <SolidColorBrush x:Key="ButtonForegroundDisabled" Color="#9CA3AF" />
+                            </Button.Resources>
+                        </Button>
                     </StackPanel>
                 </Grid>
             </Border>
@@ -197,7 +213,7 @@
             <Border
                 Grid.Column="1"
                 Background="#111827"
-                BorderBrush="{StaticResource PlaceholderBorderBrush}"
+                BorderBrush="{ThemeResource PlaceholderBorderBrush}"
                 BorderThickness="1"
                 CornerRadius="12">
                 <Grid>

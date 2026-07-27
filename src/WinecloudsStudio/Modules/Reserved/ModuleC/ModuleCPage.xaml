@@ -5,17 +5,17 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    Background="{StaticResource ContentSurfaceBrush}"
+    Background="{ThemeResource ContentSurfaceBrush}"
     mc:Ignorable="d">
     <Grid Padding="40">
         <ScrollViewer>
             <StackPanel Spacing="20">
                 <StackPanel Spacing="4">
                     <TextBlock FontSize="30" FontWeight="SemiBold" Text="窗口同步" />
-                    <TextBlock Foreground="#64748B" Text="将主控窗口的键盘和鼠标操作同步转发到多个受控窗口。" />
+                    <TextBlock Foreground="{ThemeResource AppTextSecondaryBrush}" Text="将主控窗口的键盘和鼠标操作同步转发到多个受控窗口。" />
                 </StackPanel>
 
-                <Border Padding="20" Background="White" BorderBrush="#E2E8F0" BorderThickness="1" CornerRadius="12">
+                <Border Padding="20" Background="{ThemeResource AppCardBackgroundBrush}" BorderBrush="{ThemeResource AppBorderBrush}" BorderThickness="1" CornerRadius="12">
                     <StackPanel Spacing="12">
                         <Grid ColumnSpacing="12">
                             <Grid.ColumnDefinitions>
@@ -31,7 +31,7 @@
                                 </Button.Resources>
                             </Button>
                         </Grid>
-                        <TextBlock x:Name="WindowCountLabel" Foreground="#94A3B8" Text="正在加载窗口…" />
+                        <TextBlock x:Name="WindowCountLabel" Foreground="{ThemeResource AppTextTertiaryBrush}" Text="正在加载窗口…" />
                     </StackPanel>
                 </Border>
 
@@ -41,10 +41,10 @@
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
 
-                    <Border Grid.Column="0" Padding="20" Background="White" BorderBrush="#E2E8F0" BorderThickness="1" CornerRadius="12">
+                    <Border Grid.Column="0" Padding="20" Background="{ThemeResource AppCardBackgroundBrush}" BorderBrush="{ThemeResource AppBorderBrush}" BorderThickness="1" CornerRadius="12">
                         <StackPanel Spacing="12">
                             <TextBlock FontSize="16" FontWeight="SemiBold" Text="1. 主控窗口" />
-                            <TextBlock Foreground="#64748B" FontSize="13" Text="点击整行选择主控窗口；只有它位于前台时才会同步。" />
+                            <TextBlock Foreground="{ThemeResource AppTextSecondaryBrush}" FontSize="13" Text="点击整行选择主控窗口；只有它位于前台时才会同步。" />
                             <ListView x:Name="PrimaryWindowList" Height="300" SelectionMode="None">
                                 <ListView.ItemContainerStyle>
                                     <Style TargetType="ListViewItem">
@@ -67,10 +67,10 @@
                         </StackPanel>
                     </Border>
 
-                    <Border Grid.Column="1" Padding="20" Background="White" BorderBrush="#E2E8F0" BorderThickness="1" CornerRadius="12">
+                    <Border Grid.Column="1" Padding="20" Background="{ThemeResource AppCardBackgroundBrush}" BorderBrush="{ThemeResource AppBorderBrush}" BorderThickness="1" CornerRadius="12">
                         <StackPanel Spacing="12">
                             <TextBlock FontSize="16" FontWeight="SemiBold" Text="2. 受控窗口" />
-                            <TextBlock Foreground="#64748B" FontSize="13" Text="点击整行勾选一个或多个需要接收同步操作的窗口。" />
+                            <TextBlock Foreground="{ThemeResource AppTextSecondaryBrush}" FontSize="13" Text="点击整行勾选一个或多个需要接收同步操作的窗口。" />
                             <ListView x:Name="TargetWindowList" Height="300" SelectionMode="None">
                                 <ListView.ItemContainerStyle>
                                     <Style TargetType="ListViewItem">
@@ -95,7 +95,7 @@
                     </Border>
                 </Grid>
 
-                <Border Padding="20" Background="White" BorderBrush="#E2E8F0" BorderThickness="1" CornerRadius="12">
+                <Border Padding="20" Background="{ThemeResource AppCardBackgroundBrush}" BorderBrush="{ThemeResource AppBorderBrush}" BorderThickness="1" CornerRadius="12">
                     <StackPanel Spacing="16">
                         <TextBlock FontSize="16" FontWeight="SemiBold" Text="同步选项" />
                         <Grid ColumnSpacing="32" RowSpacing="12">
@@ -117,26 +117,28 @@
                     </StackPanel>
                 </Border>
 
-                <Border Padding="20" Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="1" CornerRadius="12">
-                    <Grid ColumnSpacing="12">
-                        <Grid.ColumnDefinitions><ColumnDefinition Width="Auto" /><ColumnDefinition Width="Auto" /><ColumnDefinition Width="*" /></Grid.ColumnDefinitions>
-                        <Button x:Name="StartButton" Click="StartButton_Click" Content="开始同步">
-                            <Button.Resources>
-                                <SolidColorBrush x:Key="ButtonBackground" Color="#15803D" />
-                                <SolidColorBrush x:Key="ButtonForeground" Color="White" />
-                                <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#16A34A" />
-                            </Button.Resources>
-                        </Button>
-                        <Button x:Name="StopButton" Grid.Column="1" Click="StopButton_Click" Content="停止同步" IsEnabled="False">
-                            <Button.Resources>
-                                <SolidColorBrush x:Key="ButtonBackground" Color="#FEE2E2" />
-                                <SolidColorBrush x:Key="ButtonForeground" Color="#B91C1C" />
-                                <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#FECACA" />
-                            </Button.Resources>
-                        </Button>
-                        <TextBlock x:Name="StatusLabel" Grid.Column="2" VerticalAlignment="Center" Foreground="#64748B" Text="请选择主控窗口和至少一个受控窗口。" />
-                    </Grid>
-                </Border>
+                <Grid ColumnSpacing="12">
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="Auto" /><ColumnDefinition Width="Auto" /><ColumnDefinition Width="*" /></Grid.ColumnDefinitions>
+                    <Button x:Name="StartButton" Click="StartButton_Click" Content="开始同步">
+                        <Button.Resources>
+                            <SolidColorBrush x:Key="ButtonBackground" Color="#16A34A" />
+                            <SolidColorBrush x:Key="ButtonForeground" Color="White" />
+                            <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#22C55E" />
+                            <SolidColorBrush x:Key="ButtonBackgroundDisabled" Color="#D1D5DB" />
+                            <SolidColorBrush x:Key="ButtonForegroundDisabled" Color="#9CA3AF" />
+                        </Button.Resources>
+                    </Button>
+                    <Button x:Name="StopButton" Grid.Column="1" Click="StopButton_Click" Content="停止同步" IsEnabled="False">
+                        <Button.Resources>
+                            <SolidColorBrush x:Key="ButtonBackground" Color="#DC2626" />
+                            <SolidColorBrush x:Key="ButtonForeground" Color="White" />
+                            <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#EF4444" />
+                            <SolidColorBrush x:Key="ButtonBackgroundDisabled" Color="#D1D5DB" />
+                            <SolidColorBrush x:Key="ButtonForegroundDisabled" Color="#9CA3AF" />
+                        </Button.Resources>
+                    </Button>
+                    <TextBlock x:Name="StatusLabel" Grid.Column="2" VerticalAlignment="Center" Foreground="{ThemeResource AppTextSecondaryBrush}" Text="请选择主控窗口和至少一个受控窗口。" />
+                </Grid>
             </StackPanel>
         </ScrollViewer>
     </Grid>
