@@ -1,8 +1,6 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using WinecloudsStudio.Modules.Home.Pages;
-using WinecloudsStudio.Modules.Login.Pages;
-using WinecloudsStudio.Modules.Reserved.ModuleC;
 using WinecloudsStudio.Modules.Reserved.ModuleD;
 using WinecloudsStudio.Modules.Reserved.ModuleE;
 using WinecloudsStudio.Modules.Reserved.ModuleF;
@@ -78,12 +76,10 @@ public sealed partial class MainWindow : Window
                 "system-information" => new SystemInformationPage(),
                 "module-a" => new WindowManagerPage(),
                 "module-b" => new ScreenDetectionPage(),
-                "module-c" => new ModuleCPage(),
                 "module-d" => new ModuleDPage(),
                 "module-e" => new ModuleEPage(),
                 "module-f" => new ModuleFPage(),
                 "settings" => new SettingsPage(),
-                "login" => new LoginPage(),
                 _ => new UnavailablePage()
             };
             _modulePages[navigationKey] = page;

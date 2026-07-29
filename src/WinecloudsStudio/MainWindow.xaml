@@ -98,16 +98,6 @@
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
                 <NavigationViewItem
-                    Content="窗口同步"
-                    Foreground="{ThemeResource NavigationPaneForegroundBrush}"
-                    Tag="module-c">
-                    <NavigationViewItem.Icon>
-                        <FontIcon
-                            Glyph="&#xE8F9;"
-                            Style="{StaticResource NavigationFluentIconStyle}" />
-                    </NavigationViewItem.Icon>
-                </NavigationViewItem>
-                <NavigationViewItem
                     Content="屏幕区域检测"
                     Foreground="{ThemeResource NavigationPaneForegroundBrush}"
                     Tag="module-b">
@@ -147,11 +137,6 @@
                     Foreground="{ThemeResource NavigationPaneForegroundBrush}"
                     Icon="Setting"
                     Tag="settings" />
-                <NavigationViewItem
-                    Content="登录"
-                    Foreground="{ThemeResource NavigationPaneForegroundBrush}"
-                    Icon="Contact"
-                    Tag="login" />
             </NavigationView.MenuItems>
 
             <NavigationView.Content>

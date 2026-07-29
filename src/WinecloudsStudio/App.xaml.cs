@@ -3,7 +3,6 @@ using WinecloudsStudio.Shared.Logging;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Security.Principal;
-using WinecloudsStudio.Modules.Reserved.ModuleC;
 using WinecloudsStudio.Modules.Settings.Models;
 using WinecloudsStudio.Modules.Settings.Services;
 using WinecloudsStudio.Modules.WindowManager.Services.Implementation;
@@ -21,7 +20,6 @@ public partial class App : Microsoft.UI.Xaml.Application
     internal Window? MainAppWindow => _window;
     internal ApplicationSettingsService SettingsService { get; } = new();
     internal ApplicationSettings Settings { get; private set; } = new();
-    internal MultiWindowSyncEngine ModuleCSyncEngine { get; } = new();
     internal ThumbnailManager WindowThumbnailManager { get; private set; } = null!;
 
     public App()
@@ -76,7 +74,6 @@ public partial class App : Microsoft.UI.Xaml.Application
                 _trayIconService?.Dispose();
                 _trayIconService = null;
                 WindowThumbnailManager.Stop();
-                ModuleCSyncEngine.Dispose();
                 Logger.Shutdown();
                 _shutdownCompleted = true;
                 _window?.Close();
