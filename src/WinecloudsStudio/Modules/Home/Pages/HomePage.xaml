@@ -123,7 +123,7 @@
                         Text="一体化 Windows 工作台" />
                     <TextBlock
                         Foreground="{ThemeResource AppTextSecondaryBrush}"
-                        Text="从硬件概览、多窗口工作流到主题与账号入口，都集中在 Wineclouds Studio。" />
+                        Text="从硬件概览、多窗口工作流到检测与主题设置，都集中在 Wineclouds Studio。" />
                 </StackPanel>
 
                 <Border
@@ -146,7 +146,6 @@
                 ColumnSpacing="14"
                 RowSpacing="14">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
@@ -204,30 +203,6 @@
                 </Border>
 
                 <Border
-                    Grid.Column="2"
-                    Padding="18"
-                    Background="{ThemeResource AppSubtleBackgroundBrush}"
-                    BorderBrush="{ThemeResource AppBorderBrush}"
-                    BorderThickness="1"
-                    CornerRadius="14">
-                    <StackPanel VerticalAlignment="Center" Spacing="7">
-                        <TextBlock
-                            FontFamily="Consolas"
-                            Foreground="#D97706"
-                            Text="03 / SYNC" />
-                        <TextBlock
-                            FontSize="17"
-                            FontWeight="SemiBold"
-                            Foreground="{ThemeResource AppTextPrimaryBrush}"
-                            Text="多窗口同步" />
-                        <TextBlock
-                            Foreground="{ThemeResource AppTextSecondaryBrush}"
-                            Text="选择主控窗口，将鼠标与键盘操作同步到目标窗口组。"
-                            TextWrapping="Wrap" />
-                    </StackPanel>
-                </Border>
-
-                <Border
                     Grid.Row="1"
                     Grid.Column="0"
                     Padding="18"
@@ -239,7 +214,7 @@
                         <TextBlock
                             FontFamily="Consolas"
                             Foreground="#0891B2"
-                            Text="04 / WATCH" />
+                            Text="03 / WATCH" />
                         <TextBlock
                             FontSize="17"
                             FontWeight="SemiBold"
@@ -264,7 +239,7 @@
                         <TextBlock
                             FontFamily="Consolas"
                             Foreground="#A855F7"
-                            Text="05 / PERSONALIZE" />
+                            Text="04 / PERSONALIZE" />
                         <TextBlock
                             FontSize="17"
                             FontWeight="SemiBold"
@@ -277,30 +252,6 @@
                     </StackPanel>
                 </Border>
 
-                <Border
-                    Grid.Row="1"
-                    Grid.Column="2"
-                    Padding="18"
-                    Background="{ThemeResource AppSubtleBackgroundBrush}"
-                    BorderBrush="{ThemeResource AppBorderBrush}"
-                    BorderThickness="1"
-                    CornerRadius="14">
-                    <StackPanel VerticalAlignment="Center" Spacing="7">
-                        <TextBlock
-                            FontFamily="Consolas"
-                            Foreground="#16A34A"
-                            Text="06 / ACCOUNT" />
-                        <TextBlock
-                            FontSize="17"
-                            FontWeight="SemiBold"
-                            Foreground="{ThemeResource AppTextPrimaryBrush}"
-                            Text="Wineclouds 账号" />
-                        <TextBlock
-                            Foreground="{ThemeResource AppTextSecondaryBrush}"
-                            Text="预览登录、注册、找回密码与微信登录交互入口。"
-                            TextWrapping="Wrap" />
-                    </StackPanel>
-                </Border>
             </Grid>
         </Grid>
     </Grid>
