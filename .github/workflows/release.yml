@@ -1,124 +1,85 @@
-name: Build and publish Windows release
+name: Audit public release assets
 
 on:
-  push:
-    tags:
-      - "v*.*.*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Release tag to audit (for example, v0.3.6)
+        required: true
+        type: string
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
-  release:
-    runs-on: windows-latest
+  audit:
+    runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout source
-        uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
-
-      - name: Set up .NET 10
-        uses: actions/setup-dotnet@v5
-        with:
-          dotnet-version: "10.0.x"
-
-      - name: Install NSIS
-        shell: powershell
-        run: choco install nsis --no-progress --yes
-
-      - name: Verify release version
-        shell: powershell
-        run: |
-          [xml]$project = Get-Content -LiteralPath "src\WinecloudsStudio\WinecloudsStudio.csproj"
-          $projectVersion = @(
-            $project.Project.PropertyGroup |
-              ForEach-Object { $_.Version } |
-              Where-Object { $_ }
-          ) | Select-Object -First 1
-          $tagVersion = "${{ github.ref_name }}".TrimStart("v")
-          if ($projectVersion -ne $tagVersion) {
-            throw "Tag version $tagVersion does not match project version $projectVersion."
-          }
-
-      - name: Build NSIS installer
-        shell: powershell
-        run: .\scripts\New-Installer.ps1 -Configuration Release
-
-      - name: Generate checksum
-        id: artifact
-        shell: powershell
-        run: |
-          $version = "${{ github.ref_name }}".TrimStart("v")
-          $installer = Join-Path $PWD "artifacts\installer\output\WinecloudsStudio-Setup-$version-win-x64.exe"
-          if (-not (Test-Path -LiteralPath $installer)) {
-            throw "Installer was not produced: $installer"
-          }
-          $hash = (Get-FileHash -LiteralPath $installer -Algorithm SHA256).Hash.ToLowerInvariant()
-          $checksum = "$installer.sha256"
-          "$hash  $([IO.Path]::GetFileName($installer))" |
-            Set-Content -LiteralPath $checksum -Encoding ascii
-          "installer=$installer" >> $env:GITHUB_OUTPUT
-          "checksum=$checksum" >> $env:GITHUB_OUTPUT
-
-      - name: Create or update GitHub Release
-        shell: powershell
+      - name: Verify release assets
         env:
           GH_TOKEN: ${{ github.token }}
+          TAG: ${{ inputs.tag }}
+        shell: bash
         run: |
-          $tag = "${{ github.ref_name }}"
-          $installer = "${{ steps.artifact.outputs.installer }}"
-          $checksum = "${{ steps.artifact.outputs.checksum }}"
-          $releasesJson = gh release list --limit 1000 --json tagName
-          if ($LASTEXITCODE -ne 0) {
-            throw "Unable to list GitHub Releases."
-          }
-          $releaseTags = @(
-            $releasesJson |
-              ConvertFrom-Json |
-              ForEach-Object { $_.tagName }
-          )
-          if ($releaseTags -contains $tag) {
-            gh release upload $tag $installer $checksum --clobber
-          }
-          else {
-            gh release create $tag $installer $checksum `
-              --verify-tag `
-              --generate-notes `
-              --title $tag
-          }
+          set -euo pipefail
 
-      - name: Generate and upload update manifest
-        shell: powershell
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          $tag = "${{ github.ref_name }}"
-          $version = $tag.TrimStart("v")
-          $installer = Get-Item -LiteralPath "${{ steps.artifact.outputs.installer }}"
-          $release = gh release view $tag --json name,body,publishedAt,url |
-            ConvertFrom-Json
-          $hash = (Get-FileHash -LiteralPath $installer.FullName -Algorithm SHA256).Hash.ToLowerInvariant()
-          $manifest = [ordered]@{
-            schemaVersion = 1
-            version = $version
-            tagName = $tag
-            name = $release.name
-            releaseNotes = $release.body
-            releasePageUrl = $release.url
-            publishedAt = $release.publishedAt
-            installer = [ordered]@{
-              name = $installer.Name
-              downloadUrl = "https://github.com/${{ github.repository }}/releases/download/$tag/$($installer.Name)"
-              size = $installer.Length
-              sha256 = $hash
-            }
-          }
-          $manifestPath = Join-Path $installer.DirectoryName "update.json"
-          $manifestJson = $manifest | ConvertTo-Json -Depth 4
-          [IO.File]::WriteAllText(
-            $manifestPath,
-            $manifestJson,
-            [Text.UTF8Encoding]::new($false)
-          )
-          gh release upload $tag $manifestPath --clobber
+          tag="$TAG"
+          version="${tag#v}"
+          installer="WinecloudsStudio-Setup-${version}-win-x64.exe"
+          workdir="$(mktemp -d)"
+          trap 'rm -rf "$workdir"' EXIT
+
+          release_json="$(gh release view "$tag" --repo "$GITHUB_REPOSITORY" --json tagName,isDraft,isPrerelease,assets)"
+          jq -e --arg tag "$tag" \
+            '.tagName == $tag and (.isDraft | not) and (.isPrerelease | not)' \
+            <<<"$release_json" >/dev/null
+
+          expected_names=$(printf '%s\n' \
+            "$installer" \
+            "${installer}.sha256" \
+            "update.json" | sort)
+          actual_names=$(jq -r '.assets[].name' <<<"$release_json" | sort)
+          if [[ "$actual_names" != "$expected_names" ]]; then
+            echo 'Release assets do not match the required three-file set.' >&2
+            diff -u <(printf '%s\n' "$expected_names") <(printf '%s\n' "$actual_names") || true
+            exit 1
+          fi
+
+          gh release download "$tag" \
+            --repo "$GITHUB_REPOSITORY" \
+            --dir "$workdir" \
+            --pattern "$installer" \
+            --pattern "${installer}.sha256" \
+            --pattern update.json
+
+          actual_hash="$(sha256sum "$workdir/$installer" | awk '{print $1}')"
+          expected_hash="$(awk 'NF {print $1; exit}' "$workdir/${installer}.sha256")"
+          [[ "$actual_hash" == "$expected_hash" ]]
+
+          jq -e \
+            '.schemaVersion == 2
+             and .signatureAlgorithm == "ecdsa-p256-sha256"
+             and (.signature | type == "string" and length > 0)
+             and (.payload | type == "string" and length > 0)' \
+            "$workdir/update.json" >/dev/null
+
+          payload_file="$workdir/payload.json"
+          jq -r '.payload' "$workdir/update.json" | base64 --decode > "$payload_file"
+          installer_size="$(stat -c '%s' "$workdir/$installer")"
+          jq -e \
+            --arg version "$version" \
+            --arg tag "$tag" \
+            --arg name "$installer" \
+            --arg size "$installer_size" \
+            --arg sha "$actual_hash" \
+            '.version == $version
+             and .tagName == $tag
+             and .installer.name == $name
+             and (.installer.size | tostring) == $size
+             and .installer.sha256 == $sha' \
+            "$payload_file" >/dev/null
+
+          echo "Release $tag passed the public asset audit."
+          echo "Installer: $installer ($installer_size bytes)"
+          echo "SHA-256: $actual_hash"
