@@ -17,7 +17,7 @@
 Wineclouds Studio 将窗口管理、硬件概览、状态检测、EVE 星图和主题设置集中在一个清爽的桌面工作台中。
 
 <p>
-  <a href="https://github.com/Wineclouds04/Wineclouds-Studio/releases/latest"><img src="https://img.shields.io/badge/最新版本-v0.3.6-c96b52" alt="Latest release v0.3.6"></a>
+  <a href="https://github.com/Wineclouds04/Wineclouds-Studio/releases/latest"><img src="https://img.shields.io/badge/最新版本-v0.4.0-c96b52" alt="Latest release v0.4.0"></a>
   <a href="#运行要求"><img src="https://img.shields.io/badge/Windows-10_1809%2B-00A4EF?logo=windows&amp;logoColor=white" alt="Windows 10 1809 or later"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-22C55E" alt="MIT License"></a>
 </p>
@@ -35,6 +35,13 @@ Wineclouds Studio 将窗口管理、硬件概览、状态检测、EVE 星图和�
 ## 产品简介
 
 Wineclouds Studio 适合多开客户端、远程会话、构建任务、游戏辅助信息和多显示器工作台。它可以把需要持续关注的窗口、颜色状态和 EVE 星系情报放在同一个可自定义的界面中。
+
+## v0.4.0 更新
+
+- 新增 EVE 战斗日志面板：累计伤害、滚动 DPS、平均 DPS，支持按角色重置和本地持久化。
+- 支持日志目录、统计窗口、保留天数与缩略图统计显示设置。
+- DWM 实时预览按需恢复，注册或更新失败后退避重试。
+- 配套账号服务修复永久会员续期、过期高级会员兑换和活跃订阅统计。
 
 ## 功能概览
 
@@ -79,22 +86,23 @@ Wineclouds Studio 适合多开客户端、远程会话、构建任务、游戏�
 - 区域预警的星图和路线计算可以完全离线使用。
 - 公共 ESI 活动统计只有在用户主动刷新时请求，且不上传账号或本地窗口数据。
 - 聊天情报监控只读取用户选择的本地 EVE Chatlogs 目录。
+- 战斗日志读取用户配置的本地 EVE 日志目录，统计保存在本机。
 
 ## 版本更新
 
-当前版本为 **v0.3.6**。本版本新增区域预警，修复区域检测停止后的音频竞态，并提升日间/夜间地图连接线的可见度。
+当前版本为 **v0.4.0**（Build 50）。新增战斗日志统计并改进窗口预览恢复；完整更新内容见上方说明。
 
 请通过 [Releases](https://github.com/Wineclouds04/Wineclouds-Studio/releases) 下载正式版本和查看更新说明。
 
 ## 许可与声明
 
-Wineclouds Studio 使用 MIT License 发布。区域预警中的 EVE 星图数据改编自 MIT 许可的 Slazanger/SMT；本项目与 CCP hf. 无隶属或背书关系。
+Wineclouds Studio 使用 MIT License 发布。区域预警中的 EVE 星图数据改编自 MIT 许可的 Slazanger/SMT；战斗日志模块包含 GPL v3 许可的 EveOPlus/eve-o-preview 改编代码，请参阅随包许可证。本项目与 CCP hf. 无隶属或背书关系。
 
 ## English
 
 Wineclouds Studio is a Windows desktop workspace for multi-window workflows. It combines live window management, hardware overview, region color detection, an offline EVE universe map, routing, intel alerts, activity statistics, and customizable themes.
 
-The latest release is [v0.3.6](https://github.com/Wineclouds04/Wineclouds-Studio/releases/latest). It adds Region Alerts with autocomplete system search, route planning, avoid lists, custom jump bridges, danger zones, chat intel, and public ESI activity data. It also fixes the Region Detection stop race and improves map-line visibility in Daylight and Midnight themes.
+The latest release is [v0.4.0](https://github.com/Wineclouds04/Wineclouds-Studio/releases/latest). It adds persistent EVE combat statistics and thumbnail overlays, improves live-preview recovery, and fixes membership handling in the companion API.
 
 Wineclouds Studio supports Windows 10 version 1809 or later on 64-bit systems. The installer is self-contained and does not require a separate .NET runtime. See the [latest Release](https://github.com/Wineclouds04/Wineclouds-Studio/releases/latest) for downloads and release notes.
 
