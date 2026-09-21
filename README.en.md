@@ -17,7 +17,7 @@
 Wineclouds Studio brings window management, hardware overview, status detection, an EVE universe map, and customizable themes into one focused desktop workspace.
 
 <p>
-  <a href="https://github.com/Wineclouds04/Wineclouds-Studio/releases/latest"><img src="https://img.shields.io/badge/latest-v0.3.6-c96b52" alt="Latest release v0.3.6"></a>
+  <a href="https://github.com/Wineclouds04/Wineclouds-Studio/releases/latest"><img src="https://img.shields.io/badge/latest-v0.4.0-c96b52" alt="Latest release v0.4.0"></a>
   <a href="#requirements"><img src="https://img.shields.io/badge/Windows-10_1809%2B-00A4EF?logo=windows&amp;logoColor=white" alt="Windows 10 1809 or later"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-22C55E" alt="MIT License"></a>
 </p>
@@ -35,6 +35,13 @@ Wineclouds Studio brings window management, hardware overview, status detection,
 ## Product overview
 
 Wineclouds Studio is designed for multi-client workflows, remote sessions, build monitoring, game-related information, and multi-display workspaces. Keep important windows, color states, and EVE system intel visible in one configurable desktop tool.
+
+## What's new in v0.4.0
+
+- Added EVE combat statistics with total damage, rolling and average DPS, per-character resets, and local persistence.
+- Added log directory, statistics window, retention, and thumbnail statistics settings.
+- Improved DWM live-preview recovery with on-demand registration and retry backoff.
+- Fixed permanent-membership renewal, expired-tier redemption checks, and active-subscription counts in the companion API.
 
 ## Features
 
@@ -80,15 +87,16 @@ Region Alerts is the EVE workspace introduced in version 0.3.6:
 - The Region Alerts map and route planner work offline.
 - Public ESI activity data is requested only when you choose to refresh it; account and local window data are not uploaded with that request.
 - Chat intel monitoring reads only the local EVE Chatlogs folder you select.
+- Combat statistics read the configured local EVE logs and persist data on your computer.
 
 ## Version updates
 
-The current release is **v0.3.6**. It adds Region Alerts, fixes the Region Detection stop/audio race, and improves map-line visibility in Daylight and Midnight themes.
+The current release is **v0.4.0** (Build 50). It adds combat statistics and improves live-preview recovery; see the changes above.
 
 Download releases and read the full notes on the [Releases page](https://github.com/Wineclouds04/Wineclouds-Studio/releases).
 
 ## License and attribution
 
-Wineclouds Studio is released under the MIT License. EVE map data in Region Alerts is adapted from MIT-licensed Slazanger/SMT. This project is not affiliated with or endorsed by CCP hf.
+Wineclouds Studio is released under the MIT License. EVE map data in Region Alerts is adapted from MIT-licensed Slazanger/SMT. The combat log module includes code adapted from GPL v3-licensed EveOPlus/eve-o-preview; see the bundled license. This project is not affiliated with or endorsed by CCP hf.
 
 [MIT License](LICENSE)
