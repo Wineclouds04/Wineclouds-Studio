@@ -1,6 +1,6 @@
 <div align="center">
 
-[简体中文](README.md) · **English**
+[简体中文](README.md) · English
 
 <pre>
 ██╗    ██╗██╗███╗   ██╗███████╗ ██████╗██╗      ██████╗ ██╗   ██╗██████╗ ███████╗
@@ -9,94 +9,86 @@
 ██║███╗██║██║██║╚██╗██║██╔══╝  ██║     ██║     ██║   ██║██║   ██║██║  ██║╚════██║
 ╚███╔███╔╝██║██║ ╚████║███████╗╚██████╗███████╗╚██████╔╝╚██████╔╝██████╔╝███████║
  ╚══╝╚══╝ ╚═╝╚═╝  ╚═══╝╚══════╝ ╚═════╝╚══════╝ ╚═════╝  ╚═════╝ ╚══════╝
-                 Windows workspace for multi-window workflows
+              The Windows workspace for multi-window workflows
 </pre>
 
-**A Windows desktop workspace for multi-window workflows**
+**Keep every scattered window inside one tidy workspace**
 
-Wineclouds Studio brings window management, hardware overview, status detection, an EVE universe map, and customizable themes into one focused desktop workspace.
+Wineclouds Studio is a Windows workspace that gathers live window previews, status alerts, a hardware overview, an offline star map, and theme customization into a single app.
 
 <p>
-  <a href="https://github.com/Wineclouds04/Wineclouds-Studio/releases/latest"><img src="https://img.shields.io/badge/latest-v0.4.0-c96b52" alt="Latest release v0.4.0"></a>
-  <a href="#requirements"><img src="https://img.shields.io/badge/Windows-10_1809%2B-00A4EF?logo=windows&amp;logoColor=white" alt="Windows 10 1809 or later"></a>
+  <a href="https://github.com/Wineclouds04/Wineclouds-Studio/releases/latest"><img src="https://img.shields.io/badge/latest-v0.4.2-c96b52" alt="Latest v0.4.2"></a>
+  <a href="https://github.com/Wineclouds04/Wineclouds-Studio/releases/latest"><img src="https://img.shields.io/badge/Windows-10_1809%2B-00A4EF?logo=windows&amp;logoColor=white" alt="Windows 10 1809 or later"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-22C55E" alt="MIT License"></a>
 </p>
 
 <p>
-  <a href="https://github.com/Wineclouds04/Wineclouds-Studio/releases/latest"><strong>Download latest release</strong></a>
+  <a href="https://github.com/Wineclouds04/Wineclouds-Studio/releases/latest"><strong>Download the latest release</strong></a>
   ·
-  <a href="#features">Features</a>
+  <a href="#why-wineclouds-studio">Why Wineclouds</a>
   ·
-  <a href="#quick-start">Quick start</a>
+  <a href="#highlights">Highlights</a>
+  ·
+  <a href="#use-cases">Use cases</a>
+  ·
+  <a href="#get-started-in-three-steps">Get started</a>
+  ·
+  <a href="#support-the-author">Support</a>
 </p>
 
 </div>
 
-## Product overview
+## Why Wineclouds Studio
 
-Wineclouds Studio is designed for multi-client workflows, remote sessions, build monitoring, game-related information, and multi-display workspaces. Keep important windows, color states, and EVE system intel visible in one configurable desktop tool.
+- **One app, one place**: windows, status, hardware, maps, and appearance settings live together instead of being scattered across small utilities.
+- **Ready out of the box**: a self-contained installer — install it and run, with no extra runtime to prepare.
+- **Better with use**: thumbnail layouts, grouped hotkeys, and palettes remember your habits and come back on the next launch.
+- **Quiet and private**: your settings, statistics, and personalization stay on your own computer.
+- **Actively maintained**: built and updated continuously by an independent developer.
 
-## What's new in v0.4.0
+## Highlights
 
-- Added EVE combat statistics with total damage, rolling and average DPS, per-character resets, and local persistence.
-- Added log directory, statistics window, retention, and thumbnail statistics settings.
-- Improved DWM live-preview recovery with on-demand registration and retry backoff.
-- Fixed permanent-membership renewal, expired-tier redemption checks, and active-subscription counts in the companion API.
-
-## Features
-
-| Feature | Description |
+| Feature | What you get |
 | --- | --- |
-| Window Manager | Live window previews, always-on-top views, click-to-focus, automatic arrangement, opacity controls, and grouped hotkeys. |
-| Multi-window Sync | Forward keyboard, mouse, click, drag, and wheel actions to selected target windows. |
-| Hardware Overview | View Windows, processor, graphics, memory, storage, display, audio, and network adapter information. |
-| Region Detection | Watch a selected screen area for a target color and play a looping MP3 alert after the state is stable. |
-| Region Alerts | Offline EVE map data for 5,202 systems across 68 regions, autocomplete search, routing, avoid lists, jump bridges, danger zones, chat intel, and activity statistics. |
-| Themes and Palettes | Daylight, Midnight, or system appearance with Minimal, Ocean Blue, Sakura Pink, and Liquid Glass palettes. |
-| Account and Updates | Account sign-in, membership features, and integrity-checked release updates. |
+| Window Manager | Pin useful windows to your desktop as live thumbnails, click to switch, and fine-tune always-on-top, opacity, auto arrangement, and grouped hotkeys. |
+| Multi-window Sync | Keyboard, mouse, click, drag, and wheel actions reach several target windows at once — a real time saver for multi-client setups. |
+| Hardware Overview | See the machine's Windows version and key components at a glance: model, processor, graphics, memory, storage, displays, audio, and network. |
+| Region Detection | Frame an area of the screen and get a looping alert the moment its color state changes — made for long monitoring sessions. |
+| Region Alerts | An offline star map covering thousands of systems, with search, route planning, avoid lists, jump bridges, danger-zone warnings, chat intel, and activity statistics. |
+| Themes and Palettes | Daylight, Midnight, or follow the system, layered with Minimal, Ocean Blue, Sakura Pink, and Liquid Glass palettes. |
+| Account and Updates | Email sign-in, membership tiers with badges, and one-click access to the newest version inside the app. |
 
-## Region Alerts
+## Use cases
 
-Region Alerts is the EVE workspace introduced in version 0.3.6:
+- **Many clients at once**: line up your windows, keep live thumbnails on screen, and switch with a single hotkey.
+- **Remote sessions and long tasks**: let a color alert watch remote desktops, builds, downloads, or background jobs for you.
+- **Setup and inventory**: when upgrading or troubleshooting, see what a machine actually is at a glance.
+- **Planning in deep space**: read the map, plan routes, avoid danger zones, and keep intel within reach.
+- **Desktop aesthetics**: light and dark themes with four palettes and subtle animation give your workspace a personal touch.
 
-- Type a system name, route origin, or destination and choose from matching suggestions.
-- Switch between region and universe views, zoom and pan the map, and plan shortest, safer, or low-security-preferred routes.
-- Maintain systems to avoid, add bidirectional custom jump bridges, and calculate capital jump ranges.
-- Switch between Current, Intel, and Activity tabs in the side panel.
-- Paste intel or monitor a selected EVE Chatlogs folder and receive a warning when a system enters the configured danger zone.
-- Optionally load public ESI ship-jump and kill statistics. The offline map and route planner remain available without network access.
-
-## Quick start
+## Get started in three steps
 
 1. Download and run the installer from the [latest Release](https://github.com/Wineclouds04/Wineclouds-Studio/releases/latest).
-2. Choose a workspace feature from the home page after launch.
-3. Select windows in Window Manager, configure a color alert in Region Detection, or search systems and plan routes in Region Alerts.
-4. Open Settings to choose appearance, palette, language, and whether closing the window exits or minimizes to the tray.
+2. Open the home page and enter the workspace you need — Window Manager, Region Detection, or Region Alerts.
+3. Pick a theme, palette, and language in Settings to make the workspace yours.
 
-## Requirements
+<!-- Optional promo assets: drop screenshots or animated previews here, for example:
+     ![Home](docs/images/home.png)
+     ![Window Manager](docs/images/window-manager.png)
+     ![Region Alerts](docs/images/region-alerts.png) -->
 
-- Windows 10 version 1809 (build 17763) or later.
-- 64-bit Windows.
-- Administrator approval at startup for reliable window access and global hotkeys.
-- A local MP3 file is required for Region Detection audio alerts.
-- The installer is self-contained; a separate .NET runtime is not required.
+## Support the author
 
-## Data and privacy
+Wineclouds Studio is maintained by an independent developer. Every bit of support becomes the next release.
 
-- Hardware information, window layouts, detection settings, and appearance preferences are stored locally by default.
-- The Region Alerts map and route planner work offline.
-- Public ESI activity data is requested only when you choose to refresh it; account and local window data are not uploaded with that request.
-- Chat intel monitoring reads only the local EVE Chatlogs folder you select.
-- Combat statistics read the configured local EVE logs and persist data on your computer.
+- **GitHub**: <https://github.com/Wineclouds04/Wineclouds-Studio>
+- **Bilibili**: <https://space.bilibili.com/406310101>
+- **Afdian**: <https://ifdian.net/a/wineclouds>
 
-## Version updates
+## Notice
 
-The current release is **v0.4.0** (Build 50). It adds combat statistics and improves live-preview recovery; see the changes above.
+Wineclouds Studio is released under the MIT License and is not affiliated with or endorsed by CCP hf.
 
-Download releases and read the full notes on the [Releases page](https://github.com/Wineclouds04/Wineclouds-Studio/releases).
+---
 
-## License and attribution
-
-Wineclouds Studio is released under the MIT License. EVE map data in Region Alerts is adapted from MIT-licensed Slazanger/SMT. The combat log module includes code adapted from GPL v3-licensed EveOPlus/eve-o-preview; see the bundled license. This project is not affiliated with or endorsed by CCP hf.
-
-[MIT License](LICENSE)
+[简体中文](README.md)
