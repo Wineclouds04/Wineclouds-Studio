@@ -35,21 +35,39 @@ jobs:
           New-Item -ItemType Directory -Path $artifactDirectory -Force |
             Out-Null
 
-          gh release view $tag --json tagName,isDraft | Out-Null
+          $releaseJson = gh api "repos/$env:GH_REPO/releases/tags/$tag"
           if ($LASTEXITCODE -ne 0) {
             throw "Release $tag does not exist."
           }
+          $release = $releaseJson | ConvertFrom-Json
+          if ($release.draft) {
+            throw "Release $tag is still a draft."
+          }
 
-          gh release download $tag `
-            --pattern $installerName `
-            --dir $artifactDirectory
+          $assetsJson =
+            gh api "repos/$env:GH_REPO/releases/$($release.id)/assets"
           if ($LASTEXITCODE -ne 0) {
-            throw "Unable to download $installerName from $tag."
+            throw "Unable to list assets for $tag."
+          }
+          $matchingAssets = @(
+            $assetsJson |
+              ConvertFrom-Json |
+              Where-Object {
+                $_.name -eq $installerName -and
+                $_.state -eq 'uploaded'
+              }
+          )
+          if ($matchingAssets.Count -ne 1) {
+            throw "Expected one uploaded $installerName asset on $tag."
           }
 
           $installer = Join-Path $artifactDirectory $installerName
-          if (-not (Test-Path -LiteralPath $installer)) {
-            throw "Release installer was not found: $installer"
+          Invoke-WebRequest `
+            -Uri $matchingAssets[0].browser_download_url `
+            -OutFile $installer
+          if ((Get-Item -LiteralPath $installer).Length -ne
+              $matchingAssets[0].size) {
+            throw "Release installer size does not match the asset record."
           }
 
           $hash = (Get-FileHash `
